@@ -37,8 +37,6 @@ happi <- function(outcome, covariate, quality_var,
   quality_var <- quality_var[order(quality_var)]
   outcome <- outcome[my_order]
   covariate <- covariate[my_order, ]
-  # outcome <- outcome[order(quality_var)]
-  # covariate <- covariate[order(quality_var), ]
 
   covariate_null <- covariate[, -h0_param]
   if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
@@ -70,16 +68,6 @@ happi <- function(outcome, covariate, quality_var,
     return(ff_estimate$x)
   }
 
-  # incomplete_loglik <- function(xbeta, ff) {
-  # 
-  #   prob_lambda <- expit(xbeta)
-  # 
-  #   sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
-  #              (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
-  #     sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
-  #               ff[outcome == 1] * prob_lambda[outcome == 1]))
-  # }
-  
   incomplete_loglik <- function(xbeta, ff) {
     
     prob_lambda <- expit(xbeta)
@@ -108,28 +96,18 @@ happi <- function(outcome, covariate, quality_var,
   my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
 
-  my_estimated_beta[1, ] <- c(0.1, 0.1) # rep(0, pp)
-  my_estimated_beta_null[1, ] <- c(0.1) #rep(0, pp - 1)
+  my_estimated_beta[1, ] <- c(4, -2) # rep(0, pp)
+  my_estimated_beta_null[1, ] <- c(4) #rep(0, pp - 1)
 
   my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
   my_fitted_xbeta_null[1, ] <- c(covariate_null %*% my_estimated_beta_null[1, ])
 
-  my_estimated_ftilde[1, ] <- rep(1, nn)
-  my_estimated_ftilde_null[1, ] <- rep(1, nn)
-  
-  # my_estimated_f[1, ] <- rep(0.73, nn)
-  # my_estimated_f_null[1, ] <- rep(0.73, nn)
-  
+  my_estimated_f[1, ] <- rep(0.73, nn)
+  my_estimated_f_null[1, ] <- rep(0.73, nn)
   # f-tilde = logit(f)
-  # my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
-  # my_estimated_ftilde_null[1, ] <- logit(my_estimated_f_null[1, ])
+  my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
+  my_estimated_ftilde_null[1, ] <- logit(my_estimated_f_null[1, ])
   
-  ## pauline: f_tilde is estimated directly from isotone? 
-  ## so to get Pr(Y=1|lambda=1) = expit(f_tilde)
-  
-  expit(my_estimated_ftilde[1, ]) ->  my_estimated_f[1, ] # pauline: this gives prob_Y1_lambda1 for M_i 
-  expit(my_estimated_ftilde_null[1, ]) -> my_estimated_f_null[1, ]
-
   my_estimated_p[1, ] <- calculate_p(xbeta = my_fitted_xbeta[1, ],
                                      ff = my_estimated_f[1, ])
   my_estimated_p_null[1, ] <- calculate_p(xbeta = my_fitted_xbeta_null[1, ],
