@@ -21,26 +21,34 @@ r27 <- structure(list(tongue = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  class = "data.frame", row.names = c(NA,
                                                      -43L))
 
-## pauline's estimates:
+## pauline's estimates max iteration = 500: 
+# beta0: 2.87168
+# beta1: -1.521753
+# LL_fullmodel: -10.48573
+# LL_null: -10.72084
+# LRT: 0.470219
+# pvalue: 0.4928864
 
-## $beta0
-# [1] 2.87168
-#
-# $beta1
-# [1] -1.521753
-#
-# $LRT
-# [1] 0.470219
+## estimates using happi r-package and maxit = 500: 
+# beta0: 2.87168
+# beta1: -1.521753
+# LL_fullmodel: -10.47948
+# LL_null: -10.71932
+# LRT:  0.4796723
+# pvalue: 0.4885708
 
 happi_r27 <- happi(outcome = r27$`Ribosomal protein L27`,
                    covariate = cbind(1, r27$tongue),
                    quality_var = r27$mean_coverage,
-                   max_iterations = 100,
+                   max_iterations = 500,
                    nstarts = 1,
                    epsilon = 0)
+
 happi_r27$beta %>% tail
-happi_r27$loglik %>% tail
-happi_r27$f %>% tail(1) %>% logit ## doesn't match Pauline's
+happi_r27$loglik %>% tail(1) 
+happi_r27$f %>% tail(2) %>% logit ## doesn't match Pauline's
+happi_r27$f %>% head(2) %>% logit
+happi_r27$p %>% head()
 
 happi_r27$loglik$pvalue
 
@@ -89,6 +97,9 @@ mem <- structure(list(tongue = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 # [1] -8.177821
 # [1] "my_restricted_results$V3"
 # [1] -11.06179
+### ^^ just FYI that the ftilde_change outputted pauline's code is: 
+#max_{M_i} (0.001, | (f-tilde(M_i, iteration = 500) - f-tilde(M_i, iteration = 501)/(f-tilde(M_i, iteration = 500)|  )
+   
 
 names(mem)[3] <- "menbraneprotein"
 happi_r27 <- happi(outcome = mem$menbraneprotein,
