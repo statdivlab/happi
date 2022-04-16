@@ -1,0 +1,22 @@
+Package: happi
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: as.person(c(
+    "Amy Willis <adwillis@uw.edu> [aut, cre]",
+    "Pauline Trinh [aut]",
+    "David Clausen [aut]"
+  ))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+Depends:
+    isotone, 
+    logistf, 
+    tibble,
+    tidyverse
+Suggests:
+    testthat
+LazyData: true
