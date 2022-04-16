@@ -15,8 +15,8 @@ Encoding: UTF-8
 Depends:
     isotone, 
     logistf, 
-    tibble,
-    tidyverse
+    tibble
 Suggests:
     testthat
 LazyData: true
+RoxygenNote: 7.1.2
