@@ -29,7 +29,8 @@ r27 <- structure(list(tongue = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 # LRT: 0.470219
 # pvalue: 0.4928864
 
-## estimates using happi r-package and maxit = 500: 
+## estimates using happi r-package and maxit = 500 (using the same initial parameters as I used): 
+## beta0 = 0.1, beta1 = 0.1, f_tilde = (1, num)
 # beta0: 2.87168
 # beta1: -1.521753
 # LL_fullmodel: -10.47948
@@ -43,7 +44,9 @@ happi_r27 <- happi(outcome = r27$`Ribosomal protein L27`,
                    max_iterations = 500,
                    nstarts = 1,
                    epsilon = 0)
-
+### output when restored to happi's initial parameters (beta0=4, beta1 = -2, logit(f) = 0.73)
+# p = 0.4671942
+# LRT = 0.529
 happi_r27$beta %>% tail
 happi_r27$loglik %>% tail(1) 
 happi_r27$f %>% tail(2) %>% logit ## doesn't match Pauline's
