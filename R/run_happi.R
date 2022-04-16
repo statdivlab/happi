@@ -78,13 +78,12 @@ happi <- function(outcome, covariate, quality_var,
                 ff[outcome == 1] * prob_lambda[outcome == 1]))
   }
   
-
   ## no multiple starts for now
   my_estimates <- tibble("iteration" = 0:max_iterations,
                          "epsilon" = epsilon,
                          "loglik" = NA,
                          "loglik_null" = NA)
-
+  
   my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
   my_estimated_beta_null <- matrix(NA, nrow = max_iterations + 1, ncol = pp - 1)
   my_fitted_xbeta <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
@@ -95,13 +94,13 @@ happi <- function(outcome, covariate, quality_var,
   my_estimated_ftilde_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
-
+  
   my_estimated_beta[1, ] <- c(4, -2) # rep(0, pp)
   my_estimated_beta_null[1, ] <- c(4) #rep(0, pp - 1)
-
+  
   my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
   my_fitted_xbeta_null[1, ] <- c(covariate_null %*% my_estimated_beta_null[1, ])
-
+  
   my_estimated_f[1, ] <- rep(0.73, nn)
   my_estimated_f_null[1, ] <- rep(0.73, nn)
   # f-tilde = logit(f)
@@ -112,7 +111,7 @@ happi <- function(outcome, covariate, quality_var,
                                      ff = my_estimated_f[1, ])
   my_estimated_p_null[1, ] <- calculate_p(xbeta = my_fitted_xbeta_null[1, ],
                                           ff = my_estimated_f_null[1, ])
-
+  
   my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
                                                  ff = my_estimated_f[1, ])
   my_estimates[1, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
