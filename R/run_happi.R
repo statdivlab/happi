@@ -3,9 +3,10 @@
 #' @param outcome length-n vector
 #' @param covariate n x p matrix
 #' @param quality_var length-n vector  TODO(turn into n x q matrix)
-#' @param max_iterations
+#' @param max_iterations the maximum number of EM steps that the algorithm will run for
 #' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param nstarts number of starts TODO
+#' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon prob of ...
 #'
 #' @import tibble
@@ -14,10 +15,13 @@
 #' @importFrom stats pchisq
 #'
 #' @export
-happi <- function(outcome, covariate, quality_var,
+happi <- function(outcome,
+                  covariate,
+                  quality_var,
                   max_iterations = 50,
                   h0_param = 2,
                   nstarts = 1,
+                  change_threshold = 0.05,
                   epsilon = 0
 ) {
 
@@ -31,10 +35,12 @@ happi <- function(outcome, covariate, quality_var,
 
   pp <- ncol(covariate)
 
+  if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
+
   ## reorder all elements of all data by ordering in quality_var
   ## TODO(change back at end)
   my_order <- order(quality_var)
-  quality_var <- quality_var[order(quality_var)]
+  quality_var <- quality_var[my_order]
   outcome <- outcome[my_order]
   covariate <- covariate[my_order, ]
 
@@ -69,21 +75,21 @@ happi <- function(outcome, covariate, quality_var,
   }
 
   incomplete_loglik <- function(xbeta, ff) {
-    
+
     prob_lambda <- expit(xbeta)
-    
+
     sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
                (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
       sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
                 ff[outcome == 1] * prob_lambda[outcome == 1]))
   }
-  
+
   ## no multiple starts for now
   my_estimates <- tibble("iteration" = 0:max_iterations,
                          "epsilon" = epsilon,
                          "loglik" = NA,
                          "loglik_null" = NA)
-  
+
   my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
   my_estimated_beta_null <- matrix(NA, nrow = max_iterations + 1, ncol = pp - 1)
   my_fitted_xbeta <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
@@ -94,32 +100,32 @@ happi <- function(outcome, covariate, quality_var,
   my_estimated_ftilde_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
-  
-  my_estimated_beta[1, ] <- c(4, -2) # rep(0, pp)
-  my_estimated_beta_null[1, ] <- c(4) #rep(0, pp - 1)
-  
+
+  my_estimated_beta[1, ] <- rep(0, pp)
+  my_estimated_beta_null[1, ] <- rep(0, pp - 1)
+
   my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
   my_fitted_xbeta_null[1, ] <- c(covariate_null %*% my_estimated_beta_null[1, ])
-  
-  my_estimated_f[1, ] <- rep(0.73, nn)
-  my_estimated_f_null[1, ] <- rep(0.73, nn)
+
+  my_estimated_f[1, ] <- rep(mean(outcome), nn)
+  my_estimated_f_null[1, ] <- rep(mean(outcome), nn)
   # f-tilde = logit(f)
   my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
   my_estimated_ftilde_null[1, ] <- logit(my_estimated_f_null[1, ])
-  
+
   my_estimated_p[1, ] <- calculate_p(xbeta = my_fitted_xbeta[1, ],
                                      ff = my_estimated_f[1, ])
   my_estimated_p_null[1, ] <- calculate_p(xbeta = my_fitted_xbeta_null[1, ],
                                           ff = my_estimated_f_null[1, ])
-  
+
   my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
                                                  ff = my_estimated_f[1, ])
   my_estimates[1, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
                                                       ff = my_estimated_f_null[1, ])
 
   tt <- 1
-  other_convergence_conditions <- TRUE # TODO
-  while (tt <= max_iterations & other_convergence_conditions) {
+  keep_going <- TRUE
+  while (tt <= max_iterations & keep_going) {
 
     tt <- tt + 1
 
@@ -147,6 +153,23 @@ happi <- function(outcome, covariate, quality_var,
     my_estimates[tt, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[tt, ],
                                                          ff = my_estimated_f_null[tt, ])
 
+    ## maybe just log-likelihood changing?
+    if (tt > 15) {
+      # change_beta <- max(abs((my_estimated_beta[tt, ] - my_estimated_beta[tt - 1, ])/my_estimated_beta[tt - 1, ]))
+      # change_beta_null <- max(abs((my_estimated_beta_null[tt, ] - my_estimated_beta_null[tt - 1, ])/my_estimated_beta_null[tt - 1, ]))
+      # change_f <- max(abs((my_estimated_f[tt, ] - my_estimated_f[tt - 1, ])/my_estimated_f[tt - 1, ]))
+      # change_f_null <- max(abs((my_estimated_f_null[tt, ] - my_estimated_f_null[tt - 1, ])/my_estimated_f_null[tt - 1, ]))
+
+      pct_change_llks <- 100*max(abs((my_estimates[(tt - 4):tt, "loglik_null"] - my_estimates[(tt - 5):(tt - 1), "loglik_null"])/my_estimates[(tt - 5):(tt - 1), "loglik_null"]),
+                                 abs((my_estimates[(tt - 4):tt, "loglik"] - my_estimates[(tt - 5):(tt - 1), "loglik"])/my_estimates[(tt - 5):(tt - 1), "loglik"]))
+      keep_going <- pct_change_llks > change_threshold
+
+      if(!keep_going) message(paste("Converged after", tt, "iterations; LL % change:", round(pct_change_llks, 3)))
+    }
+
+  }
+  if (tt == max_iterations) {
+    message(paste("Had not converged after", tt, "iterations; LL % change:", round(pct_change_llks, 3)))
   }
 
   my_estimates$LRT <- 2*(my_estimates$loglik - my_estimates$loglik_null)
@@ -158,7 +181,10 @@ happi <- function(outcome, covariate, quality_var,
               "f" = my_estimated_f,
               "f_null" = my_estimated_f_null,
               "p" = my_estimated_p,
-              "p_null" = my_estimated_p_null))
+              "p_null" = my_estimated_p_null,
+              "quality_var" = quality_var,
+              "outcome" = outcome,
+              "covariate" = covariate))
 
 
 }

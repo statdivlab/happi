@@ -11,6 +11,7 @@ happi(
   max_iterations = 50,
   h0_param = 2,
   nstarts = 1,
+  change_threshold = 0.1,
   epsilon = 0
 )
 }
@@ -21,9 +22,13 @@ happi(
 
 \item{quality_var}{length-n vector  TODO(turn into n x q matrix)}
 
+\item{max_iterations}{the maximum number of EM steps that the algorithm will run for}
+
 \item{h0_param}{the column index in covariate that has beta=zero under the null}
 
 \item{nstarts}{number of starts TODO}
+
+\item{change_threshold}{algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
 
 \item{epsilon}{prob of ...}
 }
