@@ -11,7 +11,7 @@ happi(
   max_iterations = 50,
   h0_param = 2,
   nstarts = 1,
-  change_threshold = 0.1,
+  change_threshold = 0.05,
   epsilon = 0
 )
 }

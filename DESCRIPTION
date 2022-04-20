@@ -13,8 +13,9 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 Depends:
-    isotone, 
-    logistf, 
+    isotone,
+    logistf,
+    R (>= 2.10),
     tibble
 Suggests:
     testthat
