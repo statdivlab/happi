@@ -3,11 +3,11 @@ happi
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<span style="font-family:Arial; font-size:1.5em;"> a **H**ierarchical
+<span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
 **Ap**proach to **P**angenomics **I**nference</span>
 
-`happi` is an `R` package for modeling gene presence. ![happi
-Logo](/vignettes/logo.JPEG)
+`happi` is an `R` package for modeling gene presence. \| ![happi
+Logo](https://github.com/paulinetrinh/happi/blob/readme/vignettes/logo.JPEG)
 
 ## Installation
 
