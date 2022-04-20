@@ -1,13 +1,13 @@
 ---
-title: happi
 output: github_document
 ---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# happi <img src="vignettes/logo.JPEG" align="right" width="165px"/>
+# happi <img src="vignettes/logo.JPEG" align="right" width="250px"/>
 <span style="font-family:Arial; font-size:2em;"> a **H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
+
 `happi` is an `R` package for modeling gene presence. 
 
 ## Installation
