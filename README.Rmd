@@ -6,10 +6,9 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# happi <img src="vignettes/logo.png" align="right" width="165px"/>
 <span style="font-family:Arial; font-size:2em;"> a **H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
-
-`happi` is an `R` package for modeling gene presence.            |  ![happi Logo](https://github.com/paulinetrinh/happi/blob/readme/vignettes/logo.JPEG)
-
+`happi` is an `R` package for modeling gene presence. 
 
 ## Installation
 
