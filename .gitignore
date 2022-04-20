@@ -1,0 +1,28 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rproj 
+.DS_Store
+
+# latex files
+*.fls
+*.synctex
+*.synctex.gz
+*.aux
+*.synctex.gz
+*.bcl
+*.bbl
+*.blg
+*.log
+*latexmk
+*run.xml
+
+# R files
+*.RData
+*.Rproj
+*.Rhistory
+
+
+*.swp
+.DS_Store
