@@ -1,0 +1,65 @@
+---
+title: "a happi introduction"
+author: "Pauline Trinh" 
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{a happi introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{css, echo=FALSE}
+.note-box {
+  background-color: lightgreen;
+  border: 3px solid green;
+  font-weight: bold;
+}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# <img src="logo.JPEG" align="right" width="130px"/>
+
+## What does `happi` do? 
+`happi` uses a hierarchical modeling approach to incorporate information related to a genome's quality when conducting enrichment testing for genes in pangenomics. For example, if you were interested in understanding whether a particular gene is more present in *E. coli* genomes recovered from sea otters compared to *E. coli* genomes recovered from narwhals then `happi` is well-suited to help you answer this question! 
+
+To be extra clear, `happi` models the association between an experimental condition and gene presence where the **experimental condition** is the **primary predictor** of interest and **gene presence** is the **outcome**.
+
+The key difference between `happi` and existing methods for gene enrichment in pangenomics is that `happi` incorporates information on the quality of each genome in its modeling approach. 
+
+## What do I need to get started? 
+
+Before going through this vignette you'll need to make sure that you've installed `happi`. 
+To install `happi`, you'll need to check that you've installed `devtools` first. The following script checks that `devtools` is installed and if it's not, your system will install `devtools`. We'll then use `devtools` to install `happi` along with all its required dependencies (if they aren't already installed) such as `isotone`,`logistf`, and `tibble`. 
+
+```{r, eval = FALSE}
+if (!require("devtools", quietly = TRUE))
+    install.packages("devtools") # check that devtools is installed
+devtools::install_github("statdivlab/happi", dependencies = TRUE) # install dependencies for happi
+library(happi)
+```
+
+## Why account for genome quality? 
+
+
+
+## How do I use `happi`? 
+
+Great! Now that we have `happi` installed let's load in an example dataset of Saccharibacteria metagenome-assembeled genomes (MAGs) that has been provided with the `happi` `R` package. 
+
+```{r, message = FALSE, eval = FALSE}
+data(TM7_data)
+dim(TM7_data)
+```
+
+`TM7_data` is a dataset of Saccharibacteria MAGs that was taken from publicly available data published by [Shaiber et al. 2020](https://doi.org/10.1186/s13059-020-02195-w). This dataset contains the presence/absence information of COG functions identified in 43 Saccharibacteria MAGs. These 43 Saccharibacteria MAGs were recovered from two different oral sites `tongue` and `plaque`. Columns 19-731 contain the presence/absence information for each MAG of COG functions that have been annotated by Shaiber et al. Also provided is the variable `mean_coverage` in this dataset that we will be using in this tutorial as our genome quality variable. For detailed information on how this dataset was constructed from [Shaiber et al. 2020's](https://doi.org/10.1186/s13059-020-02195-w) publicly available materials please refer to `happi`'s [supplementary materials](https://github.com/statdivlab/happi_supplementary). 
+
+
+
+
+
+

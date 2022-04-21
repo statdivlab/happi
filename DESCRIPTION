@@ -1,6 +1,6 @@
 Package: happi
 Type: Package
-Title: What the Package Does (Title Case)
+Title: a hiearchical approach to pangenomics inference
 Version: 0.1.0
 Authors@R: as.person(c(
     "Amy Willis <adwillis@uw.edu> [aut, cre]",
@@ -10,7 +10,7 @@ Authors@R: as.person(c(
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: BSD 3-Clause
 Encoding: UTF-8
 Depends:
     isotone,
@@ -18,6 +18,9 @@ Depends:
     R (>= 2.10),
     tibble
 Suggests:
+    rmarkdown,
+    knitr,
     testthat
 LazyData: true
 RoxygenNote: 7.1.2
+VignetteBuilder: knitr

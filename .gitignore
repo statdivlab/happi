@@ -26,3 +26,4 @@
 
 *.swp
 .DS_Store
+inst/doc
