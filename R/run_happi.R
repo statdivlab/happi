@@ -12,9 +12,11 @@
 #' @param method method for estimating f. Defaults to "isotone" for isotonic
 #' regression fit; "spline" fits a monotone spline with df determined by
 #' argument spline_df
+#' @param random_starts whether to pick the starting values of beta's randomly. Defaults to FALSE.
+#' @param firth use firth penalty? Default is TRUE.
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit
-#' @param random_starts whether to pick the starting values of beta's randomly?
+#'
 #'
 #' @import tibble
 #' @import stats
@@ -33,8 +35,9 @@ happi <- function(outcome,
                   change_threshold = 0.05,
                   epsilon = 0,
                   method = "isotone",
-                  spline_df = 4,
-                  random_starts = FALSE
+                  random_starts = FALSE,
+                  firth = TRUE,
+                  spline_df = 4
 ) {
 
 
@@ -74,12 +77,17 @@ happi <- function(outcome,
   }
 
   update_beta <- function(probs, covariate) {
-    # logistf(probs ~ covariate - 1)$coef
-    # glm(probs ~ covariate - 1, family=binomial)$coef
 
-    ## prevents warnings about `non-integer #successes in a binomial glm!`
-    ## doesn't alter coefficient estimates compared to "binomial", only std errors, which we don't use
-    glm(probs ~ covariate - 1, family= quasibinomial)$coef
+    if (!firth) {
+      # glm(probs ~ covariate - 1, family=binomial)$coef
+
+      ## prevents warnings about `non-integer #successes in a binomial glm!`
+      ## doesn't alter coefficient estimates compared to "binomial", only std errors, which we don't use
+      coefs <- glm(probs ~ covariate - 1, family= quasibinomial)$coef
+    } else {
+      coefs <- logistf(probs ~ covariate - 1)$coef
+    }
+    coefs
   }
 
 
@@ -95,19 +103,16 @@ happi <- function(outcome,
       ff_estimate <- activeSet(isomat = cbind(1:(nn-1), 2:nn), # define monotonicity
                                mySolver = fSolver,
                                fobj = loss_fn,
-                               gobj = loss_gradient,
-                               y = outcome,
-                               weights = probs) ## this doesn't double dip on weights? (since they are specified in the fn and grad?)
-
+                               gobj = loss_gradient)
       return(ff_estimate$x)
     } else if (method == "spline") {
 
       spline_basis <- cbind(1, iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
-      b_start <- rep(0.01, ncol(spline_basis))
+      b_start <- rep(0, ncol(spline_basis))
 
       spline_criterion <- function(b) {
         logit_means <- rowSums(do.call(cbind, lapply(1:length(b),
-                                                    function(k) b[k]*spline_basis[,k,drop = FALSE])))
+                                                     function(k) b[k]*spline_basis[,k,drop = FALSE])))
         return(-1*sum(probs*(outcome*logit_means - log(1 + exp(logit_means)))))
       }
 
@@ -131,14 +136,25 @@ happi <- function(outcome,
   }
 
 
-  incomplete_loglik <- function(xbeta, ff) {
+  incomplete_loglik <- function(xbeta, ff, firth = TRUE) {
 
     prob_lambda <- expit(xbeta)
 
-    sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
-               (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
-      sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
-                ff[outcome == 1] * prob_lambda[outcome == 1]))
+    if (!firth) {
+      sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
+                 (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
+        sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
+                  ff[outcome == 1] * prob_lambda[outcome == 1]))
+    } else {
+      ll <-  sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
+                        (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
+        sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
+                  ff[outcome == 1] * prob_lambda[outcome == 1]))
+      penalty <- 0.5*det(t(covariate)%*%diag(as.numeric(prob_lambda)*(
+        1 - as.numeric(prob_lambda)))%*%covariate)
+      # print(c(ll, penalty))
+      return(ll - penalty)
+    }
   }
 
   ## no multiple starts for now
@@ -181,9 +197,11 @@ happi <- function(outcome,
                                           ff = my_estimated_f_null[1, ])
 
   my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
-                                                 ff = my_estimated_f[1, ])
+                                                 ff = my_estimated_f[1, ],
+                                                 firth = firth)
   my_estimates[1, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
-                                                      ff = my_estimated_f_null[1, ])
+                                                      ff = my_estimated_f_null[1, ],
+                                                      firth = firth)
 
   tt <- 1
   keep_going <- TRUE
@@ -203,7 +221,8 @@ happi <- function(outcome,
     my_estimated_p[tt, ] <- calculate_p(xbeta=my_fitted_xbeta[tt, ], ff=my_estimated_f[tt, ])
 
     my_estimates[tt, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt, ],
-                                                    ff = my_estimated_f[tt, ])
+                                                    ff = my_estimated_f[tt, ],
+                                                    firth = firth)
 
     ### null
     my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ], covariate=covariate_null)
@@ -217,7 +236,8 @@ happi <- function(outcome,
     my_estimated_p_null[tt, ] <- calculate_p(xbeta=my_fitted_xbeta_null[tt, ], ff=my_estimated_f_null[tt, ])
 
     my_estimates[tt, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[tt, ],
-                                                         ff = my_estimated_f_null[tt, ])
+                                                         ff = my_estimated_f_null[tt, ],
+                                                         firth = firth)
 
     ## maybe just log-likelihood changing?
     if ((tt > min_iterations) & (my_estimates[tt, "loglik"] > my_estimates[tt, "loglik_null"])) {
@@ -269,14 +289,14 @@ happi <- function(outcome,
       my_fitted_xbeta[tt_restart, ] <- c(covariate %*% my_estimated_beta[tt_restart, ])
 
       my_estimated_ftilde[tt_restart, ] <- update_f(probs=my_estimated_p[tt_restart - 1, ],
-                                            method = method,
-                                            spline_df = spline_df)
+                                                    method = method,
+                                                    spline_df = spline_df)
       my_estimated_f[tt_restart, ] <- expit(my_estimated_ftilde[tt_restart, ])
 
       my_estimated_p[tt_restart, ] <- calculate_p(xbeta=my_fitted_xbeta[tt_restart, ], ff=my_estimated_f[tt_restart, ])
 
       my_estimates[tt_restart, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
-                                                      ff = my_estimated_f[tt_restart, ])
+                                                              ff = my_estimated_f[tt_restart, ])
 
       if ((tt_restart > min_iterations) & (my_estimates[tt_restart, "loglik"] > my_estimates[tt, "loglik_null"])) {
 
@@ -291,7 +311,7 @@ happi <- function(outcome,
   }
 
   if (tt_restart == max_iterations + 1) {
-    message("didn't work")
+    message("Restarting to estimate beta_alt didn't work. Not sure what's happening...")
     # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
   }
 
