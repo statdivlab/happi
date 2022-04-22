@@ -76,7 +76,7 @@ happi <- function(outcome,
     pis
   }
 
-  update_beta <- function(probs, covariate) {
+  update_beta <- function(probs, covariate, firth = TRUE) {
 
     if (!firth) {
       # glm(probs ~ covariate - 1, family=binomial)$coef
@@ -85,14 +85,24 @@ happi <- function(outcome,
       ## doesn't alter coefficient estimates compared to "binomial", only std errors, which we don't use
       coefs <- glm(probs ~ covariate - 1, family= quasibinomial)$coef
     } else {
-      if(all(covariate ==1)){ ## if covariate is just intercept, fit directly
-        coefs <- logistf(probs~1)$coef
-      } else{
-      coefs <- logistf(probs ~ covariate - 1)$coef
+      ### code that uses logistf (which seems not to have worked great...)
+    #   if(all(covariate ==1)){ ## if covariate is just intercept, fit directly
+    #     coefs <- logistf(probs~1)$coef
+    #   } else{
+    #   coefs <- logistf(probs ~ covariate - 1)$coef
+      ### directly optimize penalized log likelihood:
+      penalized_ll <-
+        function(b){
+          fitted_logits <- as.numeric(covariate%*%matrix(b,ncol = 1))
+          pll <- sum(probs*fitted_logits - log(1 + exp(fitted_logits))) +
+            0.5*msos::logdet(t(covariate)%*%diag(
+              expit(fitted_logits)*(1 - expit(fitted_logits)))%*%covariate)
+          return(-1*pll)
+        }
+      return(optim(rep(0,ncol(covariate)),penalized_ll, method = "L-BFGS-B")$par)
       }
     }
-    coefs
-  }
+
 
 
   update_f <- function(probs,
@@ -214,7 +224,9 @@ happi <- function(outcome,
     tt <- tt + 1
 
     ### alternative
-    my_estimated_beta[tt, ] <- update_beta(probs=my_estimated_p[tt - 1, ], covariate=covariate)
+    my_estimated_beta[tt, ] <- update_beta(probs=my_estimated_p[tt - 1, ],
+                                           covariate=covariate,
+                                           firth = firth)
     my_fitted_xbeta[tt, ] <- c(covariate %*% my_estimated_beta[tt, ])
 
     my_estimated_ftilde[tt, ] <- update_f(probs=my_estimated_p[tt - 1, ],
@@ -229,7 +241,9 @@ happi <- function(outcome,
                                                     firth = firth)
 
     ### null
-    my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ], covariate=covariate_null)
+    my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ],
+                                                covariate=covariate_null,
+                                                firth = firth)
     my_fitted_xbeta_null[tt, ] <- c(covariate_null %*% my_estimated_beta_null[tt, ])
 
     my_estimated_ftilde_null[tt, ] <- update_f(probs=my_estimated_p_null[tt - 1, ],
@@ -289,13 +303,41 @@ happi <- function(outcome,
       tt_restart <- tt_restart + 1
 
       ### alternative
-      my_estimated_beta[tt_restart, ] <- update_beta(probs=my_estimated_p[tt_restart - 1, ], covariate=covariate)
-      my_fitted_xbeta[tt_restart, ] <- c(covariate %*% my_estimated_beta[tt_restart, ])
+      print(paste("Penalized log likelihood at step ", tt_restart-1,
+                  " is ", signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart -1, ],
+                        ff = my_estimated_f[tt_restart - 1, ],
+                        firth = firth),4),
+                  sep = "",
+                  collapse = ""))
+      my_estimated_beta[tt_restart, ] <-
+        update_beta(probs=my_estimated_p[tt_restart - 1, ],
+                    covariate=covariate,
+                    firth = firth)
 
-      my_estimated_ftilde[tt_restart, ] <- update_f(probs=my_estimated_p[tt_restart - 1, ],
+
+      my_fitted_xbeta[tt_restart, ] <-
+        c(covariate %*% my_estimated_beta[tt_restart, ])
+
+      print(paste("Penalized log likelihood after updating beta is ",
+                  signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
+                                                   ff = my_estimated_f[tt_restart - 1, ],
+                                           firth = firth),4),
+                  sep = "",
+                  collapse = ""))
+
+
+      my_estimated_ftilde[tt_restart, ] <-
+        update_f(probs=my_estimated_p[tt_restart - 1, ],
                                                     method = method,
                                                     spline_df = spline_df)
-      my_estimated_f[tt_restart, ] <- expit(my_estimated_ftilde[tt_restart, ])
+      my_estimated_f[tt_restart, ] <-
+        expit(my_estimated_ftilde[tt_restart, ])
+
+      print(paste("Penalized log likelihood after updating f is ",
+                  signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
+                                                   ff = my_estimated_f[tt_restart , ]),4),
+                  sep = "",
+                  collapse = ""))
 
       my_estimated_p[tt_restart, ] <- calculate_p(xbeta=my_fitted_xbeta[tt_restart, ], ff=my_estimated_f[tt_restart, ])
 
