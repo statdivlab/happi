@@ -85,7 +85,11 @@ happi <- function(outcome,
       ## doesn't alter coefficient estimates compared to "binomial", only std errors, which we don't use
       coefs <- glm(probs ~ covariate - 1, family= quasibinomial)$coef
     } else {
+      if(all(covariate ==1)){ ## if covariate is just intercept, fit directly
+        coefs <- logistf(probs~1)$coef
+      } else{
       coefs <- logistf(probs ~ covariate - 1)$coef
+      }
     }
     coefs
   }
@@ -150,10 +154,10 @@ happi <- function(outcome,
                         (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
         sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
                   ff[outcome == 1] * prob_lambda[outcome == 1]))
-      penalty <- 0.5*det(t(covariate)%*%diag(as.numeric(prob_lambda)*(
+      penalty <- 0.5*msos::logdet(t(covariate)%*%diag(as.numeric(prob_lambda)*(
         1 - as.numeric(prob_lambda)))%*%covariate)
       # print(c(ll, penalty))
-      return(ll - penalty)
+      return(ll + penalty)
     }
   }
 
