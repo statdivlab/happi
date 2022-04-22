@@ -44,6 +44,10 @@ library(happi)
 ```
 
 ## Why account for genome quality? 
+Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragements from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look our example data to give us some intuition behind why this might be problematic. 
+
+We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Ribosomal protein L27`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
+
 
 
 
