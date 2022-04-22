@@ -9,6 +9,11 @@
 #' @param nstarts number of starts TODO
 #' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon prob of ...
+#' @param method method for estimating f. Defaults to "isotone" for isotonic
+#' regression fit; "spline" fits a monotone spline with df determined by
+#' argument spline_df
+#' @param spline_df degrees of freedom (in addition to intercept) to use in
+#' monotone spline fit
 #'
 #' @import tibble
 #' @importFrom isotone activeSet fSolver
@@ -24,7 +29,9 @@ happi <- function(outcome,
                   h0_param = 2,
                   nstarts = 1,
                   change_threshold = 0.05,
-                  epsilon = 0
+                  epsilon = 0,
+                  method = "isotone",
+                  spline_df = 4
 ) {
 
   # TODO(PT) take in formula
@@ -66,8 +73,11 @@ happi <- function(outcome,
   }
 
 
-  update_f <- function(probs, tuning_param = 50) {
+  update_f <- function(probs, tuning_param = 50,
+                       method = "isotone",
+                       spline_df = 4) {
 
+    if(method == "isotone"){
     loss_fn <- function(x) -1 * sum(probs * (outcome * x - log(1 + exp(x)))) + sum(cosh((x / tuning_param)^2))
     loss_gradient <-  function(x) -1 * (probs * (outcome - exp(x) / (1 + exp(x)))) + (2 * x / tuning_param) * sinh((x / tuning_param)^2)
 
@@ -79,7 +89,28 @@ happi <- function(outcome,
                              weights = probs) ## this doesn't double dip on weights? (since they are specified in the fn and grad?)
 
     return(ff_estimate$x)
+    } else if(method == "spline"){
+      spline_basis <- cbind(1,iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
+      b_start <- numeric(ncol(spline_basis))
+      spline_criterion <- function(b){
+        logit_means <- rowSums(do.call(cbind,lapply(1:length(b),
+                              function(k) b[k]*spline_basis[,k,drop = FALSE])))
+        return(-1*sum(probs*(outcome*logit_means - log(1 + exp(logit_means)))))
+      }
+     spline_fit <- optim(b_start,spline_criterion,method = "L-BFGS-B",
+           lower = c(-Inf,rep(0,length(b_start) - 1)),
+           upper = rep(Inf, length(b_start)))
+
+     best_b <- spline_fit$par
+     fitted_f_tilde <-
+       rowSums(do.call(cbind,lapply(1:length(best_b),
+                                    function(k)
+                                      best_b[k]*
+                                      spline_basis[,k,drop = FALSE])))
+     return(fitted_f_tilde)
+    }
   }
+
 
   incomplete_loglik <- function(xbeta, ff) {
 
@@ -140,7 +171,9 @@ happi <- function(outcome,
     my_estimated_beta[tt, ] <- update_beta(probs=my_estimated_p[tt - 1, ], covariate=covariate)
     my_fitted_xbeta[tt, ] <- c(covariate %*% my_estimated_beta[tt, ])
 
-    my_estimated_ftilde[tt, ] <- update_f(probs=my_estimated_p[tt - 1, ])
+    my_estimated_ftilde[tt, ] <- update_f(probs=my_estimated_p[tt - 1, ],
+                                          method = method,
+                                          spline_df = spline_df)
     my_estimated_f[tt, ] <- expit(my_estimated_ftilde[tt, ])
 
     my_estimated_p[tt, ] <- calculate_p(xbeta=my_fitted_xbeta[tt, ], ff=my_estimated_f[tt, ])
@@ -152,7 +185,9 @@ happi <- function(outcome,
     my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ], covariate=covariate_null)
     my_fitted_xbeta_null[tt, ] <- c(covariate_null %*% my_estimated_beta_null[tt, ])
 
-    my_estimated_ftilde_null[tt, ] <- update_f(probs=my_estimated_p_null[tt - 1, ])
+    my_estimated_ftilde_null[tt, ] <- update_f(probs=my_estimated_p_null[tt - 1, ],
+                                               method = method,
+                                               spline_df = spline_df)
     my_estimated_f_null[tt, ] <- expit(my_estimated_ftilde_null[tt, ])
 
     my_estimated_p_null[tt, ] <- calculate_p(xbeta=my_fitted_xbeta_null[tt, ], ff=my_estimated_f_null[tt, ])
