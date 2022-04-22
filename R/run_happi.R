@@ -13,7 +13,7 @@
 #' argument spline_df
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit
-#'
+#' @param firth use firth penalty? Default is TRUE.
 #' @import tibble
 #' @importFrom isotone activeSet fSolver
 #' @importFrom logistf logistf
@@ -29,7 +29,8 @@ happi <- function(outcome,
                   change_threshold = 0.05,
                   epsilon = 0,
                   method = "isotone",
-                  spline_df = 4
+                  spline_df = 4,
+                  firth = TRUE
 ) {
 
   # TODO(PT) take in formula
@@ -105,14 +106,23 @@ happi <- function(outcome,
   }
 
 
-  incomplete_loglik <- function(xbeta, ff) {
+  incomplete_loglik <- function(xbeta, ff, firth = TRUE) {
 
     prob_lambda <- expit(xbeta)
-
+    if(!firth){
     sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
                (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
       sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
                 ff[outcome == 1] * prob_lambda[outcome == 1]))
+    } else{
+        ll <-  sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
+                          (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
+          sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
+                    ff[outcome == 1] * prob_lambda[outcome == 1]))
+      penalty <- 0.5*det(t(covariate)%*%diag(as.numeric(prob_lambda)*(
+        1 - as.numeric(prob_lambda)))%*%covariate)
+      return(ll - penalty)
+      }
   }
 
   ## no multiple starts for now
@@ -150,9 +160,11 @@ happi <- function(outcome,
                                           ff = my_estimated_f_null[1, ])
 
   my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
-                                                 ff = my_estimated_f[1, ])
+                                                 ff = my_estimated_f[1, ],
+                                                 firth = firth)
   my_estimates[1, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
-                                                      ff = my_estimated_f_null[1, ])
+                                                      ff = my_estimated_f_null[1, ],
+                                                      firth = firth)
 
   tt <- 1
   keep_going <- TRUE
@@ -172,7 +184,8 @@ happi <- function(outcome,
     my_estimated_p[tt, ] <- calculate_p(xbeta=my_fitted_xbeta[tt, ], ff=my_estimated_f[tt, ])
 
     my_estimates[tt, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt, ],
-                                                    ff = my_estimated_f[tt, ])
+                                                    ff = my_estimated_f[tt, ],
+                                                    firth = firth)
 
     ### null
     my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ], covariate=covariate_null)
@@ -186,7 +199,8 @@ happi <- function(outcome,
     my_estimated_p_null[tt, ] <- calculate_p(xbeta=my_fitted_xbeta_null[tt, ], ff=my_estimated_f_null[tt, ])
 
     my_estimates[tt, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[tt, ],
-                                                         ff = my_estimated_f_null[tt, ])
+                                                         ff = my_estimated_f_null[tt, ],
+                                                         firth = firth)
 
     ## maybe just log-likelihood changing?
     if (tt > 15) {
