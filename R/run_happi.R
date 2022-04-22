@@ -17,7 +17,7 @@
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit
 #'
-#'
+#' @import msos
 #' @import tibble
 #' @import stats
 #' @import splines2
