@@ -1,4 +1,4 @@
-#' Main function for p=q=1
+#' Main function for p=q=1; try without weights
 #'
 #' @param outcome length-n vector
 #' @param covariate n x p matrix
@@ -16,7 +16,7 @@
 #' @importFrom stats pchisq
 #'
 #' @export
-happi <- function(outcome,
+happi_no_weights <- function(outcome,
                   covariate,
                   quality_var,
                   max_iterations = 50,
@@ -75,9 +75,7 @@ happi <- function(outcome,
                              mySolver = fSolver,
                              fobj = loss_fn,
                              gobj = loss_gradient,
-                             y = outcome,
-                             weights = probs) ## this doesn't double dip on weights? (since they are specified in the fn and grad?)
-
+                             y = outcome)
     return(ff_estimate$x)
   }
 
