@@ -2,7 +2,10 @@
 
 export(expit)
 export(happi)
+export(happi_no_weights)
 export(logit)
+import(splines2)
+import(stats)
 import(tibble)
 importFrom(isotone,activeSet)
 importFrom(isotone,fSolver)

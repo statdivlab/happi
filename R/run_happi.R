@@ -14,11 +14,13 @@
 #' argument spline_df
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit
+#' @param random_starts whether to pick the starting values of beta's randomly?
 #'
 #' @import tibble
+#' @import stats
+#' @import splines2
 #' @importFrom isotone activeSet fSolver
 #' @importFrom logistf logistf
-#' @importFrom stats pchisq
 #'
 #' @export
 happi <- function(outcome,
@@ -31,8 +33,10 @@ happi <- function(outcome,
                   change_threshold = 0.05,
                   epsilon = 0,
                   method = "isotone",
-                  spline_df = 4
+                  spline_df = 4,
+                  random_starts = FALSE
 ) {
+
 
   # TODO(PT) take in formula
 
@@ -45,6 +49,7 @@ happi <- function(outcome,
   pp <- ncol(covariate)
 
   if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
+  if(h0_param != 2) warning("Amy hasn't properly checked that testing a different parameter results in sensible output")
 
   ## reorder all elements of all data by ordering in quality_var
   ## TODO(change back at end)
@@ -69,45 +74,59 @@ happi <- function(outcome,
   }
 
   update_beta <- function(probs, covariate) {
-    logistf(probs ~ covariate - 1)$coef
+    # logistf(probs ~ covariate - 1)$coef
+    # glm(probs ~ covariate - 1, family=binomial)$coef
+
+    ## prevents warnings about `non-integer #successes in a binomial glm!`
+    ## doesn't alter coefficient estimates compared to "binomial", only std errors, which we don't use
+    glm(probs ~ covariate - 1, family= quasibinomial)$coef
   }
 
 
-  update_f <- function(probs, tuning_param = 50,
+  update_f <- function(probs,
+                       tuning_param = 50,
                        method = "isotone",
                        spline_df = 4) {
 
-    if(method == "isotone"){
-    loss_fn <- function(x) -1 * sum(probs * (outcome * x - log(1 + exp(x)))) + sum(cosh((x / tuning_param)^2))
-    loss_gradient <-  function(x) -1 * (probs * (outcome - exp(x) / (1 + exp(x)))) + (2 * x / tuning_param) * sinh((x / tuning_param)^2)
+    if(method == "isotone") {
+      loss_fn <- function(x) -1 * sum(probs * (outcome * x - log(1 + exp(x)))) + sum(cosh((x / tuning_param)^2))
+      loss_gradient <-  function(x) -1 * (probs * (outcome - exp(x) / (1 + exp(x)))) + (2 * x / tuning_param) * sinh((x / tuning_param)^2)
 
-    ff_estimate <- activeSet(isomat = cbind(1:(nn-1), 2:nn), # define monotonicity
-                             mySolver = fSolver,
-                             fobj = loss_fn,
-                             gobj = loss_gradient,
-                             y = outcome,
-                             weights = probs) ## this doesn't double dip on weights? (since they are specified in the fn and grad?)
+      ff_estimate <- activeSet(isomat = cbind(1:(nn-1), 2:nn), # define monotonicity
+                               mySolver = fSolver,
+                               fobj = loss_fn,
+                               gobj = loss_gradient,
+                               y = outcome,
+                               weights = probs) ## this doesn't double dip on weights? (since they are specified in the fn and grad?)
 
-    return(ff_estimate$x)
-    } else if(method == "spline"){
-      spline_basis <- cbind(1,iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
-      b_start <- numeric(ncol(spline_basis))
-      spline_criterion <- function(b){
-        logit_means <- rowSums(do.call(cbind,lapply(1:length(b),
-                              function(k) b[k]*spline_basis[,k,drop = FALSE])))
+      return(ff_estimate$x)
+    } else if (method == "spline") {
+
+      spline_basis <- cbind(1, iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
+      b_start <- rep(0.01, ncol(spline_basis))
+
+      spline_criterion <- function(b) {
+        logit_means <- rowSums(do.call(cbind, lapply(1:length(b),
+                                                    function(k) b[k]*spline_basis[,k,drop = FALSE])))
         return(-1*sum(probs*(outcome*logit_means - log(1 + exp(logit_means)))))
       }
-     spline_fit <- optim(b_start,spline_criterion,method = "L-BFGS-B",
-           lower = c(-Inf,rep(0,length(b_start) - 1)),
-           upper = rep(Inf, length(b_start)))
 
-     best_b <- spline_fit$par
-     fitted_f_tilde <-
-       rowSums(do.call(cbind,lapply(1:length(best_b),
-                                    function(k)
-                                      best_b[k]*
-                                      spline_basis[,k,drop = FALSE])))
-     return(fitted_f_tilde)
+      spline_fit <- optim(b_start,
+                          spline_criterion,
+                          method = "L-BFGS-B",
+                          # lower = c(-Inf, rep(0,length(b_start) - 1)),
+                          # upper = rep(Inf, length(b_start))
+                          lower = c(-1e7, rep(0,length(b_start) - 1)), ## to improve stability
+                          upper = rep(100, length(b_start)) ## to improve stability
+      )
+
+      best_b <- spline_fit$par
+      fitted_f_tilde <- rowSums(do.call(cbind,lapply(1:length(best_b),
+                                                     function(k)
+                                                       best_b[k]*spline_basis[,k,drop = FALSE])))
+      return(fitted_f_tilde)
+    } else {
+      stop("Invalid input to `method`. Choose 'isotone' or 'spline'.")
     }
   }
 
@@ -139,8 +158,13 @@ happi <- function(outcome,
   my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
 
-  my_estimated_beta[1, ] <- rep(0, pp)
-  my_estimated_beta_null[1, ] <- rep(0, max(1, pp - 1))
+  if (random_starts) {
+    my_estimated_beta[1, ] <- rnorm(pp)
+    my_estimated_beta_null[1, ] <- rnorm(pp - 1)
+  } else {
+    my_estimated_beta[1, ] <- rep(0, pp)
+    my_estimated_beta_null[1, ] <- rep(0, max(1, pp - 1))
+  }
 
   my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
   my_fitted_xbeta_null[1, ] <- c(covariate_null %*% my_estimated_beta_null[1, ])
@@ -196,11 +220,7 @@ happi <- function(outcome,
                                                          ff = my_estimated_f_null[tt, ])
 
     ## maybe just log-likelihood changing?
-    if (tt > min_iterations) {
-      # change_beta <- max(abs((my_estimated_beta[tt, ] - my_estimated_beta[tt - 1, ])/my_estimated_beta[tt - 1, ]))
-      # change_beta_null <- max(abs((my_estimated_beta_null[tt, ] - my_estimated_beta_null[tt - 1, ])/my_estimated_beta_null[tt - 1, ]))
-      # change_f <- max(abs((my_estimated_f[tt, ] - my_estimated_f[tt - 1, ])/my_estimated_f[tt - 1, ]))
-      # change_f_null <- max(abs((my_estimated_f_null[tt, ] - my_estimated_f_null[tt - 1, ])/my_estimated_f_null[tt - 1, ]))
+    if ((tt > min_iterations) & (my_estimates[tt, "loglik"] > my_estimates[tt, "loglik_null"])) {
 
       pct_change_llks <- 100*max(abs((my_estimates[(tt - 4):tt, "loglik_null"] - my_estimates[(tt - 5):(tt - 1), "loglik_null"])/my_estimates[(tt - 5):(tt - 1), "loglik_null"]),
                                  abs((my_estimates[(tt - 4):tt, "loglik"] - my_estimates[(tt - 5):(tt - 1), "loglik"])/my_estimates[(tt - 5):(tt - 1), "loglik"]))
@@ -210,8 +230,69 @@ happi <- function(outcome,
     }
 
   }
-  if (tt == max_iterations) {
-    message(paste("Had not converged after", tt, "iterations; LL % change:", round(pct_change_llks, 3)))
+
+  tt_restart <- 1
+  if (my_estimates[tt, "loglik"] < my_estimates[tt, "loglik_null"]) {
+
+    message("Likelihood greater under null; restarting...")
+    my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
+    my_fitted_xbeta <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
+    my_estimated_f <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
+    my_estimated_ftilde <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
+    my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
+
+    if (pp > 1) {
+      my_estimated_beta[1, 1] <- my_estimated_beta_null[tt] ## start at converged null
+      my_estimated_beta[1, h0_param] <- 0
+    } else {
+      my_estimated_beta[1, 1] <- 0
+    }
+    stopifnot(h0_param == 2)
+    my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
+    my_estimated_f[1, ] <- my_estimated_f_null[tt, ]
+    my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
+    my_estimated_p[1, ] <- calculate_p(xbeta = my_fitted_xbeta[1, ],
+                                       ff = my_estimated_f[1, ])
+    my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
+                                                   ff = my_estimated_f[1, ])
+
+
+    ## restart at null model if likelihood greater under null than alternative
+
+    keep_going <- TRUE
+    while (tt_restart <= max_iterations & keep_going) {
+
+      tt_restart <- tt_restart + 1
+
+      ### alternative
+      my_estimated_beta[tt_restart, ] <- update_beta(probs=my_estimated_p[tt_restart - 1, ], covariate=covariate)
+      my_fitted_xbeta[tt_restart, ] <- c(covariate %*% my_estimated_beta[tt_restart, ])
+
+      my_estimated_ftilde[tt_restart, ] <- update_f(probs=my_estimated_p[tt_restart - 1, ],
+                                            method = method,
+                                            spline_df = spline_df)
+      my_estimated_f[tt_restart, ] <- expit(my_estimated_ftilde[tt_restart, ])
+
+      my_estimated_p[tt_restart, ] <- calculate_p(xbeta=my_fitted_xbeta[tt_restart, ], ff=my_estimated_f[tt_restart, ])
+
+      my_estimates[tt_restart, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
+                                                      ff = my_estimated_f[tt_restart, ])
+
+      if ((tt_restart > min_iterations) & (my_estimates[tt_restart, "loglik"] > my_estimates[tt, "loglik_null"])) {
+
+        pct_change_llks <- 100*abs((my_estimates[(tt_restart - 4):tt_restart, "loglik"] - my_estimates[(tt_restart - 5):(tt_restart - 1), "loglik"])/my_estimates[(tt_restart - 5):(tt_restart - 1), "loglik"])
+        keep_going <- pct_change_llks > change_threshold
+
+        if(!keep_going) message(paste("Converged after", tt_restart, "iterations; LL % change:", round(pct_change_llks, 3)))
+      }
+
+    }
+
+  }
+
+  if (tt_restart == max_iterations + 1) {
+    message("didn't work")
+    # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
   }
 
   my_estimates$LRT <- 2*(my_estimates$loglik - my_estimates$loglik_null)

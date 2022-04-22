@@ -16,11 +16,13 @@ Depends:
     isotone,
     logistf,
     R (>= 2.10),
+    splines2, 
     tibble
 Suggests:
     rmarkdown,
     knitr,
-    testthat
+    testthat (>= 3.0.0)
 LazyData: true
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
+Config/testthat/edition: 3
