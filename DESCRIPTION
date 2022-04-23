@@ -15,6 +15,7 @@ Encoding: UTF-8
 Depends:
     isotone,
     logistf,
+    msos,
     R (>= 2.10),
     splines2, 
     tibble

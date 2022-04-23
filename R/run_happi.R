@@ -17,7 +17,7 @@
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit
 #'
-#' @import msos
+#' @importFrom msos logdet
 #' @import tibble
 #' @import stats
 #' @import splines2
@@ -37,7 +37,7 @@ happi <- function(outcome,
                   method = "isotone",
                   random_starts = FALSE,
                   firth = TRUE,
-                  spline_df = 4
+                  spline_df = 3
 ) {
 
 
@@ -86,29 +86,29 @@ happi <- function(outcome,
       coefs <- glm(probs ~ covariate - 1, family= quasibinomial)$coef
     } else {
       ### code that uses logistf (which seems not to have worked great...)
-    #   if(all(covariate ==1)){ ## if covariate is just intercept, fit directly
-    #     coefs <- logistf(probs~1)$coef
-    #   } else{
-    #   coefs <- logistf(probs ~ covariate - 1)$coef
+      #   if(all(covariate ==1)){ ## if covariate is just intercept, fit directly
+      #     coefs <- logistf(probs~1)$coef
+      #   } else{
+      #   coefs <- logistf(probs ~ covariate - 1)$coef
       ### directly optimize penalized log likelihood:
       penalized_ll <-
         function(b){
           fitted_logits <- as.numeric(covariate%*%matrix(b,ncol = 1))
           pll <- sum(probs*fitted_logits - log(1 + exp(fitted_logits))) +
-            0.5*msos::logdet(t(covariate)%*%diag(
-              expit(fitted_logits)*(1 - expit(fitted_logits)))%*%covariate)
+            0.5 * logdet(t(covariate) %*% diag(
+              expit(fitted_logits) * (1 - expit(fitted_logits))) %*% covariate)
           return(-1*pll)
         }
       return(optim(rep(0,ncol(covariate)),penalized_ll, method = "L-BFGS-B")$par)
-      }
     }
+  }
 
 
 
   update_f <- function(probs,
                        tuning_param = 50,
                        method = "isotone",
-                       spline_df = 4) {
+                       spline_df = spline_df) {
 
     if(method == "isotone") {
       loss_fn <- function(x) -1 * sum(probs * (outcome * x - log(1 + exp(x)))) + sum(cosh((x / tuning_param)^2))
@@ -118,10 +118,11 @@ happi <- function(outcome,
                                mySolver = fSolver,
                                fobj = loss_fn,
                                gobj = loss_gradient)
-      return(ff_estimate$x)
-    } else if (method == "spline") {
+      return(list("fitted_f_tilde" = ff_estimate$x, "basis_weights" = NA))
+    } else if (method %in% c("splines", "spline")) {
 
       spline_basis <- cbind(1, iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
+
       b_start <- rep(0, ncol(spline_basis))
 
       spline_criterion <- function(b) {
@@ -140,10 +141,13 @@ happi <- function(outcome,
       )
 
       best_b <- spline_fit$par
+
+      if (any(abs(best_b - 100) < 0.01)) warning("spline basis weights close to boundaries; try reducing spline_df")
+      if (any(abs(best_b > 1e4))) warning("spline basis weights close to boundaries; try reducing spline_df")
       fitted_f_tilde <- rowSums(do.call(cbind,lapply(1:length(best_b),
                                                      function(k)
                                                        best_b[k]*spline_basis[,k,drop = FALSE])))
-      return(fitted_f_tilde)
+      return(list("fitted_f_tilde" = fitted_f_tilde, "basis_weights" = best_b))
     } else {
       stop("Invalid input to `method`. Choose 'isotone' or 'spline'.")
     }
@@ -164,9 +168,8 @@ happi <- function(outcome,
                         (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
         sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
                   ff[outcome == 1] * prob_lambda[outcome == 1]))
-      penalty <- 0.5*msos::logdet(t(covariate)%*%diag(as.numeric(prob_lambda)*(
-        1 - as.numeric(prob_lambda)))%*%covariate)
-      # print(c(ll, penalty))
+      penalty <- 0.5*msos::logdet(t(covariate) %*% diag(as.numeric(prob_lambda)*(
+        1 - as.numeric(prob_lambda))) %*% covariate)
       return(ll + penalty)
     }
   }
@@ -187,6 +190,8 @@ happi <- function(outcome,
   my_estimated_ftilde_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
   my_estimated_p_null <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
+  my_estimated_basis_weights <- matrix(NA, nrow = max_iterations + 1, ncol = spline_df + 1)
+  my_estimated_basis_weights_null <- matrix(NA, nrow = max_iterations + 1, ncol = spline_df + 1)
 
   if (random_starts) {
     my_estimated_beta[1, ] <- rnorm(pp)
@@ -204,6 +209,7 @@ happi <- function(outcome,
   # f-tilde = logit(f)
   my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
   my_estimated_ftilde_null[1, ] <- logit(my_estimated_f_null[1, ])
+
 
   my_estimated_p[1, ] <- calculate_p(xbeta = my_fitted_xbeta[1, ],
                                      ff = my_estimated_f[1, ])
@@ -229,9 +235,12 @@ happi <- function(outcome,
                                            firth = firth)
     my_fitted_xbeta[tt, ] <- c(covariate %*% my_estimated_beta[tt, ])
 
-    my_estimated_ftilde[tt, ] <- update_f(probs=my_estimated_p[tt - 1, ],
-                                          method = method,
-                                          spline_df = spline_df)
+    updated_f <- update_f(probs=my_estimated_p[tt - 1, ],
+                          method = method,
+                          spline_df = spline_df)
+    my_estimated_ftilde[tt, ] <- updated_f$fitted_f_tilde
+    my_estimated_basis_weights[tt, ] <- updated_f$basis_weights
+
     my_estimated_f[tt, ] <- expit(my_estimated_ftilde[tt, ])
 
     my_estimated_p[tt, ] <- calculate_p(xbeta=my_fitted_xbeta[tt, ], ff=my_estimated_f[tt, ])
@@ -246,9 +255,12 @@ happi <- function(outcome,
                                                 firth = firth)
     my_fitted_xbeta_null[tt, ] <- c(covariate_null %*% my_estimated_beta_null[tt, ])
 
-    my_estimated_ftilde_null[tt, ] <- update_f(probs=my_estimated_p_null[tt - 1, ],
-                                               method = method,
-                                               spline_df = spline_df)
+    updated_f_null <- update_f(probs=my_estimated_p_null[tt - 1, ],
+                               method = method,
+                               spline_df = spline_df)
+    my_estimated_ftilde_null[tt, ] <- updated_f_null$fitted_f_tilde
+    my_estimated_basis_weights_null[tt, ] <- updated_f_null$basis_weights
+
     my_estimated_f_null[tt, ] <- expit(my_estimated_ftilde_null[tt, ])
 
     my_estimated_p_null[tt, ] <- calculate_p(xbeta=my_fitted_xbeta_null[tt, ], ff=my_estimated_f_null[tt, ])
@@ -305,8 +317,8 @@ happi <- function(outcome,
       ### alternative
       print(paste("Penalized log likelihood at step ", tt_restart-1,
                   " is ", signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart -1, ],
-                        ff = my_estimated_f[tt_restart - 1, ],
-                        firth = firth),4),
+                                                   ff = my_estimated_f[tt_restart - 1, ],
+                                                   firth = firth),4),
                   sep = "",
                   collapse = ""))
       my_estimated_beta[tt_restart, ] <-
@@ -320,7 +332,7 @@ happi <- function(outcome,
 
       print(paste("Penalized log likelihood after updating beta is ",
                   signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
-                                                   ff = my_estimated_f[tt_restart - 1, ],
+                                           ff = my_estimated_f[tt_restart - 1, ],
                                            firth = firth),4),
                   sep = "",
                   collapse = ""))
@@ -328,14 +340,14 @@ happi <- function(outcome,
 
       my_estimated_ftilde[tt_restart, ] <-
         update_f(probs=my_estimated_p[tt_restart - 1, ],
-                                                    method = method,
-                                                    spline_df = spline_df)
+                 method = method,
+                 spline_df = spline_df)$fitted_f_tilde
       my_estimated_f[tt_restart, ] <-
         expit(my_estimated_ftilde[tt_restart, ])
 
       print(paste("Penalized log likelihood after updating f is ",
                   signif(incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
-                                                   ff = my_estimated_f[tt_restart , ]),4),
+                                           ff = my_estimated_f[tt_restart , ]),4),
                   sep = "",
                   collapse = ""))
 
@@ -369,6 +381,8 @@ happi <- function(outcome,
               "beta_null" = my_estimated_beta_null,
               "f" = my_estimated_f,
               "f_null" = my_estimated_f_null,
+              "basis_weights" =  my_estimated_basis_weights,
+              "basis_weights_null" =  my_estimated_basis_weights_null,
               "p" = my_estimated_p,
               "p_null" = my_estimated_p_null,
               "quality_var" = quality_var,
