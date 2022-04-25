@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_happi.R
 \name{happi}
 \alias{happi}
-\title{Main function for p=q=1}
+\title{Main function running happi, p=q=1}
 \usage{
 happi(
   outcome,
@@ -17,15 +17,15 @@ happi(
   method = "isotone",
   random_starts = FALSE,
   firth = TRUE,
-  spline_df = 4
+  spline_df = 3
 )
 }
 \arguments{
-\item{outcome}{length-n vector}
+\item{outcome}{length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1}
 
-\item{covariate}{n x p matrix}
+\item{covariate}{n x p matrix; this is the matrix for the primary predictor/covariate of interest}
 
-\item{quality_var}{length-n vector  TODO(turn into n x q matrix)}
+\item{quality_var}{length-n vector; this is the quality variable vector, currently p = 1  TODO(turn into n x q matrix)}
 
 \item{max_iterations}{the maximum number of EM steps that the algorithm will run for}
 
@@ -51,5 +51,16 @@ argument spline_df}
 monotone spline fit}
 }
 \description{
-Main function for p=q=1
+Main function running happi, p=q=1
+}
+\examples{
+load(TM7_data)
+x_matrix <- model.matrix(~tongue, data = TM7_data) # create design matrix
+
+happi_results <- happi(outcome=TM7_data$`Ribosomal protein L27`, 
+covariate=x_matrix, 
+quality_var=TM7_data$mean_coverage,
+max_iterations=100, 
+change_threshold=0.01, 
+epsilon=0)
 }

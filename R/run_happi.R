@@ -1,8 +1,8 @@
-#' Main function for p=q=1
+#' Main function running happi, p=q=1
 #'
-#' @param outcome length-n vector
-#' @param covariate n x p matrix
-#' @param quality_var length-n vector  TODO(turn into n x q matrix)
+#' @param outcome length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1
+#' @param covariate n x p matrix; this is the matrix for the primary predictor/covariate of interest
+#' @param quality_var length-n vector; this is the quality variable vector, currently p = 1  TODO(turn into n x q matrix)
 #' @param max_iterations the maximum number of EM steps that the algorithm will run for
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param h0_param the column index in covariate that has beta=zero under the null
@@ -25,6 +25,17 @@
 #' @importFrom logistf logistf
 #'
 #' @export
+#' 
+#' @examples
+#' load(TM7_data)
+#' x_matrix <- model.matrix(~tongue, data = TM7_data) # create design matrix
+#' 
+#' happi_results <- happi(outcome=TM7_data$`Ribosomal protein L27`, 
+#' covariate=x_matrix, 
+#' quality_var=TM7_data$mean_coverage,
+#' max_iterations=100, 
+#' change_threshold=0.01, 
+#' epsilon=0)
 happi <- function(outcome,
                   covariate,
                   quality_var,
