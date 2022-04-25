@@ -22,8 +22,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-# <img src="logo.JPEG" align="right" width="130px"/>
-
 ## What does `happi` do? 
 `happi` uses a hierarchical modeling approach to incorporate information related to a genome's quality when conducting enrichment testing for genes in pangenomics. For example, if you were interested in understanding whether a particular gene is more present in *E. coli* genomes recovered from sea otters compared to *E. coli* genomes recovered from narwhals then `happi` is well-suited to help you answer this question! 
 
@@ -43,13 +41,17 @@ devtools::install_github("statdivlab/happi", dependencies = TRUE) # install depe
 library(happi)
 ```
 
-## Why account for genome quality? 
-Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragements from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look our example data to give us some intuition behind why this might be problematic. 
+Additionally, to go through this vignette (but these are not required to use `happi`) we'll need to make sure `magrittr`, `ggplot` and `dplyr` are installed. 
+```{r, eval = FALSE}
+if (!require("magrittr", quietly = TRUE))
+    install.packages("magrittr") # check that magrittr is installed
 
-We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Ribosomal protein L27`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
+if (!require("dplyr", quietly = TRUE))
+    install.packages("dplyr") # check that dplyr is installed
 
-
-
+if (!require("ggplot2", quietly = TRUE))
+    install.packages("ggplot2") # check that ggplot2 is installed
+```
 
 ## How do I use `happi`? 
 
@@ -60,10 +62,69 @@ data(TM7_data)
 dim(TM7_data)
 ```
 
-`TM7_data` is a dataset of Saccharibacteria MAGs that was taken from publicly available data published by [Shaiber et al. 2020](https://doi.org/10.1186/s13059-020-02195-w). This dataset contains the presence/absence information of COG functions identified in 43 Saccharibacteria MAGs. These 43 Saccharibacteria MAGs were recovered from two different oral sites `tongue` and `plaque`. Columns 19-731 contain the presence/absence information for each MAG of COG functions that have been annotated by Shaiber et al. Also provided is the variable `mean_coverage` in this dataset that we will be using in this tutorial as our genome quality variable. For detailed information on how this dataset was constructed from [Shaiber et al. 2020's](https://doi.org/10.1186/s13059-020-02195-w) publicly available materials please refer to `happi`'s [supplementary materials](https://github.com/statdivlab/happi_supplementary). 
+`TM7_data` is a dataset of Saccharibacteria MAGs that was taken from publicly available data published by [Shaiber et al. 2020](https://doi.org/10.1186/s13059-020-02195-w). This dataset contains the presence/absence information of COG functions identified in 43 Saccharibacteria MAGs (these are designated by the rows). These 43 Saccharibacteria MAGs were recovered from two different oral sites `tongue` and `plaque`. Columns 19-731 contain the presence/absence information for each MAG of COG functions that have been annotated by Shaiber et al. Also provided is the variable `mean_coverage` in this dataset that we will be using in this tutorial as our genome quality variable. For detailed information on how this dataset was constructed from [Shaiber et al. 2020's](https://doi.org/10.1186/s13059-020-02195-w) publicly available materials please refer to `happi`'s [supplementary materials](https://github.com/statdivlab/happi_supplementary). 
 
 
+## Why account for genome quality? 
+Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragements from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look our example data to give us some intuition behind why this might be problematic. 
 
+We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
 
+```{r,message = F}
+library(magrittr)
+library(happi)
+TM7_data %>% 
+  dplyr::rename(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` = `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`) %>% 
+  dplyr::select(MAGs_Id, site, mean_coverage, tongue,
+         `Membrane protein insertase Oxa1/YidC/SpoIIIJ`) -> Mem # Let's simplify our data and pull out the variables we'll need
+```
+
+Let's plot our data with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
+
+```{r,fig.width=7,fig.height=4}
+library(ggplot2)
+Mem %>% ggplot() +
+  geom_jitter(aes(x = mean_coverage, y = `Membrane protein insertase Oxa1/YidC/SpoIIIJ`, col = site, pch = site), height=0.08, width=0.00) +
+  xlab("Mean coverage") + ylab("") +
+  theme_bw() + 
+  scale_colour_manual(values= c("mediumseagreen", "dodgerblue")) + 
+  theme(legend.position="right") +
+  scale_y_continuous(breaks = c(0,1),
+                     label = c("Not detected", "Detected"), limits=c(-0.32, 1.1)) 
+```
+
+So what do we see? We see that there are more tongue-associated MAGs that do not have `Membrane protein insertase Oxa1/YidC/SpoIIIJ` detected in their genomes and these appear to be MAGs that have lower mean coverage. 
+
+Looking at this plot, there may be a potential difference between the presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` by  site where this gene appears to be more prevalent in plaque-associated MAGs than in tongue-associated MAGs. However, are we conflating this difference in gene detection with differences in genome quality (aka mean coverage)? Put another way, is this difference  in gene detection that we're seeing potentially influenced by the fact that some of the MAGs had lower sequencing depth or mean coverage to be able to detect the gene in the first place or is this difference in gene detection truly attributable to the our primary covariate of interest (oral site)?  
+
+## Let's compare an existing method for enrichment testing with `happi` 
+One existing method to test the hypothesis of whether there is a difference in gene presence by some covariate of interest is to use a generalized linear model (GLM) with Rao score test. So let's use that and see what we get. 
+
+```{r}
+ha <- glm(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` ~ tongue, family="binomial", data = Mem)
+h0 <- glm(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` ~ 1, family="binomial", data = Mem)
+anova(ha, h0, test = "Rao")[2, "Pr(>Chi)"]
+```
+
+So, using a GLM + Rao score test we find that there is a significant difference (p = 0.006370813) at an alpha level of 0.05 between the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites. Specifically, it appears that `Membrane protein insertase Oxa1/YidC/SpoIIIJ` is more enriched in Saccharibacteria MAGs from plaque than from tongue samples. We have additional confirmation for what we visually  were seeing in the plot in terms of differences in detection pattern by oral site. 
+
+Recall though, we were concerned about conflating of this difference in gene detection with differences in mean coverage. We would expect that if this was the case that a method that does not account for genome quality would produce smaller p-values than a method that does account for genome quality. 
+
+`happi` accounts for genome quality in its modeling of gene presence and allows user flexibility to specify which genome quality variable is relevant to their experimental condition. Let's see how `happi` does! 
+
+```{r}
+x_matrix <- model.matrix(~tongue, data = Mem) # create design matrix
+happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
+        covariate=x_matrix, 
+        quality_var=Mem$mean_coverage,
+        max_iterations=100, 
+        change_threshold=0.01, 
+        epsilon=0)
+
+happi_results$loglik$pvalue %>% tail(1)
+```
+Using `happi` we still see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.01741983) than the p-value we got when we didn't account for genome quality. 
+
+We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
 
 
