@@ -9,10 +9,15 @@ happi(
   covariate,
   quality_var,
   max_iterations = 50,
+  min_iterations = 15,
   h0_param = 2,
   nstarts = 1,
   change_threshold = 0.05,
-  epsilon = 0
+  epsilon = 0,
+  method = "isotone",
+  random_starts = FALSE,
+  firth = TRUE,
+  spline_df = 4
 )
 }
 \arguments{
@@ -24,6 +29,8 @@ happi(
 
 \item{max_iterations}{the maximum number of EM steps that the algorithm will run for}
 
+\item{min_iterations}{the minimum number of EM steps that the algorithm will run for}
+
 \item{h0_param}{the column index in covariate that has beta=zero under the null}
 
 \item{nstarts}{number of starts TODO}
@@ -31,6 +38,17 @@ happi(
 \item{change_threshold}{algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
 
 \item{epsilon}{prob of ...}
+
+\item{method}{method for estimating f. Defaults to "isotone" for isotonic
+regression fit; "spline" fits a monotone spline with df determined by
+argument spline_df}
+
+\item{random_starts}{whether to pick the starting values of beta's randomly. Defaults to FALSE.}
+
+\item{firth}{use firth penalty? Default is TRUE.}
+
+\item{spline_df}{degrees of freedom (in addition to intercept) to use in
+monotone spline fit}
 }
 \description{
 Main function for p=q=1

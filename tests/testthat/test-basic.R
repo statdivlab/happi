@@ -1,6 +1,3 @@
-context("basic checks that the package works")
-library(happi)
-
 test_that("happi runs", {
 
   set.seed(2)
@@ -28,26 +25,23 @@ test_that("happi runs", {
 
   ys <- rbinom(n = nn, size = 1, prob = true_prob_y_equal_1)
 
-  devtools::load_all()
-  hh0 <- happi(outcome = ys,
-              covariate = xx,
-              quality_var = mm,
-              max_iterations = 30,
-              nstarts = 1,
-              epsilon = 0)
-  hh0$loglik$loglik
-  hh0$loglik$loglik_null
-  # 1e5 * (hh0$loglik$loglik %>% exp)
-  # 1e5 * (hh5$loglik$loglik %>% exp)
-  # hh5$loglik$loglik %>% plot
+  hh0_isotone <- happi(outcome = ys,
+                       covariate = xx,
+                       quality_var = mm,
+                       max_iterations = 100,
+                       method = "isotone",
+                       nstarts = 1,
+                       epsilon = 0)
 
-  hh5 <- happi(outcome = ys,
-          covariate = xx,
-          quality_var = mm,
-          max_iterations = 10,
-          nstarts = 1,
-          epsilon = 0.05)
+  hh0_spline <- happi(outcome = ys,
+                       covariate = xx,
+                       quality_var = mm,
+                       max_iterations = 100,
+                       method = "spline",
+                       nstarts = 1,
+                       epsilon = 0)
 
-
+  expect_type(hh0_isotone, "list")
+  expect_type(hh0_spline, "list")
 
 })
