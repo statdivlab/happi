@@ -2,13 +2,22 @@
 % Please edit documentation in R/logit.R
 \name{logit}
 \alias{logit}
-\title{logit for easy access}
+\title{logit: function for logit calculation}
 \usage{
 logit(input)
 }
 \arguments{
-\item{input}{vector}
+\item{input}{vector of value(s)  consisting of proportions `p` between 0 and 1}
+}
+\value{
+Returns value(s) between negative infinity and infinity
 }
 \description{
-logit for easy access
+logit: function for logit calculation
+}
+\examples{
+# taking the logit of any proportion between 0 and 1
+logit(0.4)
+# taking the logit of a vector of proportions 
+logit(c(0.1, 0.2, 0.9))
 }
