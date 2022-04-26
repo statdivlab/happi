@@ -1,8 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# happi <img src="vignettes/logo.JPEG" align="right" width="250px"/>
-
 <span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
 **Ap**proach to **P**angenomics **I**nference</span>
 
@@ -12,7 +10,7 @@
 
     if (!require("devtools", quietly = TRUE))
         install.packages("devtools") # check that devtools is installed
-    devtools::install_github("statdivlab/happi") # install happi using devtools
+    devtools::install_github("statdivlab/happi", build_vignettes = TRUE) # install happi using devtools
     library(happi)
 
 ## Usage
