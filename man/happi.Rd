@@ -14,7 +14,7 @@ happi(
   nstarts = 1,
   change_threshold = 0.05,
   epsilon = 0,
-  method = "isotone",
+  method = "splines",
   random_starts = FALSE,
   firth = TRUE,
   spline_df = 3
@@ -39,16 +39,15 @@ happi(
 
 \item{epsilon}{prob of ...}
 
-\item{method}{method for estimating f. Defaults to "isotone" for isotonic
-regression fit; "spline" fits a monotone spline with df determined by
-argument spline_df}
+\item{method}{method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
+argument spline_df; "isotone" for isotonic regression fit}
 
 \item{random_starts}{whether to pick the starting values of beta's randomly. Defaults to FALSE.}
 
 \item{firth}{use firth penalty? Default is TRUE.}
 
 \item{spline_df}{degrees of freedom (in addition to intercept) to use in
-monotone spline fit}
+monotone spline fit; default 3}
 }
 \description{
 Main function running happi, p=q=1
