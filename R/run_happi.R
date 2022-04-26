@@ -9,13 +9,12 @@
 #' @param nstarts number of starts TODO
 #' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon prob of ...
-#' @param method method for estimating f. Defaults to "isotone" for isotonic
-#' regression fit; "spline" fits a monotone spline with df determined by
-#' argument spline_df
+#' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
+#' argument spline_df; "isotone" for isotonic regression fit
 #' @param random_starts whether to pick the starting values of beta's randomly. Defaults to FALSE.
 #' @param firth use firth penalty? Default is TRUE.
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
-#' monotone spline fit
+#' monotone spline fit; default 3 
 #'
 #' @importFrom msos logdet
 #' @import tibble
@@ -45,7 +44,7 @@ happi <- function(outcome,
                   nstarts = 1,
                   change_threshold = 0.05,
                   epsilon = 0,
-                  method = "isotone",
+                  method = "splines",
                   random_starts = FALSE,
                   firth = TRUE,
                   spline_df = 3
@@ -118,7 +117,7 @@ happi <- function(outcome,
 
   update_f <- function(probs,
                        tuning_param = 50,
-                       method = "isotone",
+                       method = "splines",
                        spline_df = spline_df) {
 
     if(method == "isotone") {
