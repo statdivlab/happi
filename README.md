@@ -10,7 +10,7 @@
 
     if (!require("remotes", quietly = TRUE))
         install.packages("remotes") # check that remotes is installed
-    remotes::install_github("statdivlab/happi") # install happi using remotes
+    remotes::install_github("statdivlab/happi", build_vignettes = TRUE) # install happi using remotes and build vignettes
     library(happi)
 
 ## Usage
