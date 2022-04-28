@@ -1,10 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
+`happi`: <span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
 **Ap**proach to **P**angenomics **I**nference</span>
 
-`happi` is an `R` package for modeling gene presence.
+`happi` is an `R` package for modeling gene presence that accounts for differences in genome quality. 
 
 ## Installation
 
@@ -25,7 +25,7 @@ functions. You can follow the vignettes by running the following code in
 
 If you use `happi` please cite our work:
 
-An open-access preprint is available here.
+An open-access preprint is available [here](https://www.biorxiv.org/content/10.1101/2022.04.26.489591v1).
 
 ## Issues/Requests
 
