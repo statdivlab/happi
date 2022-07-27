@@ -49,8 +49,7 @@ happi <- function(outcome,
                   firth = TRUE,
                   spline_df = 3
 ) {
-
-
+  
   # TODO(PT) take in formula
 
   stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) # some missing data
@@ -152,8 +151,56 @@ happi <- function(outcome,
 
       best_b <- spline_fit$par
       # see GitHub Issue #13 https://github.com/statdivlab/happi/issues/13
-      if (any(abs(best_b - 100) < 0.01)) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df"))
-      if (any(abs(best_b > 1e4))) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df"))
+      if (any(abs(best_b - 100) < 0.01)) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df ",tt))
+      if (any(abs(best_b > 1e4))) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df ",tt))
+      fitted_f_tilde <- rowSums(do.call(cbind,lapply(1:length(best_b),
+                                                     function(k)
+                                                       best_b[k]*spline_basis[,k,drop = FALSE])))
+      return(list("fitted_f_tilde" = fitted_f_tilde, "basis_weights" = best_b))
+    } else {
+      stop("Invalid input to `method`. Choose 'isotone' or 'spline'.")
+    }
+  }
+  
+  warningcheck_update_f <- function(probs,
+                       tuning_param = 50,
+                       method = "splines",
+                       spline_df = spline_df) {
+    
+    if(method == "isotone") {
+      loss_fn <- function(x) -1 * sum(probs * (outcome * x - log(1 + exp(x)))) + sum(cosh((x / tuning_param)^2))
+      loss_gradient <-  function(x) -1 * (probs * (outcome - exp(x) / (1 + exp(x)))) + (2 * x / tuning_param) * sinh((x / tuning_param)^2)
+      
+      ff_estimate <- activeSet(isomat = cbind(1:(nn-1), 2:nn), # define monotonicity
+                               mySolver = fSolver,
+                               fobj = loss_fn,
+                               gobj = loss_gradient)
+      return(list("fitted_f_tilde" = ff_estimate$x, "basis_weights" = NA))
+    } else if (method %in% c("splines", "spline")) {
+      
+      spline_basis <- cbind(1, iSpline(quality_var, df= spline_df, degree = 2, intercept = TRUE))
+      
+      b_start <- rep(0, ncol(spline_basis))
+      
+      spline_criterion <- function(b) {
+        logit_means <- rowSums(do.call(cbind, lapply(1:length(b),
+                                                     function(k) b[k]*spline_basis[,k,drop = FALSE])))
+        return(-1*sum(probs*(outcome*logit_means - log(1 + exp(logit_means)))))
+      }
+      
+      spline_fit <- optim(b_start,
+                          spline_criterion,
+                          method = "L-BFGS-B",
+                          # lower = c(-Inf, rep(0,length(b_start) - 1)),
+                          # upper = rep(Inf, length(b_start))
+                          lower = c(-1e7, rep(0,length(b_start) - 1)), ## to improve stability
+                          upper = rep(100, length(b_start)) ## to improve stability
+      )
+      
+      best_b <- spline_fit$par
+      # see GitHub Issue #13 https://github.com/statdivlab/happi/issues/13
+      if (any(abs(best_b - 100) < 0.01)) warning("spline basis weights close to boundaries; try reducing spline_df; warning at iteration",tt)
+      if (any(abs(best_b > 1e4))) warning("spline basis weights close to boundaries; try reducing spline_df; warning at iteration",tt)
       fitted_f_tilde <- rowSums(do.call(cbind,lapply(1:length(best_b),
                                                      function(k)
                                                        best_b[k]*spline_basis[,k,drop = FALSE])))
@@ -287,6 +334,14 @@ happi <- function(outcome,
       keep_going <- pct_change_llks > change_threshold
 
       if(!keep_going) message(paste("Converged after", tt, "iterations; LL % change:", round(pct_change_llks, 3)))
+      if(!keep_going) {
+        check_updated_f <- warningcheck_update_f(probs=my_estimated_p[tt - 1, ],
+                                             method = method,
+                                             spline_df = spline_df)
+        check_updated_f_null <- warningcheck_update_f(probs=my_estimated_p_null[tt - 1, ],
+                                   method = method,
+                                   spline_df = spline_df) # add in warning check for the last iteration 
+      }
     }
 
   }
