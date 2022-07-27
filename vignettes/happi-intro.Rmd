@@ -121,10 +121,9 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         change_threshold=0.01, 
         epsilon=0)
 
-happi_results$loglik$pvalue %>% tail(1)
+happi_results$loglik$pvalue[23]
 ```
-Using `happi` we still see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.01741983) than the p-value we got when we didn't account for genome quality. 
+Using `happi` we still see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009211437) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
-
 
