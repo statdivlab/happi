@@ -1,6 +1,8 @@
+library(mgcv)
+
 test_that("method spline works", {
 
-  logit_data <- readRDS("data/logit_DRR102664.RDS")
+  data("logit_data")
   gam_model <- mgcv::gam(presence ~ s(coverage), family = binomial, data = logit_data, method = "REML")
   epsilon <- 0
 

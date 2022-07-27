@@ -8,7 +8,7 @@
 #' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param nstarts number of starts TODO
 #' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
-#' @param epsilon prob of ...
+#' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
 #' @param random_starts whether to pick the starting values of beta's randomly. Defaults to FALSE.
@@ -26,7 +26,7 @@
 #' @export
 #' 
 #' @examples
-#' load(TM7_data)
+#' data("TM7_data")
 #' x_matrix <- model.matrix(~tongue, data = TM7_data) # create design matrix
 #' 
 #' happi_results <- happi(outcome=TM7_data$`Ribosomal protein L27`, 
@@ -151,9 +151,9 @@ happi <- function(outcome,
       )
 
       best_b <- spline_fit$par
-
-      if (any(abs(best_b - 100) < 0.01)) warning("spline basis weights close to boundaries; try reducing spline_df")
-      if (any(abs(best_b > 1e4))) warning("spline basis weights close to boundaries; try reducing spline_df")
+      # see GitHub Issue #13 https://github.com/statdivlab/happi/issues/13
+      if (any(abs(best_b - 100) < 0.01)) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df"))
+      if (any(abs(best_b > 1e4))) suppressWarnings(warning("spline basis weights close to boundaries; try reducing spline_df"))
       fitted_f_tilde <- rowSums(do.call(cbind,lapply(1:length(best_b),
                                                      function(k)
                                                        best_b[k]*spline_basis[,k,drop = FALSE])))

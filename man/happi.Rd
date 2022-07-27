@@ -37,7 +37,7 @@ happi(
 
 \item{change_threshold}{algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
 
-\item{epsilon}{prob of ...}
+\item{epsilon}{probability of observing a gene when it should be absent; probability between 0 and 1}
 
 \item{method}{method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 argument spline_df; "isotone" for isotonic regression fit}
@@ -53,7 +53,7 @@ monotone spline fit; default 3}
 Main function running happi, p=q=1
 }
 \examples{
-load(TM7_data)
+data("TM7_data")
 x_matrix <- model.matrix(~tongue, data = TM7_data) # create design matrix
 
 happi_results <- happi(outcome=TM7_data$`Ribosomal protein L27`, 

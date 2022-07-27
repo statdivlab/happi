@@ -10,7 +10,7 @@ Authors@R: as.person(c(
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: BSD 3-Clause
+License: GPL (>= 3)
 Encoding: UTF-8
 Depends:
     isotone,
@@ -24,6 +24,11 @@ Suggests:
     knitr,
     testthat (>= 3.0.0)
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Imports: 
+    dplyr,
+    ggplot2,
+    magrittr,
+    mgcv

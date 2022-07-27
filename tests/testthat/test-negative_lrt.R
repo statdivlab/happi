@@ -1,7 +1,7 @@
-
+library(mgcv)
 test_that("likelihood is higher under alternative than null", {
 
-  logit_data <- readRDS("data/logit_DRR102664.RDS")
+  data("logit_data")
   gam_model <- mgcv::gam(presence ~ s(coverage), family = binomial, data = logit_data, method = "REML")
   epsilon <- 0
 

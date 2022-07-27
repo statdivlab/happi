@@ -12,6 +12,733 @@ A data frame with 43 rows and 732 variables:
          \item{total_length}{total length of the MAG}
          \item{mean_coverage}{mean coverage of the MAG} 
          \item{tongue}{binary re-coding of sample origin site where 1 = tongue, 0 = plaque}
+         \item{\code{P_A_F_com}}{a numeric vector}
+\item{\code{P_A_M_com}}{a numeric vector}
+\item{\code{P_B_F_com}}{a numeric vector}
+\item{\code{P_B_M_com}}{a numeric vector}
+\item{\code{P_C_F_com}}{a numeric vector}
+\item{\code{P_C_M_com}}{a numeric vector}
+\item{\code{P_D_F_com}}{a numeric vector}
+\item{\code{T_A_F_com}}{a numeric vector}
+\item{\code{T_A_M_com}}{a numeric vector}
+\item{\code{T_B_F_com}}{a numeric vector}
+\item{\code{T_B_M_com}}{a numeric vector}
+\item{\code{T_C_F_com}}{a numeric vector}
+\item{\code{T_C_M_com}}{a numeric vector}
+\item{\code{T_D_F_com}}{a numeric vector}
+\item{\samp{Cellulase/cellobiase CelA1}}{a numeric vector}
+\item{\samp{Leucine-rich repeat (LRR) protein}}{a numeric vector}
+\item{\samp{Translation elongation factor EF-4, membrane-bound GTPase}}{a numeric vector}
+\item{\samp{Arginine deiminase}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein PilE}}{a numeric vector}
+\item{\samp{DNA-directed RNA polymerase, beta' subunit/160 kD subunit}}{a numeric vector}
+\item{\samp{Isoleucyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{DNA topoisomerase IA}}{a numeric vector}
+\item{\samp{Ribosomal protein L21}}{a numeric vector}
+\item{\samp{5'-3' exonuclease}}{a numeric vector}
+\item{\samp{Translation elongation factor EF-Tu, a GTPase}}{a numeric vector}
+\item{\samp{Molecular chaperone DnaK (HSP70)}}{a numeric vector}
+\item{\samp{Polyribonucleotide nucleotidyltransferase (polynucleotide phosphorylase)}}{a numeric vector}
+\item{\samp{Cell division GTPase FtsZ}}{a numeric vector}
+\item{\samp{UDP-N-acetylglucosamine enolpyruvyl transferase}}{a numeric vector}
+\item{\samp{Translation initiation factor IF-2, a GTPase}}{a numeric vector}
+\item{\samp{DNA polymerase III, gamma/tau subunits}}{a numeric vector}
+\item{\samp{DNA primase (bacterial type)}}{a numeric vector}
+\item{\samp{ATP-dependent Zn proteases}}{a numeric vector}
+\item{\samp{Archaeal DNA helicase HerA or a related bacterial ATPase, contains HAS-barrel and ATPase domains}}{a numeric vector}
+\item{\samp{Ribosome-binding ATPase YchF, GTP1/OBG family}}{a numeric vector}
+\item{\samp{Peptidoglycan biosynthesis protein MviN/MurJ, putative lipid II flippase}}{a numeric vector}
+\item{\samp{(p)ppGpp synthase/hydrolase, HD superfamily}}{a numeric vector}
+\item{\samp{Replicative DNA helicase}}{a numeric vector}
+\item{\samp{nanoRNase/pAp phosphatase, hydrolyzes c-di-AMP and oligoRNAs}}{a numeric vector}
+\item{\samp{Preprotein translocase subunit SecA (ATPase, RNA helicase)}}{a numeric vector}
+\item{\samp{NAD-dependent DNA ligase}}{a numeric vector}
+\item{\samp{Transcription antitermination factor NusG}}{a numeric vector}
+\item{\samp{Methionyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Prolyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Leucyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Exonuclease I}}{a numeric vector}
+\item{\samp{Holliday junction resolvasome RuvABC, ATP-dependent DNA helicase subunit}}{a numeric vector}
+\item{\samp{Alanyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Glutamyl- or glutaminyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Predicted membrane GTPase involved in stress response}}{a numeric vector}
+\item{\samp{Exonuclease III}}{a numeric vector}
+\item{\samp{Valyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein PilT, pilus retraction ATPase}}{a numeric vector}
+\item{\samp{RecA/RadA recombinase}}{a numeric vector}
+\item{\samp{Type IV secretory pathway, VirB4 component}}{a numeric vector}
+\item{\samp{Type II secretory pathway, component PulF}}{a numeric vector}
+\item{\samp{Ribosomal protein L6P/L9E}}{a numeric vector}
+\item{\samp{Ribosomal protein S1}}{a numeric vector}
+\item{\samp{Threonyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{DNA gyrase/topoisomerase IV, subunit B}}{a numeric vector}
+\item{\samp{5,10-methylene-tetrahydrofolate dehydrogenase/Methenyl tetrahydrofolate cyclohydrolase}}{a numeric vector}
+\item{\samp{Cysteinyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Conserved DNA-binding protein YbaB (function unknown)}}{a numeric vector}
+\item{\samp{ABC-type ATPase involved in cell division}}{a numeric vector}
+\item{\samp{Translation elongation factor EF-Ts}}{a numeric vector}
+\item{\samp{Translation elongation factor EF-G, a GTPase}}{a numeric vector}
+\item{\samp{tRNA U34 2-thiouridine synthase MnmA/TrmU, contains the PP-loop ATPase domain}}{a numeric vector}
+\item{\samp{Glycyl-tRNA synthetase (class II)}}{a numeric vector}
+\item{\samp{GTPase involved in cell partioning and DNA repair}}{a numeric vector}
+\item{\samp{Holliday junction resolvasome RuvABC endonuclease subunit}}{a numeric vector}
+\item{\samp{Holliday junction resolvasome RuvABC DNA-binding subunit}}{a numeric vector}
+\item{\samp{Lysyl-tRNA synthetase (class II)}}{a numeric vector}
+\item{\samp{Asp-tRNAAsn/Glu-tRNAGln amidotransferase B subunit}}{a numeric vector}
+\item{\samp{Glycine/serine hydroxymethyltransferase}}{a numeric vector}
+\item{\samp{UDP-N-acetylmuramyl pentapeptide phosphotransferase/UDP-N-acetylglucosamine-1-phosphate transferase}}{a numeric vector}
+\item{\samp{tRNA-dihydrouridine synthase}}{a numeric vector}
+\item{\samp{Protein chain release factor B}}{a numeric vector}
+\item{\samp{Tyrosyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Peptide deformylase}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, ArsR family}}{a numeric vector}
+\item{\samp{Oligoribonuclease (3'-5' exoribonuclease)}}{a numeric vector}
+\item{\samp{Dephospho-CoA kinase}}{a numeric vector}
+\item{\samp{Transcriptional and/or translational regulatory protein YebC/TACO1}}{a numeric vector}
+\item{\samp{Murein DD-endopeptidase MepM and murein hydrolase activator NlpD, contain LysM domain}}{a numeric vector}
+\item{\samp{Asp-tRNAAsn/Glu-tRNAGln amidotransferase A subunit or related amidase}}{a numeric vector}
+\item{\samp{Signal peptidase I}}{a numeric vector}
+\item{\samp{Excinuclease UvrABC helicase subunit UvrB}}{a numeric vector}
+\item{\samp{mRNA degradation ribonuclease J1/J2}}{a numeric vector}
+\item{\samp{Transcription antitermination factor NusA, contains S1 and KH domains}}{a numeric vector}
+\item{\samp{DNA segregation ATPase FtsK/SpoIIIE and related proteins}}{a numeric vector}
+\item{\samp{Phenylalanyl-tRNA synthetase alpha subunit}}{a numeric vector}
+\item{\samp{ATP-dependent protease ClpP, protease subunit}}{a numeric vector}
+\item{\samp{ADP-ribose pyrophosphatase YjhB, NUDIX family}}{a numeric vector}
+\item{\samp{Predicted Zn-dependent peptidase}}{a numeric vector}
+\item{\samp{Protein chain release factor A}}{a numeric vector}
+\item{\samp{Preprotein translocase subunit SecY}}{a numeric vector}
+\item{\samp{Carbamate kinase}}{a numeric vector}
+\item{\samp{DNA-directed RNA polymerase, beta subunit/140 kD subunit}}{a numeric vector}
+\item{\samp{Ribosomal protein L1}}{a numeric vector}
+\item{\samp{Ribosomal protein L7/L12}}{a numeric vector}
+\item{\samp{Ribosomal protein L11}}{a numeric vector}
+\item{\samp{Ribosome recycling factor}}{a numeric vector}
+\item{\samp{Replication-associated recombination protein RarA (DNA-dependent ATPase)}}{a numeric vector}
+\item{\samp{Pyruvate kinase}}{a numeric vector}
+\item{\samp{16S rRNA C1402 N4-methylase RsmH}}{a numeric vector}
+\item{\samp{Translation elongation factor P (EF-P)/translation initiation factor 5A (eIF-5A)}}{a numeric vector}
+\item{\samp{Ribosomal protein S8}}{a numeric vector}
+\item{\samp{Translation initiation factor IF-3}}{a numeric vector}
+\item{\samp{Ribosomal protein S16}}{a numeric vector}
+\item{\samp{Ribosomal protein S5}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein, ATPase PilM}}{a numeric vector}
+\item{\samp{Transcription termination factor NusB}}{a numeric vector}
+\item{\samp{Ribosomal protein L27}}{a numeric vector}
+\item{\samp{Ribosomal protein L10}}{a numeric vector}
+\item{\samp{dsRNA-specific ribonuclease}}{a numeric vector}
+\item{\samp{Tryptophanyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{tRNA U55 pseudouridine synthase TruB, may also work on U342 of tmRNA}}{a numeric vector}
+\item{\samp{Site-specific recombinase XerD}}{a numeric vector}
+\item{\samp{16S rRNA U516 pseudouridylate synthase RsuA and related 23S rRNA U2605, pseudouridylate synthases}}{a numeric vector}
+\item{\code{Enolase}}{a numeric vector}
+\item{\samp{Endonuclease I}}{a numeric vector}
+\item{\samp{DNA gyrase/topoisomerase IV, subunit A}}{a numeric vector}
+\item{\samp{Aspartyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Predicted RNA-binding protein Jag, conains KH and R3H domains}}{a numeric vector}
+\item{\samp{Nucleoside diphosphate kinase}}{a numeric vector}
+\item{\samp{Ribosomal protein L19}}{a numeric vector}
+\item{\samp{Ribosomal protein L15}}{a numeric vector}
+\item{\samp{Ribonuclease HI}}{a numeric vector}
+\item{\samp{Asp-tRNAAsn/Glu-tRNAGln amidotransferase C subunit}}{a numeric vector}
+\item{\samp{Seryl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Exonuclease VII, large subunit}}{a numeric vector}
+\item{\samp{Ribosomal protein S12}}{a numeric vector}
+\item{\samp{Ribosomal protein S18}}{a numeric vector}
+\item{\samp{Molecular chaperone IbpA, HSP20 family}}{a numeric vector}
+\item{\samp{Triosephosphate isomerase}}{a numeric vector}
+\item{\samp{Single-stranded DNA-specific exonuclease, DHH superfamily, may be involved in archaeal DNA replication intiation}}{a numeric vector}
+\item{\samp{Guanylate kinase}}{a numeric vector}
+\item{\samp{Recombinational DNA repair protein (RecF pathway)}}{a numeric vector}
+\item{\samp{Primosomal protein N' (replication factor Y) - superfamily II helicase}}{a numeric vector}
+\item{\samp{Transcriptional regulator NrdR, contains Zn-ribbon and ATP-cone domains}}{a numeric vector}
+\item{\samp{Ribosomal protein S6}}{a numeric vector}
+\item{\samp{Predicted RNA-binding protein YlqC, contains KH domain, UPF0109 family}}{a numeric vector}
+\item{\samp{Cell division protein YceG, involved in septum cleavage}}{a numeric vector}
+\item{\samp{tRNA G37 N-methylase TrmD}}{a numeric vector}
+\item{\samp{Predicted GTPases}}{a numeric vector}
+\item{\samp{Ribosomal protein L35}}{a numeric vector}
+\item{\samp{Ribosomal protein S9}}{a numeric vector}
+\item{\samp{Translation initiation factor IF-1}}{a numeric vector}
+\item{\samp{Ribosomal protein L31}}{a numeric vector}
+\item{\samp{Co-chaperonin GroES (HSP10)}}{a numeric vector}
+\item{\samp{Ribosomal protein S2}}{a numeric vector}
+\item{\samp{23S rRNA pseudoU1915 N3-methylase RlmH}}{a numeric vector}
+\item{\samp{Ribosomal protein S20}}{a numeric vector}
+\item{\samp{Chaperonin GroEL (HSP60 family)}}{a numeric vector}
+\item{\samp{ATPase components of ABC transporters with duplicated ATPase domains}}{a numeric vector}
+\item{\samp{SOS response regulatory protein OraA/RecX, interacts with RecA}}{a numeric vector}
+\item{\samp{DNA anti-recombination protein (rearrangement mutator) RmuC}}{a numeric vector}
+\item{\samp{Phenylalanyl-tRNA synthetase beta subunit}}{a numeric vector}
+\item{\samp{UDP-glucose 4-epimerase}}{a numeric vector}
+\item{\samp{Ribosomal protein S10}}{a numeric vector}
+\item{\samp{Ribosomal protein L20}}{a numeric vector}
+\item{\samp{Adenylate kinase or related kinase}}{a numeric vector}
+\item{\samp{ABC-type polar amino acid transport system, ATPase component}}{a numeric vector}
+\item{\samp{Chromosome segregation protein Spo0J, contains ParB-like nuclease domain}}{a numeric vector}
+\item{\samp{Excinuclease UvrABC, nuclease subunit}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YfcC, ion transporter superfamily}}{a numeric vector}
+\item{\samp{UDP-N-acetylmuramate-alanine ligase}}{a numeric vector}
+\item{\samp{FKBP-type peptidyl-prolyl cis-trans isomerase (trigger factor)}}{a numeric vector}
+\item{\samp{Predicted rRNA methylase YqxC, contains S4 and FtsJ domains}}{a numeric vector}
+\item{\samp{tRNA/tmRNA/rRNA uracil-C5-methylase, TrmA/RlmC/RlmD family}}{a numeric vector}
+\item{\samp{Ribosomal protein S7}}{a numeric vector}
+\item{\samp{Ribosomal protein L18}}{a numeric vector}
+\item{\samp{Ribosomal protein S15P/S13E}}{a numeric vector}
+\item{\samp{RNase H-fold protein, predicted Holliday junction resolvase in Firmicutes and mycoplasms, involved in anti-termination at Rho-dependent terminators}}{a numeric vector}
+\item{\code{Glutaredoxin}}{a numeric vector}
+\item{\samp{tmRNA-binding protein}}{a numeric vector}
+\item{\samp{UDP-N-acetylglucosamine:LPS N-acetylglucosamine transferase}}{a numeric vector}
+\item{\samp{Ribosomal protein L5}}{a numeric vector}
+\item{\samp{Methionyl-tRNA formyltransferase}}{a numeric vector}
+\item{\samp{RNase P protein component}}{a numeric vector}
+\item{\samp{RecG-like helicase}}{a numeric vector}
+\item{\samp{tRNA G46 methylase TrmB}}{a numeric vector}
+\item{\samp{Ribosomal protein S13}}{a numeric vector}
+\item{\samp{Ribosomal protein L33}}{a numeric vector}
+\item{\samp{DNA-directed RNA polymerase, alpha subunit/40 kD subunit}}{a numeric vector}
+\item{\samp{ABC-type polysaccharide/polyol phosphate transport system, ATPase component}}{a numeric vector}
+\item{\samp{Zn-dependent protease with chaperone function}}{a numeric vector}
+\item{\samp{tRNA A37 threonylcarbamoyladenosine biosynthesis protein TsaE}}{a numeric vector}
+\item{\samp{Methionine aminopeptidase}}{a numeric vector}
+\item{\samp{ABC-type amino acid transport/signal transduction system, periplasmic component/domain}}{a numeric vector}
+\item{\samp{ABC-type amino acid transport system, permease component}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YqeY}}{a numeric vector}
+\item{\samp{ATP-dependent exoDNAse (exonuclease V), alpha subunit, helicase superfamily I}}{a numeric vector}
+\item{\samp{Ribosomal protein S14}}{a numeric vector}
+\item{\samp{DnaJ-class molecular chaperone with C-terminal Zn finger domain}}{a numeric vector}
+\item{\samp{Cysteine sulfinate desulfinase/cysteine desulfurase or related enzyme}}{a numeric vector}
+\item{\samp{Ribosomal protein L13}}{a numeric vector}
+\item{\samp{Glycosyltransferase, catalytic subunit of cellulose synthase and poly-beta-1,6-N-acetylglucosamine synthase}}{a numeric vector}
+\item{\samp{tRNA G18 (ribose-2'-O)-methylase SpoU}}{a numeric vector}
+\item{\samp{Ribonucleotide reductase alpha subunit}}{a numeric vector}
+\item{\samp{Ca2+-binding protein, RTX toxin-related}}{a numeric vector}
+\item{\samp{Pyruvate/2-oxoglutarate dehydrogenase complex, dihydrolipoamide dehydrogenase (E3) component or related enzyme}}{a numeric vector}
+\item{\samp{Queuine/archaeosine tRNA-ribosyltransferase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YdbT, contains bPH2 (bacterial pleckstrin homology) domain}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YvlD, DUF360 family}}{a numeric vector}
+\item{\samp{Ribosomal protein L17}}{a numeric vector}
+\item{\samp{ABC-type uncharacterized transport system, ATPase component}}{a numeric vector}
+\item{\samp{Formamidopyrimidine-DNA glycosylase}}{a numeric vector}
+\item{\samp{Alpha-amylase/alpha-mannosidase, GH57 family}}{a numeric vector}
+\item{\samp{Glutamine amidotransferase related to the GATase domain of CobQ}}{a numeric vector}
+\item{\samp{Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins}}{a numeric vector}
+\item{\samp{tRNA A37 threonylcarbamoyltransferase TsaD}}{a numeric vector}
+\item{\samp{L-ascorbate metabolism protein UlaG, beta-lactamase superfamily}}{a numeric vector}
+\item{\samp{Predicted ATPase with chaperone activity}}{a numeric vector}
+\item{\samp{Pentose-5-phosphate-3-epimerase}}{a numeric vector}
+\item{\samp{Ribosome-associated translation inhibitor RaiA}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, alpha subunit}}{a numeric vector}
+\item{\samp{Ribosomal protein L3}}{a numeric vector}
+\item{\samp{Tetratricopeptide (TPR) repeat}}{a numeric vector}
+\item{\samp{Glycogen synthase}}{a numeric vector}
+\item{\samp{Molecular chaperone GrpE (heat shock protein)}}{a numeric vector}
+\item{\samp{Ribosomal protein L4}}{a numeric vector}
+\item{\samp{Predicted Rossmann fold nucleotide-binding protein DprA/Smf involved in DNA uptake}}{a numeric vector}
+\item{\samp{Chromosomal replication initiation ATPase DnaA}}{a numeric vector}
+\item{\samp{CTP synthase (UTP-ammonia lyase)}}{a numeric vector}
+\item{\samp{Glyceraldehyde-3-phosphate dehydrogenase/erythrose-4-phosphate dehydrogenase}}{a numeric vector}
+\item{\samp{Ribosomal protein S19}}{a numeric vector}
+\item{\samp{Ribosomal protein L14}}{a numeric vector}
+\item{\samp{Ribosomal protein S3}}{a numeric vector}
+\item{\samp{Ribosomal protein S11}}{a numeric vector}
+\item{\samp{Ribosomal protein L24}}{a numeric vector}
+\item{\samp{Ribosomal protein S4 or related protein}}{a numeric vector}
+\item{\samp{UTP-glucose-1-phosphate uridylyltransferase}}{a numeric vector}
+\item{\samp{tRNA A37 N6-isopentenylltransferase MiaA}}{a numeric vector}
+\item{\samp{ABC-type polysaccharide/polyol phosphate export permease}}{a numeric vector}
+\item{\samp{Thioredoxin reductase}}{a numeric vector}
+\item{\samp{Ribonuclease HII}}{a numeric vector}
+\item{\samp{Cell division protein FtsX}}{a numeric vector}
+\item{\samp{Ribosomal protein L16/L10AE}}{a numeric vector}
+\item{\samp{Ribosomal protein S17}}{a numeric vector}
+\item{\samp{Ribosomal protein L28}}{a numeric vector}
+\item{\samp{Ribosomal protein L22}}{a numeric vector}
+\item{\samp{Undecaprenyl pyrophosphate synthase}}{a numeric vector}
+\item{\samp{DNA polymerase III sliding clamp (beta) subunit, PCNA homolog}}{a numeric vector}
+\item{\samp{Transketolase, C-terminal subunit}}{a numeric vector}
+\item{\samp{Bacterial cell division protein FtsW, lipid II flippase}}{a numeric vector}
+\item{\samp{NAD(P)H-hydrate repair enzyme Nnr, NAD(P)H-hydrate dehydratase domain}}{a numeric vector}
+\item{\samp{UDP-N-acetylmuramyl pentapeptide synthase}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, membrane subunit a}}{a numeric vector}
+\item{\samp{Predicted metal-dependent hydrolase}}{a numeric vector}
+\item{\samp{Predicted DNA-binding protein with double-wing structural motif, MmcQ/YjbR family}}{a numeric vector}
+\item{\samp{K+-sensing histidine kinase KdpD}}{a numeric vector}
+\item{\samp{Ribose 5-phosphate isomerase RpiB}}{a numeric vector}
+\item{\samp{Predicted PurR-regulated permease PerM}}{a numeric vector}
+\item{\samp{UDP-N-acetylenolpyruvoylglucosamine reductase}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, membrane subunit c/Archaeal/vacuolar-type H+-ATPase, subunit K}}{a numeric vector}
+\item{\samp{Ribosomal protein L2}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, PadR family}}{a numeric vector}
+\item{\samp{Magnesium-transporting ATPase (P-type)}}{a numeric vector}
+\item{\samp{Regulator of protease activity HflC, stomatin/prohibitin superfamily}}{a numeric vector}
+\item{\samp{Tat protein secretion system quality control protein TatD (DNase activity)}}{a numeric vector}
+\item{\samp{Uracil-DNA glycosylase}}{a numeric vector}
+\item{\samp{Fructoselysine-6-P-deglycase FrlB and related proteins with duplicated sugar isomerase (SIS) domain}}{a numeric vector}
+\item{\samp{C-terminal processing protease CtpA/Prc, contains a PDZ domain}}{a numeric vector}
+\item{\samp{Uncharacterized protein}}{a numeric vector}
+\item{\samp{Transketolase, N-terminal subunit}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein DedA, SNARE-associated domain}}{a numeric vector}
+\item{\samp{tRNA A37 threonylcarbamoyladenosine modification protein TsaB}}{a numeric vector}
+\item{\samp{Mg2+ and Co2+ transporter CorA}}{a numeric vector}
+\item{\samp{NTP pyrophosphatase, house-cleaning of non-canonical NTPs}}{a numeric vector}
+\item{\samp{Ribonucleotide reductase beta subunit, ferritin-like domain}}{a numeric vector}
+\item{\samp{Uncharacterized SAM-binding protein YcdF, DUF218 family}}{a numeric vector}
+\item{\samp{Anaerobic ribonucleoside-triphosphate reductase}}{a numeric vector}
+\item{\samp{Membrane-associated phospholipid phosphatase}}{a numeric vector}
+\item{\samp{Malic enzyme}}{a numeric vector}
+\item{\samp{Peptidoglycan/xylan/chitin deacetylase, PgdA/CDA1 family}}{a numeric vector}
+\item{\samp{Large-conductance mechanosensitive channel}}{a numeric vector}
+\item{\samp{Ribosomal protein L23}}{a numeric vector}
+\item{\samp{16S rRNA G966 N2-methylase RsmD}}{a numeric vector}
+\item{\samp{Fructose/tagatose bisphosphate aldolase}}{a numeric vector}
+\item{\samp{dTDP-glucose pyrophosphorylase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, beta subunit}}{a numeric vector}
+\item{\samp{Archaeal 2-phospho-L-lactate transferase/Bacterial gluconeogenesis factor, CofD/UPF0052 family}}{a numeric vector}
+\item{\samp{ABC-type multidrug transport system, ATPase component}}{a numeric vector}
+\item{\samp{Undecaprenyl pyrophosphate phosphatase UppP}}{a numeric vector}
+\item{\samp{UDP-N-acetylmuramyl tripeptide synthase}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, epsilon subunit}}{a numeric vector}
+\item{\samp{Zn-dependent protease (includes SpoIVFB)}}{a numeric vector}
+\item{\samp{Periplasmic serine protease, S1-C subfamily, contain C-terminal PDZ domain}}{a numeric vector}
+\item{\samp{Peptidyl-tRNA hydrolase}}{a numeric vector}
+\item{\samp{tRNA G10  N-methylase Trm11}}{a numeric vector}
+\item{\samp{Glutathione synthase/RimK-type ligase, ATP-grasp superfamily}}{a numeric vector}
+\item{\samp{Sugar or nucleoside kinase, ribokinase family}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YhgE, phage infection protein (PIP) family}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, gamma subunit}}{a numeric vector}
+\item{\samp{Phosphoglycerate mutase (BPG-dependent)}}{a numeric vector}
+\item{\samp{Thiol-disulfide isomerase or thioredoxin}}{a numeric vector}
+\item{\samp{dTDP-D-glucose 4,6-dehydratase}}{a numeric vector}
+\item{\samp{Uncharacterized N-terminal domain of peptidoglycan hydrolase CwlO}}{a numeric vector}
+\item{\samp{Thymidylate kinase}}{a numeric vector}
+\item{\samp{ABC-type Na+ efflux pump, permease component}}{a numeric vector}
+\item{\samp{Single-stranded DNA-binding protein}}{a numeric vector}
+\item{\samp{DNA repair protein RadC, contains a helix-hairpin-helix DNA-binding motif}}{a numeric vector}
+\item{\samp{dTDP-4-dehydrorhamnose reductase}}{a numeric vector}
+\item{\samp{Aminopeptidase N}}{a numeric vector}
+\item{\samp{ABC-type multidrug transport system, permease component}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YabE, contains G5 and tandem DUF348 domains}}{a numeric vector}
+\item{\samp{GTPase, G3E family}}{a numeric vector}
+\item{\samp{Predicted phosphoribosyltransferase}}{a numeric vector}
+\item{\samp{Methylase of polypeptide chain release factors}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, membrane subunit b or b'}}{a numeric vector}
+\item{\samp{Alkylated DNA nucleotide flippase Atl1, participates in nucleotide excision repair, Ada-like DNA-binding domain}}{a numeric vector}
+\item{\samp{Pyruvate-formate lyase-activating enzyme}}{a numeric vector}
+\item{\samp{ABC-type antimicrobial peptide transport system, permease component}}{a numeric vector}
+\item{\code{Glycosidase}}{a numeric vector}
+\item{\samp{3-phosphoglycerate kinase}}{a numeric vector}
+\item{\samp{Thymidylate synthase}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, IscR family}}{a numeric vector}
+\item{\samp{Beta-glucosidase/6-phospho-beta-glucosidase/beta-galactosidase}}{a numeric vector}
+\item{\samp{Uridylate kinase}}{a numeric vector}
+\item{\samp{MraZ, DNA-binding transcriptional regulator and inhibitor of RsmH methyltransferase activity}}{a numeric vector}
+\item{\samp{Sugar transferase involved in LPS biosynthesis (colanic, teichoic acid)}}{a numeric vector}
+\item{\samp{Cell division protein FtsI/penicillin-binding protein 2}}{a numeric vector}
+\item{\samp{AraC-type DNA-binding domain and AraC-containing proteins}}{a numeric vector}
+\item{\samp{Histidyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{4-amino-4-deoxy-L-arabinose transferase or related glycosyltransferase of PMT family}}{a numeric vector}
+\item{\samp{Hydroxymethylpyrimidine pyrophosphatase and other HAD family phosphatases}}{a numeric vector}
+\item{\samp{Dihydroorotate dehydrogenase}}{a numeric vector}
+\item{\samp{Prephenate dehydratase}}{a numeric vector}
+\item{\samp{Deoxycytidine triphosphate deaminase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YeaO, DUF488 family}}{a numeric vector}
+\item{\samp{Dihydrofolate reductase}}{a numeric vector}
+\item{\samp{Arginyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YggU, UPF0235/DUF167 family}}{a numeric vector}
+\item{\samp{Glycosyltransferase, GT2 family}}{a numeric vector}
+\item{\samp{Glucan phosphorylase}}{a numeric vector}
+\item{\samp{1,4-alpha-glucan branching enzyme}}{a numeric vector}
+\item{\samp{Copper oxidase (laccase) domain}}{a numeric vector}
+\item{\samp{Ribosomal protein L34}}{a numeric vector}
+\item{\samp{Sugar kinase of the NBD/HSP70 family, may contain an N-terminal HTH domain}}{a numeric vector}
+\item{\samp{Uracil DNA glycosylase}}{a numeric vector}
+\item{\samp{LysM repeat}}{a numeric vector}
+\item{\samp{Predicted Rossmann fold nucleotide-binding protein}}{a numeric vector}
+\item{\samp{5'(3')-deoxyribonucleotidase}}{a numeric vector}
+\item{\samp{Ferredoxin-NADP reductase}}{a numeric vector}
+\item{\samp{Membrane protein involved in the export of O-antigen and teichoic acid}}{a numeric vector}
+\item{\samp{Protein-disulfide isomerase}}{a numeric vector}
+\item{\samp{GMP synthase - Glutamine amidotransferase domain}}{a numeric vector}
+\item{\samp{Ribosomal protein L29}}{a numeric vector}
+\item{\samp{Predicted esterase of the alpha/beta hydrolase fold}}{a numeric vector}
+\item{\samp{Succinyl-CoA synthetase, alpha subunit}}{a numeric vector}
+\item{\samp{3-methyladenine DNA glycosylase AlkD}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YacL, contains PIN and TRAM domains}}{a numeric vector}
+\item{\samp{Glycerol-3-phosphate cytidylyltransferase, cytidylyltransferase family}}{a numeric vector}
+\item{\samp{Fe2+ or Zn2+ uptake regulation protein}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, phosphatidylethanolamine-binding protein (PEBP) family}}{a numeric vector}
+\item{\samp{Predicted membrane protein}}{a numeric vector}
+\item{\samp{Diadenosine tetraphosphate (Ap4A) hydrolase or other HIT family hydrolase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YajQ, UPF0234 family}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YbhN, UPF0104 family}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YjdB, contains Ig-like domain}}{a numeric vector}
+\item{\samp{Uncharacterized protein YjaZ}}{a numeric vector}
+\item{\samp{Small-conductance mechanosensitive channel}}{a numeric vector}
+\item{\samp{Pseudouridylate synthase, 23S rRNA- or tRNA-specific}}{a numeric vector}
+\item{\samp{FKBP-type peptidyl-prolyl cis-trans isomerase}}{a numeric vector}
+\item{\samp{Glucosamine 6-phosphate synthetase, contains amidotransferase and phosphosugar isomerase domains}}{a numeric vector}
+\item{\samp{Succinyl-CoA synthetase, beta subunit}}{a numeric vector}
+\item{\samp{Sortase (surface protein transpeptidase)}}{a numeric vector}
+\item{\samp{Ribosomal protein L25 (general stress protein Ctc)}}{a numeric vector}
+\item{\samp{Predicted arabinose efflux permease, MFS family}}{a numeric vector}
+\item{\samp{Neutral trehalase}}{a numeric vector}
+\item{\samp{Ribosomal protein L36}}{a numeric vector}
+\item{\samp{Putative flippase GtrA (transmembrane translocase of bactoprenol-linked glucose)}}{a numeric vector}
+\item{\samp{Lipopolysaccharide biosynthesis protein, LPS:glycosyltransferase}}{a numeric vector}
+\item{\samp{Gas vesicle protein}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein PilN}}{a numeric vector}
+\item{\samp{Predicted membrane metal-binding protein}}{a numeric vector}
+\item{\samp{S-adenosylmethionine synthetase}}{a numeric vector}
+\item{\code{Nitroreductase}}{a numeric vector}
+\item{\samp{Type I site-specific restriction-modification system, R (restriction) subunit and related helicases ...}}{a numeric vector}
+\item{\samp{Adenine-specific DNA glycosylase, acts on AG and A-oxoG pairs}}{a numeric vector}
+\item{\samp{Phage-related protein, tail component}}{a numeric vector}
+\item{\samp{Selenocysteine lyase/Cysteine desulfurase}}{a numeric vector}
+\item{\samp{Predicted Fe2+/Mn2+ transporter, VIT1/CCC1 family}}{a numeric vector}
+\item{\samp{Acid phosphatase family membrane protein YuiD}}{a numeric vector}
+\item{\samp{Malate/lactate dehydrogenase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YraQ, UPF0718 family}}{a numeric vector}
+\item{\samp{Inosine/xanthosine triphosphate pyrophosphatase, all-alpha NTP-PPase family}}{a numeric vector}
+\item{\samp{Uncharacterized protein YrrD, contains PRC-barrel domain}}{a numeric vector}
+\item{\samp{Beta-lactamase class A}}{a numeric vector}
+\item{\code{Phosphoketolase}}{a numeric vector}
+\item{\samp{SOS-response transcriptional repressor LexA (RecA-mediated autopeptidase)}}{a numeric vector}
+\item{\samp{CRISPR/Cas system Type II  associated protein, contains McrA/HNH and RuvC-like nuclease domains}}{a numeric vector}
+\item{\samp{Prepilin signal peptidase PulO (type II secretory pathway) or related peptidase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YjjP, DUF1212 family}}{a numeric vector}
+\item{\samp{Cell pole-organizing protein PopZ}}{a numeric vector}
+\item{\samp{Adenylate cyclase class IV, CYTH domain (includes archaeal enzymes of unknown function)}}{a numeric vector}
+\item{\samp{DNA polymerase III, delta subunit}}{a numeric vector}
+\item{\samp{NADP-dependent 3-hydroxy acid dehydrogenase YdfG}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, FrmR family}}{a numeric vector}
+\item{\samp{Phosphatidylserine/phosphatidylglycerophosphate/cardiolipin synthase or related enzyme}}{a numeric vector}
+\item{\samp{Glycerol uptake facilitator and related aquaporins (Major Intrinsic Protein Family)}}{a numeric vector}
+\item{\samp{Phosphoglycerol transferase MdoB or a related enzyme of AlkP superfamily}}{a numeric vector}
+\item{\samp{Lysophospholipase L1 or related esterase}}{a numeric vector}
+\item{\samp{ABC-type transport system, periplasmic component}}{a numeric vector}
+\item{\samp{Chromosome segregation ATPase}}{a numeric vector}
+\item{\samp{Type I restriction-modification system, DNA methylase subunit}}{a numeric vector}
+\item{\samp{Cell division protein FtsB}}{a numeric vector}
+\item{\samp{Aryl-phospho-beta-D-glucosidase BglC, GH1 family}}{a numeric vector}
+\item{\samp{S-adenosylmethionine:tRNA-ribosyltransferase-isomerase (queuine synthetase)}}{a numeric vector}
+\item{\samp{Glucoamylase (glucan-1,4-alpha-glucosidase), GH15 family}}{a numeric vector}
+\item{\samp{Recombinational DNA repair ATPase RecF}}{a numeric vector}
+\item{\samp{Hemolysin or related protein, contains CBS domains}}{a numeric vector}
+\item{\samp{Organic radical activating enzyme}}{a numeric vector}
+\item{\samp{Acetate kinase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YcgQ,  UPF0703/DUF1980 family}}{a numeric vector}
+\item{\samp{Lipid II:glycine glycyltransferase (Peptidoglycan interpeptide bridge formation enzyme)}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, contains LGFP repeats}}{a numeric vector}
+\item{\samp{Mannose-6-phosphate isomerase, cupin superfamily}}{a numeric vector}
+\item{\samp{8-oxo-dGTP pyrophosphatase MutT and related house-cleaning NTP pyrophosphohydrolases, NUDIX family}}{a numeric vector}
+\item{\code{Phosphotransacetylase}}{a numeric vector}
+\item{\samp{LD-carboxypeptidase LdcB, LAS superfamily}}{a numeric vector}
+\item{\samp{FoF1-type ATP synthase, delta subunit}}{a numeric vector}
+\item{\samp{ABC-type bacteriocin/lantibiotic exporters, contain an N-terminal double-glycine peptidase domain}}{a numeric vector}
+\item{\samp{Preprotein translocase subunit SecE}}{a numeric vector}
+\item{\samp{Multidrug efflux pump subunit AcrA (membrane-fusion protein)}}{a numeric vector}
+\item{\samp{CRISPR/Cas system-associated protein Cas2, endoribonuclease}}{a numeric vector}
+\item{\samp{CRISPR/Cas system-associated endonuclease Cas1}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, contains ParB-like and HNH nuclease domains}}{a numeric vector}
+\item{\samp{Gluconate kinase}}{a numeric vector}
+\item{\samp{ASC-1 homology (ASCH) domain, predicted RNA-binding domain}}{a numeric vector}
+\item{\samp{Uncharacterized protein related to plant photosystem II stability/assembly factor}}{a numeric vector}
+\item{\samp{Serine/threonine protein kinase}}{a numeric vector}
+\item{\samp{Predicted kinase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YcaP, DUF421 family}}{a numeric vector}
+\item{\samp{CYTH domain, found in class IV adenylate cyclase and various triphosphatases}}{a numeric vector}
+\item{\code{Phosphomannomutase}}{a numeric vector}
+\item{\samp{Lysophospholipase, alpha-beta hydrolase superfamily}}{a numeric vector}
+\item{\samp{Predicted spermidine synthase with an N-terminal membrane domain}}{a numeric vector}
+\item{\samp{tRNA(Ile)-lysidine synthase TilS/MesJ}}{a numeric vector}
+\item{\samp{Cation transport ATPase}}{a numeric vector}
+\item{\samp{FAD/FMN-containing dehydrogenase}}{a numeric vector}
+\item{\samp{Surface antigen}}{a numeric vector}
+\item{\samp{3',5'-cyclic AMP phosphodiesterase CpdA}}{a numeric vector}
+\item{\samp{Hypoxanthine-guanine phosphoribosyltransferase}}{a numeric vector}
+\item{\samp{N-Dimethylarginine dimethylaminohydrolase}}{a numeric vector}
+\item{\code{Rubrerythrin}}{a numeric vector}
+\item{\samp{Ribosomal protein S18 acetylase RimI and related acetyltransferases}}{a numeric vector}
+\item{\samp{Esterase/lipase}}{a numeric vector}
+\item{\samp{ABC-type Mn2+/Zn2+ transport system, permease component}}{a numeric vector}
+\item{\samp{Uncharacterized PurR-regulated membrane protein YhhQ, DUF165 family}}{a numeric vector}
+\item{\samp{Uncharacterized protein, pyridoxamine 5'-phosphate oxidase (PNPOx-like) family}}{a numeric vector}
+\item{\samp{Amino acid transporter}}{a numeric vector}
+\item{\samp{Adenine specific DNA methylase Mod}}{a numeric vector}
+\item{\samp{Nucleotidyltransferase/DNA polymerase involved in DNA repair}}{a numeric vector}
+\item{\samp{Tyrosine-protein phosphatase YwqE}}{a numeric vector}
+\item{\samp{Sulfate permease or related transporter, MFS superfamily}}{a numeric vector}
+\item{\samp{Phosphoglycerate mutase (BPG-independent, AlkP superfamily)}}{a numeric vector}
+\item{\samp{Glycerophosphoryl diester phosphodiesterase}}{a numeric vector}
+\item{\samp{Mannose-1-phosphate guanylyltransferase}}{a numeric vector}
+\item{\samp{Chromosome partitioning ATPase, Mrp family, contains Fe-S cluster}}{a numeric vector}
+\item{\samp{Site-specific DNA recombinase related to the DNA invertase Pin}}{a numeric vector}
+\item{\samp{Predicted esterase}}{a numeric vector}
+\item{\samp{Predicted amidophosphoribosyltransferases}}{a numeric vector}
+\item{\samp{D-alanyl-D-alanine dipeptidase}}{a numeric vector}
+\item{\samp{Muramoyltetrapeptide carboxypeptidase LdcA (peptidoglycan recycling)}}{a numeric vector}
+\item{\samp{HD-GYP domain, c-di-GMP phosphodiesterase class II (or its inactivated variant)}}{a numeric vector}
+\item{\samp{Prophage maintenance system killer protein}}{a numeric vector}
+\item{\samp{Ubiquinone/menaquinone biosynthesis C-methylase UbiE}}{a numeric vector}
+\item{\samp{ABC-type Mn2+/Zn2+ transport system, ATPase component}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein HdeD, DUF308 family}}{a numeric vector}
+\item{\samp{Bacterial nucleoid DNA-binding protein}}{a numeric vector}
+\item{\samp{Cell division septal protein FtsQ}}{a numeric vector}
+\item{\samp{Predicted lipid-binding transport protein, Tim44 family}}{a numeric vector}
+\item{\samp{Type IV secretory pathway, VirB6 components}}{a numeric vector}
+\item{\samp{N-formylglutamate amidohydrolase}}{a numeric vector}
+\item{\samp{DNA polymerase III, delta prime subunit}}{a numeric vector}
+\item{\samp{Poly-gamma-glutamate biosynthesis protein CapA/YwtB (capsule formation), metallophosphatase superfamily}}{a numeric vector}
+\item{\samp{Pimeloyl-ACP methyl ester carboxylesterase}}{a numeric vector}
+\item{\samp{Anionic cell wall polymer biosynthesis enzyme,  LytR-Cps2A-Psr (LCP) family}}{a numeric vector}
+\item{\samp{Predicted phosphoesterase, related to the Icc protein}}{a numeric vector}
+\item{\samp{Fe-S cluster assembly scaffold protein SufB}}{a numeric vector}
+\item{\samp{5-methylcytosine-specific restriction endonuclease McrA}}{a numeric vector}
+\item{\samp{tRNA A37 threonylcarbamoyladenosine synthetase subunit TsaC/SUA5/YrdC}}{a numeric vector}
+\item{\samp{HrpA-like RNA helicase}}{a numeric vector}
+\item{\samp{Acetylornithine deacetylase/Succinyl-diaminopimelate desuccinylase or related deacylase}}{a numeric vector}
+\item{\samp{Argininosuccinate lyase}}{a numeric vector}
+\item{\samp{Peptidase E}}{a numeric vector}
+\item{\samp{Fic family protein}}{a numeric vector}
+\item{\samp{Ca2+/Na+ antiporter}}{a numeric vector}
+\item{\samp{PKD repeat}}{a numeric vector}
+\item{\samp{Uridine phosphorylase}}{a numeric vector}
+\item{\samp{FMN phosphatase YigB, HAD superfamily}}{a numeric vector}
+\item{\samp{CubicO group peptidase, beta-lactamase class C family}}{a numeric vector}
+\item{\samp{N-acetyl-anhydromuramyl-L-alanine amidase AmpD}}{a numeric vector}
+\item{\samp{Succinylglutamate desuccinylase}}{a numeric vector}
+\item{\samp{Energy-coupling factor transporter ATP-binding protein EcfA2}}{a numeric vector}
+\item{\samp{Ribonuclease G or E}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, DUF1697 family}}{a numeric vector}
+\item{\samp{Endonuclease, HJR/Mrr/RecB family}}{a numeric vector}
+\item{\samp{Phage-related protein}}{a numeric vector}
+\item{\samp{Geranylgeranyl pyrophosphate synthase}}{a numeric vector}
+\item{\samp{Membrane protease YdiL, CAAX protease family}}{a numeric vector}
+\item{\samp{Glycopeptide antibiotics resistance protein}}{a numeric vector}
+\item{\samp{Putative exporter of polyketide antibiotics}}{a numeric vector}
+\item{\samp{Predicted dehydrogenase}}{a numeric vector}
+\item{\samp{GrpB domain, predicted nucleotidyltransferase, UPF0157 family}}{a numeric vector}
+\item{\samp{Carbamoylphosphate synthase large subunit}}{a numeric vector}
+\item{\samp{Beta-glucanase, GH16 family}}{a numeric vector}
+\item{\samp{Broad specificity phosphatase PhoE}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein PilV}}{a numeric vector}
+\item{\samp{1-acyl-sn-glycerol-3-phosphate acyltransferase}}{a numeric vector}
+\item{\samp{Acetyl esterase/lipase}}{a numeric vector}
+\item{\samp{MoxR-like ATPase}}{a numeric vector}
+\item{\samp{Transcription factor homologous to NACalpha-BTF3}}{a numeric vector}
+\item{\samp{Diadenosine tetraphosphatase ApaH/serine/threonine protein phosphatase, PP2A family}}{a numeric vector}
+\item{\samp{Lysyl-tRNA synthetase, class I}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, LabA/DUF88 family}}{a numeric vector}
+\item{\samp{dTDP-4-amino-4,6-dideoxygalactose transaminase}}{a numeric vector}
+\item{\samp{Xaa-Pro aminopeptidase}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YgcG, contains a TPM-fold domain}}{a numeric vector}
+\item{\samp{Predicted amidohydrolase}}{a numeric vector}
+\item{\samp{Alpha-tubulin suppressor and related RCC1 domain-containing proteins}}{a numeric vector}
+\item{\samp{O6-methylguanine-DNA--protein-cysteine methyltransferase}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, AcrR family}}{a numeric vector}
+\item{\code{Flavodoxin}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YeaQ/YmgE, transglycosylase-associated protein family}}{a numeric vector}
+\item{\samp{ABC-type transport system, involved in lipoprotein release, permease component}}{a numeric vector}
+\item{\samp{Lactate dehydrogenase or related 2-hydroxyacid dehydrogenase}}{a numeric vector}
+\item{\samp{Glucan-binding domain (YG repeat)}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, contains a C-terminal beta-barrel porin domain}}{a numeric vector}
+\item{\samp{Secreted protein containing bacterial Ig-like domain and vWFA domain}}{a numeric vector}
+\item{\samp{Predicted ribonuclease YlaK, contains NYN-type RNase and PhoH-family ATPase domains}}{a numeric vector}
+\item{\samp{Nitrate/nitrite transporter NarK}}{a numeric vector}
+\item{\samp{Sucrose-6-phosphate hydrolase SacC, GH32 family}}{a numeric vector}
+\item{\samp{Phage shock protein PspC (stress-responsive transcriptional regulator)}}{a numeric vector}
+\item{\samp{Alkyl hydroperoxide reductase subunit AhpC (peroxiredoxin)}}{a numeric vector}
+\item{\samp{Na+/glutamate symporter}}{a numeric vector}
+\item{\samp{Predicted transcriptional regulator}}{a numeric vector}
+\item{\samp{Cytoskeletal protein RodZ, contains Xre-like HTH and DUF4115 domains}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, DUF58 family, contains vWF domain}}{a numeric vector}
+\item{\samp{Argininosuccinate synthase}}{a numeric vector}
+\item{\samp{Nucleoside-diphosphate-sugar epimerase}}{a numeric vector}
+\item{\samp{3-methyladenine DNA glycosylase Tag}}{a numeric vector}
+\item{\samp{Restriction endonuclease}}{a numeric vector}
+\item{\samp{Archaeal fructose-1,6-bisphosphatase or related enzyme of inositol monophosphatase family}}{a numeric vector}
+\item{\samp{Superfamily II helicase, archaea-specific}}{a numeric vector}
+\item{\samp{Fermentation-respiration switch protein FrsA, has esterase activity, DUF1100 family}}{a numeric vector}
+\item{\samp{Lyzozyme M1 (1,4-beta-N-acetylmuramidase), GH25 family}}{a numeric vector}
+\item{\samp{O-antigen ligase}}{a numeric vector}
+\item{\samp{Phosphoglycolate phosphatase, HAD superfamily}}{a numeric vector}
+\item{\samp{Ketosteroid isomerase-related protein}}{a numeric vector}
+\item{\samp{Deoxycytidylate deaminase}}{a numeric vector}
+\item{\samp{Membrane protein involved in colicin uptake}}{a numeric vector}
+\item{\samp{Uncharacterized protein, UPF0160 family}}{a numeric vector}
+\item{\samp{Soluble lytic murein transglycosylase and related regulatory proteins (some contain LysM/invasin domains)}}{a numeric vector}
+\item{\samp{NifU homolog involved in Fe-S cluster formation}}{a numeric vector}
+\item{\samp{Divalent metal cation (Fe/Co/Zn/Cd) transporter}}{a numeric vector}
+\item{\samp{UDP-galactopyranose mutase}}{a numeric vector}
+\item{\samp{ABC-type Zn2+ transport system, periplasmic component/surface adhesin}}{a numeric vector}
+\item{\samp{Endo-1,4-beta-xylanase, GH35 family}}{a numeric vector}
+\item{\samp{Thymidine kinase}}{a numeric vector}
+\item{\samp{Fe-S cluster assembly ATPase SufC}}{a numeric vector}
+\item{\samp{Ribonuclease BN, tRNA processing enzyme}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YurZ, alkylhydroperoxidase/carboxymuconolactone decarboxylase family}}{a numeric vector}
+\item{\samp{NADH dehydrogenase, FAD-containing subunit}}{a numeric vector}
+\item{\samp{5'-deoxynucleotidase YfbR and related HD superfamily hydrolases}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YkwD, contains CAP (CSP/antigen 5/PR1) domain}}{a numeric vector}
+\item{\code{Integrase}}{a numeric vector}
+\item{\samp{Predicted sulfurtransferase}}{a numeric vector}
+\item{\samp{Phosphate starvation-inducible protein PhoH, predicted ATPase}}{a numeric vector}
+\item{\samp{Serine protease, subtilisin family}}{a numeric vector}
+\item{\samp{Cytoskeletal protein CcmA, bactofilin family}}{a numeric vector}
+\item{\samp{MFS family permease}}{a numeric vector}
+\item{\samp{Fido, protein-threonine AMPylation domain}}{a numeric vector}
+\item{\samp{Chromosome segregation and condensation protein ScpB}}{a numeric vector}
+\item{\samp{Phosphoserine phosphatase}}{a numeric vector}
+\item{\samp{Predicted RNA methylase}}{a numeric vector}
+\item{\samp{Protein-S-isoprenylcysteine O-methyltransferase Ste14}}{a numeric vector}
+\item{\samp{Peptidoglycan/LPS O-acetylase OafA/YrhL, contains acyltransferase and SGNH-hydrolase domains}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, XRE-family HTH domain}}{a numeric vector}
+\item{\samp{HD superfamily phosphohydrolase}}{a numeric vector}
+\item{\samp{Isopentenyldiphosphate isomerase}}{a numeric vector}
+\item{\samp{Superoxide dismutase}}{a numeric vector}
+\item{\samp{RNA recognition motif (RRM) domain}}{a numeric vector}
+\item{\samp{Predicted epimerase YddE/YHI9, PhzF superfamily}}{a numeric vector}
+\item{\samp{Predicted phosphohydrolase, MPP superfamily}}{a numeric vector}
+\item{\samp{Cell division protein DamX, binds to the septal ring, contains C-terminal SPOR domain}}{a numeric vector}
+\item{\samp{Predicted NAD-dependent protein-ADP-ribosyltransferase YbiA, DUF1768 family}}{a numeric vector}
+\item{\samp{Uncharacterized surface anchored protein}}{a numeric vector}
+\item{\samp{Endonuclease III}}{a numeric vector}
+\item{\samp{Phosphatidylglycerophosphate synthase}}{a numeric vector}
+\item{\samp{NH3-dependent NAD+ synthetase}}{a numeric vector}
+\item{\samp{Acyl carrier protein}}{a numeric vector}
+\item{\samp{Uncharacterized protein YijF, DUF1287 family}}{a numeric vector}
+\item{\samp{Chitinase, GH18 family}}{a numeric vector}
+\item{\samp{Aspartate/glutamate racemase}}{a numeric vector}
+\item{\samp{Fructose-bisphosphate aldolase class 1}}{a numeric vector}
+\item{\samp{Exopolyphosphatase/pppGpp-phosphohydrolase}}{a numeric vector}
+\item{\samp{Predicted ABC-type transport system involved in lysophospholipase L1 biosynthesis, permease component}}{a numeric vector}
+\item{\samp{Low affinity Fe/Cu permease}}{a numeric vector}
+\item{\samp{VanZ like family protein (function unknown)}}{a numeric vector}
+\item{\samp{Short-chain dehydrogenase}}{a numeric vector}
+\item{\samp{Nicotinic acid phosphoribosyltransferase}}{a numeric vector}
+\item{\samp{Glutamate racemase}}{a numeric vector}
+\item{\samp{Threonine synthase}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein PilW}}{a numeric vector}
+\item{\samp{Signal recognition particle GTPase}}{a numeric vector}
+\item{\samp{NADH pyrophosphatase NudC, Nudix superfamily}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, MarR family}}{a numeric vector}
+\item{\samp{CO dehydrogenase nickel-insertion accessory protein CooC1}}{a numeric vector}
+\item{\samp{DNA modification methylase}}{a numeric vector}
+\item{\samp{Lantibiotic modifying enzyme}}{a numeric vector}
+\item{\samp{S-adenosylmethionine decarboxylase or arginine decarboxylase}}{a numeric vector}
+\item{\samp{Predicted unusual protein kinase regulating ubiquinone biosynthesis, AarF/ABC1/UbiB family}}{a numeric vector}
+\item{\samp{Surface polysaccharide O-acyltransferase, integral membrane enzyme}}{a numeric vector}
+\item{\samp{Galactose mutarotase or related enzyme}}{a numeric vector}
+\item{\samp{Beta-mannanase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein YchJ, contains N- and C-terminal SEC-C domains}}{a numeric vector}
+\item{\samp{Co/Zn/Cd efflux system component}}{a numeric vector}
+\item{\samp{DNA-binding beta-propeller fold protein YncE}}{a numeric vector}
+\item{\samp{NAD(P)-dependent dehydrogenase, short-chain alcohol dehydrogenase family}}{a numeric vector}
+\item{\samp{3D (Asp-Asp-Asp) domain}}{a numeric vector}
+\item{\samp{ABC-type Zn uptake system ZnuABC, Zn-binding component ZnuA}}{a numeric vector}
+\item{\samp{ADP-ribosylglycohydrolase}}{a numeric vector}
+\item{\samp{Cell wall-associated hydrolase, NlpC family}}{a numeric vector}
+\item{\samp{Type II restriction/modification system, DNA methylase subunit YeeA}}{a numeric vector}
+\item{\samp{Site-specific DNA-adenine methylase}}{a numeric vector}
+\item{\samp{Na+/phosphate symporter}}{a numeric vector}
+\item{\samp{16S rRNA C967 or C1407 C5-methylase, RsmB/RsmF family}}{a numeric vector}
+\item{\samp{Phage antirepressor protein YoqD, KilAC domain}}{a numeric vector}
+\item{\samp{Transposase InsO and inactivated derivatives}}{a numeric vector}
+\item{\samp{Acyl-CoA reductase or other NAD-dependent aldehyde dehydrogenase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved membrane protein, UPF0127 family}}{a numeric vector}
+\item{\samp{Cysteine synthase}}{a numeric vector}
+\item{\samp{Uncharacterized protein, DUF2075 family}}{a numeric vector}
+\item{\samp{Superfamily II DNA and RNA helicase}}{a numeric vector}
+\item{\samp{Sugar-specific transcriptional regulator TrmB}}{a numeric vector}
+\item{\samp{Thymidylate synthase ThyX}}{a numeric vector}
+\item{\samp{SAM-dependent methyltransferase}}{a numeric vector}
+\item{\samp{Nicotinamidase-related amidase}}{a numeric vector}
+\item{\samp{Site-specific DNA-cytosine methylase}}{a numeric vector}
+\item{\samp{Folylpolyglutamate synthase/Dihydropteroate synthase}}{a numeric vector}
+\item{\samp{ATP phosphoribosyltransferase}}{a numeric vector}
+\item{\samp{GDP-D-mannose dehydratase}}{a numeric vector}
+\item{\samp{Cupin domain protein related to quercetin dioxygenase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein RhaS, contains 28 RHS repeats}}{a numeric vector}
+\item{\samp{Uncharacterized protein YerC}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein, major pilin PilA}}{a numeric vector}
+\item{\samp{ssDNA-binding Zn-finger and Zn-ribbon domains of topoisomerase 1}}{a numeric vector}
+\item{\samp{D-alanine-D-alanine ligase and related ATP-grasp enzymes}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, HxlR family}}{a numeric vector}
+\item{\samp{Phosphoribosylpyrophosphate synthetase}}{a numeric vector}
+\item{\samp{Restriction endonuclease S subunit}}{a numeric vector}
+\item{\samp{Superfamily II DNA helicase RecQ}}{a numeric vector}
+\item{\samp{Predicted house-cleaning noncanonical NTP pyrophosphatase, all-alpha NTP-PPase (MazG) superfamily}}{a numeric vector}
+\item{\samp{Glucose-6-phosphate 1-dehydrogenase}}{a numeric vector}
+\item{\samp{Replicative superfamily II helicase}}{a numeric vector}
+\item{\samp{Rhodanese-related sulfurtransferase}}{a numeric vector}
+\item{\samp{Predicted transcriptional regulator, contains HTH domain}}{a numeric vector}
+\item{\samp{DNA mismatch repair protein MutH}}{a numeric vector}
+\item{\samp{Phosphatidate phosphatase PAH1, contains Lipin and LNS2 domains. can be involved in plasmid maintenance}}{a numeric vector}
+\item{\samp{Threonine dehydrogenase or related Zn-dependent dehydrogenase}}{a numeric vector}
+\item{\samp{Superfamily II DNA or RNA helicase, SNF2 family}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YdfJ, MMPL/SSD domain}}{a numeric vector}
+\item{\samp{4-hydroxybenzoate polyprenyltransferase}}{a numeric vector}
+\item{\samp{Cytidine deaminase}}{a numeric vector}
+\item{\code{dUTPase}}{a numeric vector}
+\item{\samp{Predicted ATPase, AAA+ superfamily}}{a numeric vector}
+\item{\samp{Sugar phosphate isomerase/epimerase}}{a numeric vector}
+\item{\samp{Predicted P-loop ATPase, KAP-like}}{a numeric vector}
+\item{\samp{DNA-binding protein SpoVG, cell septation regulator}}{a numeric vector}
+\item{\samp{Ornithine cyclodeaminase/archaeal alanine dehydrogenase, mu-crystallin family}}{a numeric vector}
+\item{\samp{Catechol 2,3-dioxygenase or other lactoylglutathione lyase family enzyme}}{a numeric vector}
+\item{\samp{Large exoprotein involved in heme utilization or adhesion}}{a numeric vector}
+\item{\samp{Cytidylate kinase}}{a numeric vector}
+\item{\samp{Bifunctional DNA-binding transcriptional regulator of stationary/sporulation/toxin gene expression and antitoxin component of the YhaV-PrlF toxin-antitoxin module}}{a numeric vector}
+\item{\samp{Uncharacterized coiled-coil protein, contains DUF342 domain}}{a numeric vector}
+\item{\samp{UDP-N-acetylglucosamine transferase subunit ALG13}}{a numeric vector}
+\item{\samp{Anti-anti-sigma regulatory factor (antagonist of anti-sigma factor)}}{a numeric vector}
+\item{\samp{Predicted metal-dependent phosphoesterase TrpH, contains PHP domain}}{a numeric vector}
+\item{\samp{Diaminopimelate decarboxylase}}{a numeric vector}
+\item{\samp{3-methyladenine DNA glycosylase AlkC}}{a numeric vector}
+\item{\samp{Radical SAM superfamily enzyme, MoaA/NifB/PqqE/SkfB family}}{a numeric vector}
+\item{\samp{Inorganic pyrophosphatase/exopolyphosphatase}}{a numeric vector}
+\item{\samp{Autotransporter adhesin}}{a numeric vector}
+\item{\samp{Predicted archaeal sugar kinase}}{a numeric vector}
+\item{\samp{Archaeal/vacuolar-type H+-ATPase subunit I/STV1}}{a numeric vector}
+\item{\samp{Uridine kinase}}{a numeric vector}
+\item{\samp{Molybdenum cofactor biosynthesis enzyme MoaA}}{a numeric vector}
+\item{\samp{UDP-N-acetylglucosamine 2-epimerase}}{a numeric vector}
+\item{\samp{Phage-related tail protein}}{a numeric vector}
+\item{\samp{Cyanate permease}}{a numeric vector}
+\item{\samp{Phage terminase large subunit}}{a numeric vector}
+\item{\samp{Dipeptidyl aminopeptidase/acylaminoacyl peptidase}}{a numeric vector}
+\item{\samp{Predicted pyrophosphatase or phosphodiesterase, AlkP superfamily}}{a numeric vector}
+\item{\samp{Recombinational DNA repair protein RecT}}{a numeric vector}
+\item{\samp{Pyruvate/2-oxoglutarate dehydrogenase complex, dihydrolipoamide acyltransferase (E2) component}}{a numeric vector}
+\item{\samp{GTP cyclohydrolase II}}{a numeric vector}
+\item{\samp{DNA-binding transcriptional regulator, MerR family}}{a numeric vector}
+\item{\samp{CMP-N-acetylneuraminic acid synthetase}}{a numeric vector}
+\item{\samp{Uncharacterized conserved protein, contains phage Mu gpF-like domain}}{a numeric vector}
+\item{\samp{Restriction endonuclease Mrr}}{a numeric vector}
+\item{\samp{ppGpp synthetase catalytic domain (RelA/SpoT-type nucleotidyltranferase)}}{a numeric vector}
+\item{\samp{Predicted DNA-binding transcriptional regulator YafY, contains an HTH and WYL domains}}{a numeric vector}
+\item{\samp{2-polyprenyl-3-methyl-5-hydroxy-6-metoxy-1,4-benzoquinol methylase}}{a numeric vector}
+\item{\samp{Endonuclease YncB, thermonuclease family}}{a numeric vector}
+\item{\samp{DNA repair exonuclease SbcCD ATPase subunit}}{a numeric vector}
+\item{\samp{Nicotinic acid mononucleotide adenylyltransferase}}{a numeric vector}
+\item{\samp{Retron-type reverse transcriptase}}{a numeric vector}
+\item{\samp{Type I site-specific restriction endonuclease, part of a restriction-modification system}}{a numeric vector}
+\item{\samp{Phytoene/squalene synthetase}}{a numeric vector}
+\item{\samp{Glycine/D-amino acid oxidase (deaminating)}}{a numeric vector}
+\item{\samp{Permease of the drug/metabolite transporter (DMT) superfamily}}{a numeric vector}
+\item{\samp{Protoporphyrinogen oxidase}}{a numeric vector}
+\item{\samp{Transcriptional regulator of competence genes, TfoX/Sxy family}}{a numeric vector}
+\item{\samp{23S rRNA G2069 N7-methylase RlmK or C1962 C5-methylase RlmI}}{a numeric vector}
+\item{\samp{Aspartyl/asparaginyl-tRNA synthetase}}{a numeric vector}
+\item{\samp{Predicted ATPase}}{a numeric vector}
+\item{\samp{Predicted transcriptional regulator, contains an HTH and PUA-like domains}}{a numeric vector}
+\item{\samp{Transcriptional regulator, contains XRE-family HTH domain}}{a numeric vector}
+\item{\samp{Transposase and inactivated derivatives, IS30 family}}{a numeric vector}
+\item{\samp{Sialic acid synthase SpsE, contains C-terminal SAF domain}}{a numeric vector}
+\item{\samp{Tfp pilus assembly protein FimV}}{a numeric vector}
+\item{\samp{Uncharacterized membrane protein YjgN, DUF898 family}}{a numeric vector}
+\item{\samp{tRNA nucleotidyltransferase (CCA-adding enzyme)}}{a numeric vector}
           }
           
           
