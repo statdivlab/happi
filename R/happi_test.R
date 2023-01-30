@@ -145,7 +145,7 @@ happi_test <- function(outcome,
                                                         firth = firth, 
                                                         outcome = outcome, 
                                                         epsilon = epsilon, 
-                                                        covariate = covariate)
+                                                        covariate = covariate_null)
 
     mlout <- tryCatch(run_em(outcome = outcome,
                         quality_var = quality_var,
