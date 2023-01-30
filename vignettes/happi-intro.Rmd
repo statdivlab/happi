@@ -114,14 +114,17 @@ Recall though, we were concerned about conflating of this difference in gene det
 
 ```{r}
 x_matrix <- model.matrix(~tongue, data = Mem) # create design matrix
+set.seed(55)
 happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
         covariate=x_matrix, 
         quality_var=Mem$mean_coverage,
-        max_iterations=100, 
-        change_threshold=0.01, 
-        epsilon=0)
+        max_iterations=1000, 
+        change_threshold=0.001, 
+        epsilon=0, 
+        nstarts = 50)
 
-happi_results$loglik$pvalue[23]
+tail(happi_results$loglik$pvalue[!is.na(happi_results$loglik$pvalue)],1)
+#happi_results$loglik$pvalue[23]
 ```
 Using `happi` we still see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009211437) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
 
