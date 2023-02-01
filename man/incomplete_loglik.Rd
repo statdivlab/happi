@@ -10,7 +10,7 @@ incomplete_loglik(
   firth = TRUE,
   outcome = outcome,
   epsilon = epsilon,
-  covariate = covariate
+  covariate
 )
 }
 \arguments{

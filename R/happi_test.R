@@ -64,8 +64,8 @@ happi_test <- function(outcome,
   
   pp <- ncol(covariate)
   
-  if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
-  if(h0_param != 2) warning("Amy hasn't properly checked that testing a different parameter results in sensible output")
+#  if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
+#  if(h0_param != 2) warning("Amy hasn't properly checked that testing a different parameter results in sensible output")
   
   ## reorder all elements of all data by ordering in quality_var
   ## TODO(change back at end)
@@ -85,6 +85,8 @@ happi_test <- function(outcome,
     inits <- genInits(num_covariate = pp, nstarts = nstarts, seed = seed)
     
     inits_null <- genInits(num_covariate = pp - 1, nstarts = nstarts, seed = seed)
+    
+    inits_f <- genInits_f(nn = nn, nstarts = nstarts, seed = seed, outcome = outcome)
     
     bestOut <- NULL
     bestOut_null <- NULL
@@ -117,8 +119,8 @@ happi_test <- function(outcome,
     my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
     my_fitted_xbeta_null[1, ] <- c(covariate_null %*% my_estimated_beta_null[1, ])
     
-    my_estimated_f[1, ] <- rep(mean(outcome), nn)
-    my_estimated_f_null[1, ] <- rep(mean(outcome), nn)
+    my_estimated_f[1, ] <- inits_f[i,]
+    my_estimated_f_null[1, ] <- inits_f[i,]
     # f-tilde = logit(f)
     my_estimated_ftilde[1, ] <- logit(my_estimated_f[1, ])
     my_estimated_ftilde_null[1, ] <- logit(my_estimated_f_null[1, ])
@@ -225,8 +227,11 @@ happi_test <- function(outcome,
         my_estimated_f <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
         my_estimated_ftilde <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
         my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
-        
-        if (pp == 2) {
+    
+        if (pp == 1){
+          my_estimated_beta[1, 1] <- 0
+          
+        } else if (pp == 2) {
           my_estimated_beta[1, 1] <- tail(bestOut_null$beta[!is.na(bestOut_null$beta[,1]),],1)[1] ## start at converged null
           my_estimated_beta[1, h0_param] <- 0
           
@@ -234,9 +239,9 @@ happi_test <- function(outcome,
           my_estimated_beta[1, 1] <- tail(bestOut_null$beta[!is.na(bestOut_null$beta[,1]),],1)[1] ## start at converged null
           my_estimated_beta[1, h0_param] <- 0
           my_estimated_beta[1, 3] <- tail(bestOut_null$beta[!is.na(bestOut_null$beta[,1]),],1)[2] ## start at converged null
-        } else if (pp == 1){
-          my_estimated_beta[1, 1] <- 0
-        }
+          
+        } ## TO DO PT 
+        
         stopifnot(h0_param == 2)
         my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
         my_estimated_f[1, ] <- tail(bestOut_null$f[!is.na(bestOut_null$f[,1]),],1)
@@ -272,7 +277,7 @@ happi_test <- function(outcome,
         
 
         if (tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
-          stop("Restarting to estimate beta_alt didn't work. Likelihood is greater under the null. Not sure what's happening...")
+          message("Restarting to estimate beta_alt didn't work. Likelihood is still greater under the null than alt.")
           # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
         }
 } ## End restart 

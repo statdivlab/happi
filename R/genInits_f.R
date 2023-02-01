@@ -17,7 +17,7 @@ genInits_f <- function(nn,
                      outcome) {
   
   init_start <- rep(mean(outcome), nn) # fixed initial start parameters
-  inits <- init_start
+  inits <- rbind(init_start)
   
   if (nstarts > 1) { 
     set.seed(seed)

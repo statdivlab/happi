@@ -329,7 +329,7 @@ happi <- function(outcome,
                                                          ff = my_estimated_f_null[tt, ],
                                                          firth = firth, 
                                                          mycovariate = covariate_null)
-    
+    print(tt)
     ## maybe just log-likelihood changing?
     if ((tt > min_iterations) & (my_estimates[tt, "loglik"] > my_estimates[tt, "loglik_null"])) {
       
@@ -349,7 +349,6 @@ happi <- function(outcome,
     }
     
   }
-  
   tt_restart <- 1
   if (my_estimates[tt, "loglik"] < my_estimates[tt, "loglik_null"]) {
     
@@ -360,10 +359,15 @@ happi <- function(outcome,
     my_estimated_ftilde <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
     my_estimated_p <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
     
-    if (pp > 1) {
-      my_estimated_beta[1, 1] <- my_estimated_beta_null[tt] ## start at converged null
+    if (pp == 2) {
+      my_estimated_beta[1, 1] <- my_estimated_beta_null[tt,][1] ## start at converged null
       my_estimated_beta[1, h0_param] <- 0
-    } else {
+    } else if(pp == 3){
+      my_estimated_beta[1, 1] <- my_estimated_beta_null[tt,][1] ## start at converged null
+      my_estimated_beta[1, h0_param] <- 0
+      my_estimated_beta[1, 3] <- my_estimated_beta_null[tt,][2] ## start at converged null
+      
+    } else if (pp == 1) {
       my_estimated_beta[1, 1] <- 0
     }
     stopifnot(h0_param == 2)

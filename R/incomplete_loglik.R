@@ -32,7 +32,7 @@ incomplete_loglik <- function(xbeta,
                               firth = TRUE, 
                               outcome = outcome, 
                               epsilon = epsilon, 
-                              covariate = covariate) {
+                              covariate) {
   
   prob_lambda <- expit(xbeta)
   
