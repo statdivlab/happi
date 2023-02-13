@@ -26,17 +26,7 @@
 #' @importFrom logistf logistf
 #'
 #' @return An object of class \code{happi}.
-#' 
-#' @examples
-#' data("TM7_data")
-#' # create design matrix
-#' x_matrix <- model.matrix(~tongue, data = TM7_data) 
-#' happi_results <- happi_test(outcome=TM7_data$`Ribosomal protein L27`, 
-#' covariate=x_matrix, 
-#' quality_var=TM7_data$mean_coverage,
-#' max_iterations=100, 
-#' change_threshold=0.01, 
-#' epsilon=0)
+#'
 #' @export
 happi_test <- function(outcome,
                   covariate,

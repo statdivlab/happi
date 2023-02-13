@@ -118,21 +118,12 @@ set.seed(55)
 happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
         covariate=x_matrix, 
         quality_var=Mem$mean_coverage,
-        max_iterations=1000, 
-        change_threshold=0.001, 
+        max_iterations=100, 
+        change_threshold=0.01,
         epsilon=0, 
         nstarts = 1)
 
 tail(happi_results$loglik$pvalue[!is.na(happi_results$loglik$pvalue)],1)
-
-happi_results_test <- happi_test(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
-        covariate=x_matrix, 
-        quality_var=Mem$mean_coverage,
-        max_iterations=1000, 
-        change_threshold=0.001, 
-        epsilon=0, 
-        nstarts = 10)
-tail(happi_results_test$loglik$pvalue[!is.na(happi_results_test$loglik$pvalue)],1)
 ```
 Using `happi` we see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009211437) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
 
