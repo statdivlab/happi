@@ -215,6 +215,7 @@ happi_old_method <- function(outcome,
                         (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
         sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
                   ff[outcome == 1] * prob_lambda[outcome == 1]))
+      
       penalty <- 0.5*msos::logdet(t(covariate) %*% diag(as.numeric(prob_lambda)*(
         1 - as.numeric(prob_lambda))) %*% covariate)
       return(ll + penalty)
@@ -225,7 +226,9 @@ happi_old_method <- function(outcome,
   my_estimates <- tibble("iteration" = 0:max_iterations,
                          "epsilon" = epsilon,
                          "loglik" = NA,
-                         "loglik_null" = NA)
+                         "loglik_null" = NA, 
+                         "loglik_nopenalty" = NA, 
+                         "loglik_null_nopenalty" = NA)
   
   my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
   my_estimated_beta_null <- matrix(NA, nrow = max_iterations + 1, ncol = max(1, pp - 1))
@@ -270,6 +273,13 @@ happi_old_method <- function(outcome,
                                                       ff = my_estimated_f_null[1, ],
                                                       firth = firth)
   
+  my_estimates[1, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
+                                                 ff = my_estimated_f[1, ],
+                                                 firth = F)
+  my_estimates[1, "loglik_null_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
+                                                      ff = my_estimated_f_null[1, ],
+                                                      firth = F)
+  
   tt <- 1
   keep_going <- TRUE
   while (tt <= max_iterations & keep_going) {
@@ -295,7 +305,9 @@ happi_old_method <- function(outcome,
     my_estimates[tt, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt, ],
                                                     ff = my_estimated_f[tt, ],
                                                     firth = firth)
-    
+    my_estimates[tt, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt, ],
+                                                    ff = my_estimated_f[tt, ],
+                                                    firth = F)
     ### null
     my_estimated_beta_null[tt, ] <- update_beta(probs=my_estimated_p_null[tt - 1, ],
                                                 covariate=covariate_null,
@@ -315,7 +327,9 @@ happi_old_method <- function(outcome,
     my_estimates[tt, "loglik_null"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[tt, ],
                                                          ff = my_estimated_f_null[tt, ],
                                                          firth = firth)
-    
+    my_estimates[tt, "loglik_null_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[tt, ],
+                                                         ff = my_estimated_f_null[tt, ],
+                                                         firth = F)
     ## maybe just log-likelihood changing?
     if ((tt > min_iterations) & (my_estimates[tt, "loglik"] > my_estimates[tt, "loglik_null"])) {
       
@@ -360,6 +374,9 @@ happi_old_method <- function(outcome,
                                        ff = my_estimated_f[1, ])
     my_estimates[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
                                                    ff = my_estimated_f[1, ])
+    my_estimates[1, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
+                                                   ff = my_estimated_f[1, ], 
+                                                   firth = F)
     
     
     ## restart at null model if likelihood greater under null than alternative
@@ -410,6 +427,9 @@ happi_old_method <- function(outcome,
       
       my_estimates[tt_restart, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
                                                               ff = my_estimated_f[tt_restart, ])
+      my_estimates[tt_restart, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[tt_restart, ],
+                                                              ff = my_estimated_f[tt_restart, ], 
+                                                              firth = F)
       
       if ((tt_restart > min_iterations) & (my_estimates[tt_restart, "loglik"] > my_estimates[tt, "loglik_null"])) {
         
@@ -430,6 +450,9 @@ happi_old_method <- function(outcome,
   
   my_estimates$LRT <- 2*(my_estimates$loglik - my_estimates$loglik_null)
   my_estimates$pvalue <- 1 - pchisq(my_estimates$LRT, df=1)
+  
+  my_estimates$LRT_nopenalty <- 2*(my_estimates$loglik_nopenalty - my_estimates$loglik_null_nopenalty)
+  my_estimates$pvalue_nopenalty <- 1 - pchisq(my_estimates$LRT_nopenalty, df=1)
   
   return(list("loglik" = my_estimates,
               "beta" = my_estimated_beta,

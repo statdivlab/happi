@@ -71,11 +71,11 @@ happi_test <- function(outcome,
     covariate_null <- covariate[, -h0_param]
   }
   if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
-  
+  # generate beta initial starts for alternative model
     inits <- genInits(num_covariate = pp, nstarts = nstarts, seed = seed)
-    
+  # generate beta initial starts for null model   
     inits_null <- genInits(num_covariate = pp - 1, nstarts = nstarts, seed = seed)
-    
+  # generate f initial starts for both alternative and null models   
     inits_f <- genInits_f(nn = nn, nstarts = nstarts, seed = seed, outcome = outcome)
     
     bestOut <- NULL
@@ -85,10 +85,13 @@ happi_test <- function(outcome,
     for (i in 1:nstarts) {
     my_estimates <- tibble("iteration" = 0:max_iterations,
                            "epsilon" = epsilon,
-                           "loglik" = NA)
+                           "loglik" = NA,  
+                           "loglik_nopenalty" = NA)
+    
     my_estimates_null <- tibble("iteration" = 0:max_iterations,
                                 "epsilon" = epsilon,
-                                "loglik" = NA)
+                                "loglik" = NA, 
+                                "loglik_nopenalty" = NA)
     
     my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
     my_estimated_beta_null <- matrix(NA, nrow = max_iterations + 1, ncol = max(1, pp - 1))
@@ -131,10 +134,21 @@ happi_test <- function(outcome,
                                                    outcome = outcome, 
                                                    epsilon = epsilon, 
                                                    covariate = covariate)
-    
+    my_estimates[1, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
+                                                   ff = my_estimated_f[1, ],
+                                                   firth = F, 
+                                                   outcome = outcome, 
+                                                   epsilon = epsilon, 
+                                                   covariate = covariate)
     my_estimates_null[1, "loglik"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
                                                         ff = my_estimated_f_null[1, ],
                                                         firth = firth, 
+                                                        outcome = outcome, 
+                                                        epsilon = epsilon, 
+                                                        covariate = covariate_null)
+    my_estimates_null[1, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta_null[1, ],
+                                                        ff = my_estimated_f_null[1, ],
+                                                        firth = F, 
                                                         outcome = outcome, 
                                                         epsilon = epsilon, 
                                                         covariate = covariate_null)
@@ -157,6 +171,9 @@ happi_test <- function(outcome,
                         em_estimated_basis_weights =  my_estimated_basis_weights,
                         em_estimated_ftilde = my_estimated_ftilde), 
                         error = function(e) {cat("WARNING alternative model E-M at initial start row index", paste(i),":", conditionMessage(e),"\n")}) 
+# I want to understand the contribution of the penalty term 
+# why is it so much bigger for larger sample sizes??? 
+# less covariates results in a larger penalty than more covariates??? 
     
     mlout_null <- tryCatch(run_em(outcome = outcome,
                              quality_var = quality_var,
@@ -177,9 +194,9 @@ happi_test <- function(outcome,
                              em_estimated_ftilde = my_estimated_ftilde_null), 
                              error = function(e) {cat("WARNING null model E-M at initial start row index", paste(i),":", conditionMessage(e),"\n")}) # END WHILE loop that stops when convergence is met
 
-    ## if we get a valid result then... check if bestOut is NULL. If NULL then replace with the valid result 
+    ## if we get a converged result then... check if bestOut is NULL. If NULL then replace with the converges result 
     
-    tryCatch(if(!is.na(tail(mlout$loglik$loglik[!is.na(mlout$loglik$loglik)],1))){ # check that not NA
+    tryCatch(if(!is.na(tail(mlout$loglik$loglik[!is.na(mlout$loglik$loglik)],1))){ # check that not NA for alternative model
       if (is.null(bestOut)) {
         bestOut <-  mlout
       } else if (!is.null(bestOut)){
@@ -187,9 +204,9 @@ happi_test <- function(outcome,
           bestOut <- mlout 
         }
       }
-    },error = function(e) {cat("WARNING alternative model did not converge at initial start row index", paste(i),":", conditionMessage(e),"\n")})
+    }, error = function(e) {cat("WARNING alternative model did not converge at initial start row index", paste(i),":", conditionMessage(e),"\n")})
     
-    tryCatch(if(!is.na(tail(mlout_null$loglik$loglik[!is.na(mlout_null$loglik$loglik)],1))){ # check that not NA
+    tryCatch(if(!is.na(tail(mlout_null$loglik$loglik[!is.na(mlout_null$loglik$loglik)],1))){ # check that not NA for null model 
       if (is.null(bestOut_null)) {
         bestOut_null <-  mlout_null
       } else if (!is.null(bestOut_null)){
@@ -211,7 +228,8 @@ happi_test <- function(outcome,
         message("Likelihood greater under null; restarting...")
         my_estimates <- tibble("iteration" = 0:max_iterations,
                               "epsilon" = epsilon,
-                              "loglik" = NA)
+                              "loglik" = NA, 
+                              "loglik_nopenalty" = NA)
         my_estimated_beta <- matrix(NA, nrow = max_iterations + 1, ncol = pp)
         my_fitted_xbeta <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
         my_estimated_f <- matrix(NA, nrow = max_iterations + 1, ncol = nn)
@@ -245,7 +263,12 @@ happi_test <- function(outcome,
                                                        outcome = outcome, 
                                                        epsilon = epsilon, 
                                                        covariate = covariate)
-        
+        my_estimates[1, "loglik_nopenalty"] <- incomplete_loglik(xbeta = my_fitted_xbeta[1, ],
+                                                       ff = my_estimated_f[1, ], 
+                                                       outcome = outcome, 
+                                                       epsilon = epsilon, 
+                                                       covariate = covariate,
+                                                       firth = F)
         ## restart at null model if likelihood greater under null than alternative
         bestOut <- run_em(outcome = outcome,
                             quality_var = quality_var,
@@ -273,8 +296,12 @@ happi_test <- function(outcome,
 } ## End restart 
     ### Return the best estimates 
     
-    my_estimates <- bestOut$loglik
+    my_estimates$loglik <- bestOut$loglik$loglik
+    my_estimates$iteration <- bestOut$loglik$iteration
+    my_estimates$loglik_nopenalty <- bestOut$loglik$loglik_nopenalty
     my_estimates$loglik_null <- bestOut_null$loglik$loglik
+    my_estimates$loglik_null_nopenalty <- bestOut_null$loglik$loglik_nopenalty
+    
     my_estimates$iteration_null <- bestOut_null$loglik$iteration
     
     my_estimated_beta <- bestOut$beta
@@ -288,7 +315,10 @@ happi_test <- function(outcome,
     
     my_estimates$LRT <- 2*(tail(my_estimates$loglik[!is.na(my_estimates$loglik)],1) - tail(my_estimates$loglik_null[!is.na(my_estimates$loglik_null)],1))
     my_estimates$pvalue <- 1 - pchisq(my_estimates$LRT, df=1)
-
+    
+    my_estimates$LRT_nopenalty <- 2*(tail(my_estimates$loglik_nopenalty[!is.na(my_estimates$loglik_nopenalty)],1) - tail(my_estimates$loglik_null_nopenalty[!is.na(my_estimates$loglik_null_nopenalty)],1))
+    my_estimates$pvalue_nopenalty <- 1 - pchisq(my_estimates$LRT_nopenalty, df=1)
+    
   return(list("loglik" = my_estimates,
               "beta" = my_estimated_beta,
               "beta_null" = my_estimated_beta_null,

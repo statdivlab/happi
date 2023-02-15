@@ -82,6 +82,13 @@ run_em <- function(outcome = outcome,
                                                     epsilon = epsilon, 
                                                     covariate = em_covariate)
     
+    em_estimates[tt, "loglik_nopenalty"] <- incomplete_loglik(xbeta = em_fitted_xbeta[tt, ],
+                                                    ff = em_estimated_f[tt, ],
+                                                    firth = F, 
+                                                    outcome = outcome, 
+                                                    epsilon = epsilon, 
+                                                    covariate = em_covariate)
+    
     if ((tt > min_iterations) & (!is.na(em_estimates[tt, "loglik"]))) {
       
       pct_change_llks <- 100*abs((em_estimates[(tt - 4):tt, "loglik"] - em_estimates[(tt - 5):(tt - 1), "loglik"])/em_estimates[(tt - 5):(tt - 1), "loglik"])
