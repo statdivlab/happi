@@ -292,15 +292,15 @@ happi_test <- function(outcome,
           message("Restarting to estimate beta_alt didn't work. Likelihood is still greater under the null than alt.")
           # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
         }
-} ## End restart 
+} ## End restart if likelihood is greater under the null
     ### Return the best estimates 
     
     my_estimates$loglik <- bestOut$loglik$loglik
-    my_estimates$iteration <- bestOut$loglik$iteration
     my_estimates$loglik_nopenalty <- bestOut$loglik$loglik_nopenalty
+    my_estimates$iteration <- bestOut$loglik$iteration
+
     my_estimates$loglik_null <- bestOut_null$loglik$loglik
     my_estimates$loglik_null_nopenalty <- bestOut_null$loglik$loglik_nopenalty
-    
     my_estimates$iteration_null <- bestOut_null$loglik$iteration
     
     my_estimated_beta <- bestOut$beta
