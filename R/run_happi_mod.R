@@ -45,6 +45,7 @@ happi_test <- function(outcome,
 ) {
   
   # TODO(PT) take in formula
+  # TODO(PT) reduce redundancies i.e. calculation of ll 
   
   stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) # some missing data
   
@@ -85,6 +86,10 @@ happi_test <- function(outcome,
     ### Start for loop through multiple starts in our penalized log likelihood 
     
     for (i in 1:nstarts) {
+      
+      ####################################
+      ## Create matrices to hold results #
+      ####################################
     my_estimates <- tibble("iteration" = 0:max_iterations,
                            "epsilon" = epsilon,
                            "loglik" = NA,  
@@ -108,6 +113,9 @@ happi_test <- function(outcome,
     my_estimated_basis_weights <- matrix(NA, nrow = max_iterations + 1, ncol = spline_df + 1)
     my_estimated_basis_weights_null <- matrix(NA, nrow = max_iterations + 1, ncol = spline_df + 1)
     
+    ##################
+    ## Input starts ##
+    ##################
     my_estimated_beta[1, ] <- inits[i,]
     my_estimated_beta_null[1, ] <- inits_null[i,]
     
@@ -154,7 +162,9 @@ happi_test <- function(outcome,
                                                         outcome = outcome, 
                                                         epsilon = epsilon, 
                                                         covariate = covariate_null)
-
+    ###############################################################################################################
+    ## E-M algorithm for penalized maximum likelihood estimation of our parameter estimates for alternative model #
+    ###############################################################################################################
     mlout <- tryCatch(run_em(outcome = outcome,
                         quality_var = quality_var,
                         max_iterations = max_iterations,
@@ -173,7 +183,10 @@ happi_test <- function(outcome,
                         em_estimated_basis_weights =  my_estimated_basis_weights,
                         em_estimated_ftilde = my_estimated_ftilde), 
                         error = function(e) {cat("WARNING alternative model E-M at initial start row index", paste(i),":", conditionMessage(e),"\n")}) 
-    
+   
+    ########################################################################################################
+    ## E-M algorithm for penalized maximum likelihood estimation of our parameter estimates for null model #
+    ########################################################################################################
     mlout_null <- tryCatch(run_em(outcome = outcome,
                              quality_var = quality_var,
                              max_iterations = max_iterations,
@@ -192,8 +205,13 @@ happi_test <- function(outcome,
                              em_estimated_basis_weights =  my_estimated_basis_weights_null,
                              em_estimated_ftilde = my_estimated_ftilde_null), 
                              error = function(e) {cat("WARNING null model E-M at initial start row index", paste(i),":", conditionMessage(e),"\n")}) # END WHILE loop that stops when convergence is met
-
-    ## if we get a converged result then... check if bestOut is NULL. If NULL then replace with the converges result 
+    ############################################################
+    # Evaluate for best set of results for alternative model ###
+    ############################################################
+    ## if we get a converged result then... 
+    ## check if bestOut is NULL. 
+    ## If NULL then replace with the converged result 
+    ## If NOT NUlL then replace only if LL is better than what is currently in bestOut
     
     tryCatch(if(!is.na(tail(mlout$loglik$loglik[!is.na(mlout$loglik$loglik)],1))){ # check that not NA for alternative model
       if (is.null(bestOut)) {
@@ -204,6 +222,14 @@ happi_test <- function(outcome,
         }
       }
     }, error = function(e) {cat("WARNING alternative model did not converge at initial start row index", paste(i),":", conditionMessage(e),"\n")})
+    
+    #####################################################
+    # Evaluate for best set of results for null model ###
+    #####################################################
+    ## if we get a converged result then... 
+    ## check if bestOut_null model is NULL. 
+    ## If bestOut_null is NULL then replace with the converged result 
+    ## If bestOut_null is NOT NUlL then replace only if LL is better than what is currently in bestOut_null
     
     tryCatch(if(!is.na(tail(mlout_null$loglik$loglik[!is.na(mlout_null$loglik$loglik)],1))){ # check that not NA for null model 
       if (is.null(bestOut_null)) {
@@ -220,8 +246,10 @@ happi_test <- function(outcome,
   if (is.null(bestOut)) stop("Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.")
   if (is.null(bestOut_null)) stop("Null model could not be optimized! Try increasing the number of nstarts or simplifying your model.")
   
-  
-##### If alternative LL is smaller than null:       
+  #############################################
+  ### If alternative LL is smaller than null:
+  ## restart estimation of alternative model using the null model 
+  #############################################
      if (tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
         
         message("Likelihood greater under null; restarting...")
@@ -247,7 +275,7 @@ happi_test <- function(outcome,
           my_estimated_beta[1, h0_param] <- 0
           my_estimated_beta[1, 3] <- tail(bestOut_null$beta[!is.na(bestOut_null$beta[,1]),],1)[2] ## start at converged null
           
-        } ## TO DO PT 
+        } ## TO DO (PT): need to take in pp > 3 if needed 
         
         stopifnot(h0_param == 2)
         my_fitted_xbeta[1, ] <- c(covariate %*% my_estimated_beta[1, ])
@@ -293,8 +321,10 @@ happi_test <- function(outcome,
           # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
         }
 } ## End restart if likelihood is greater under the null
-    ### Return the best estimates 
     
+    ###############################
+    ### Output the best estimates## 
+    ###############################
     my_estimates$loglik <- bestOut$loglik$loglik
     my_estimates$loglik_nopenalty <- bestOut$loglik$loglik_nopenalty
     my_estimates$iteration <- bestOut$loglik$iteration
@@ -311,6 +341,10 @@ happi_test <- function(outcome,
     my_estimated_basis_weights_null <- bestOut_null$basis_weights
     my_estimated_p <- bestOut$p
     my_estimated_p_null <- bestOut_null$p
+    
+    ########################
+    # LRT based on best LLs 
+    ########################
     
     my_estimates$LRT <- 2*(tail(my_estimates$loglik[!is.na(my_estimates$loglik)],1) - tail(my_estimates$loglik_null[!is.na(my_estimates$loglik_null)],1))
     my_estimates$pvalue <- 1 - pchisq(my_estimates$LRT, df=1)
