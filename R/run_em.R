@@ -104,7 +104,7 @@ run_em <- function(outcome = outcome,
                                                  nn = nn, 
                                                  outcome = outcome, 
                                                  tt = tt)
-        } else if((tt == max_iterations) & keep_going) {
+        } else if((tt == max_iterations) & keep_going) { # if we reach max_iterations and the model still has not converged then: 
           stop(paste("Model did not converge after", tt, "maximum number of iterations"))
          
         } else {

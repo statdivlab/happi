@@ -1,4 +1,4 @@
-#' Main function running happi, p=q=1
+#' Main function running happi, p=q=1; this script contains the corrected non-modular implementation of the previous happi function 
 #'
 #' @param outcome length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1
 #' @param covariate n x p matrix; this is the matrix for the primary predictor/covariate of interest

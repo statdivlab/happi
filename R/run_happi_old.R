@@ -1,4 +1,4 @@
-#' (old) Main function running happi, p=q=1
+#' (old) Main function running happi, p=q=1; this function is the previous incorrect non-modular implementation of happi
 #'
 #' @param outcome length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1
 #' @param covariate n x p matrix; this is the matrix for the primary predictor/covariate of interest

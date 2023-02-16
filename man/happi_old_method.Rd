@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_happi_old.R
 \name{happi_old_method}
 \alias{happi_old_method}
-\title{(old) Main function running happi, p=q=1}
+\title{(old) Main function running happi, p=q=1; this function is the previous incorrect non-modular implementation of happi}
 \usage{
 happi_old_method(
   outcome,
@@ -50,5 +50,5 @@ argument spline_df; "isotone" for isotonic regression fit}
 monotone spline fit; default 3}
 }
 \description{
-(old) Main function running happi, p=q=1
+(old) Main function running happi, p=q=1; this function is the previous incorrect non-modular implementation of happi
 }

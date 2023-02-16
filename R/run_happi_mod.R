@@ -1,4 +1,4 @@
-#' Test function running happi, p=q=1
+#' Testing function running happi, p=q=1; this script contains the modularized version of happi with correct implementation of log likelihood
 #'
 #' @param outcome length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1
 #' @param covariate n x p matrix; this is the matrix for the primary predictor/covariate of interest
@@ -69,8 +69,9 @@ happi_test <- function(outcome,
     covariate_null <- matrix(1, ncol = 1, nrow = nn)
   } else {
     covariate_null <- covariate[, -h0_param]
-  }
+  } #TODO(PT) take in formula 
   if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
+  
   # generate beta initial starts for alternative model
     inits <- genInits(num_covariate = pp, nstarts = nstarts, seed = seed)
   # generate beta initial starts for null model   
@@ -80,7 +81,8 @@ happi_test <- function(outcome,
     
     bestOut <- NULL
     bestOut_null <- NULL
-    ### Optimization of the multiple starts in our penalized log likelihood 
+    
+    ### Start for loop through multiple starts in our penalized log likelihood 
     
     for (i in 1:nstarts) {
     my_estimates <- tibble("iteration" = 0:max_iterations,
@@ -171,9 +173,6 @@ happi_test <- function(outcome,
                         em_estimated_basis_weights =  my_estimated_basis_weights,
                         em_estimated_ftilde = my_estimated_ftilde), 
                         error = function(e) {cat("WARNING alternative model E-M at initial start row index", paste(i),":", conditionMessage(e),"\n")}) 
-# I want to understand the contribution of the penalty term 
-# why is it so much bigger for larger sample sizes??? 
-# less covariates results in a larger penalty than more covariates??? 
     
     mlout_null <- tryCatch(run_em(outcome = outcome,
                              quality_var = quality_var,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_happi.R
 \name{happi}
 \alias{happi}
-\title{Main function running happi, p=q=1}
+\title{Main function running happi, p=q=1; this script contains the corrected non-modular implementation of the previous happi function}
 \usage{
 happi(
   outcome,
@@ -50,7 +50,7 @@ argument spline_df; "isotone" for isotonic regression fit}
 monotone spline fit; default 3}
 }
 \description{
-Main function running happi, p=q=1
+Main function running happi, p=q=1; this script contains the corrected non-modular implementation of the previous happi function
 }
 \examples{
 data("TM7_data")

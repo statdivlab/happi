@@ -35,7 +35,7 @@ incomplete_loglik <- function(xbeta,
                               covariate) {
   
   prob_lambda <- expit(xbeta)
-  
+  ## PT TODO: remove redundancy of the LL calculation 
   if (!firth) {
     sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
                (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
