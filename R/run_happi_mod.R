@@ -83,7 +83,7 @@ happi_test <- function(outcome,
     bestOut <- NULL
     bestOut_null <- NULL
     
-    ### Start for loop through multiple starts in our penalized log likelihood 
+    ### Start for loop through multiple starts 
     
     for (i in 1:nstarts) {
       
