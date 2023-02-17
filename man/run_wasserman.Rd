@@ -11,7 +11,8 @@ run_wasserman(
   max_iterations = 1000,
   change_threshold = 0.01,
   epsilon = 0,
-  nstarts = 1
+  nstarts = 1,
+  h0_param = 2
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ by this percentage or less for 5 iterations in a row for both the alternative an
 \item{epsilon}{probability of observing a gene when it should be absent; probability between 0 and 1}
 
 \item{nstarts}{number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.}
+
+\item{h0_param}{the column index in covariate that has beta=zero under the null}
 }
 \value{
 A list of Wasserman pvalues

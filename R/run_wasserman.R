@@ -9,6 +9,7 @@
 #' by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
+#' @param h0_param the column index in covariate that has beta=zero under the null
 #'
 #' @return A list of Wasserman pvalues 
 #' @export
@@ -19,7 +20,8 @@ run_wasserman <- function(happi_results_object,
                           max_iterations = 1000, 
                           change_threshold = 0.01, 
                           epsilon = 0, 
-                          nstarts = 1) {
+                          nstarts = 1, 
+                          h0_param = 2) {
   #take in the data 
   picked <- sample(seq_len(length(happi_results_object$outcome)), size = length(happi_results_object$outcome)/2, replace = FALSE)
   # split the data randomly into sets D0 and D1
@@ -48,13 +50,13 @@ run_wasserman <- function(happi_results_object,
   D1_outcome <- D1_results$outcome
   D1_quality_var <- D1_results$quality_var
   D1_covariate <- D1_results$covariate
-  D1_covariate_null <- D1_covariate[, -2]
+  D1_covariate_null <- D1_covariate[, -h0_param]
   if (!is.matrix(D1_covariate_null)) D1_covariate_null <- matrix(D1_covariate_null, nrow=length(D1_covariate_null))
   
   D0_outcome <- D0_results$outcome
   D0_quality_var <- D0_results$quality_var
   D0_covariate <- D0_results$covariate
-  D0_covariate_null <- D0_covariate[, -2]
+  D0_covariate_null <- D0_covariate[, -h0_param]
   if (!is.matrix(D0_covariate_null)) D0_covariate_null <- matrix(D0_covariate_null, nrow=length(D0_covariate_null))
   
   #################
