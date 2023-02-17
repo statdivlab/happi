@@ -138,5 +138,5 @@ run_wasserman <- function(happi_results_object,
   pvalue_nopenalty <- 1/((U_n_nopenalty + U_n_swap_nopenalty)/2)
 
   return(list("wasserman_pvalue" = pvalue,
-              "wassernan_pvalue_nopenalty" = pvalue_nopenalty))
+              "wasserman_pvalue_nopenalty" = pvalue_nopenalty))
 }
