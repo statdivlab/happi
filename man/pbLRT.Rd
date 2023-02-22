@@ -5,18 +5,19 @@
 \title{parametric boostrap LRT implementation}
 \usage{
 pbLRT(
-  happi_results_object,
+  happi_out,
   firth = TRUE,
   spline_df = 3,
   max_iterations = 1000,
   change_threshold = 0.01,
   epsilon = 0,
   nstarts = 1,
-  h0_param = 2
+  h0_param = 2,
+  B = 1000
 )
 }
 \arguments{
-\item{happi_results_object}{An object of class \code{happi}.}
+\item{happi_out}{a happi results object}
 
 \item{firth}{use firth penalty? Default is TRUE.}
 
@@ -33,6 +34,8 @@ by this percentage or less for 5 iterations in a row for both the alternative an
 \item{nstarts}{number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.}
 
 \item{h0_param}{the column index in covariate that has beta=zero under the null}
+
+\item{B}{number of bootstrap iterations}
 }
 \value{
 An object with pbLRT pvalues
