@@ -1,4 +1,4 @@
-#' parametric boostrap LRT implementation 
+#' Non parametric LRT aka permutation test
 #'
 #' @param firth use firth penalty? Default is TRUE.
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
@@ -10,16 +10,16 @@
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param happi_out a happi results object 
-#' @param B number of bootstrap iterations
+#' @param P number of permutation iterations
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
 #' @param seed numeric number to set seed for random multiple starts
 #'
-#' @return An object with pbLRT pvalues 
+#' @return An object with npLRT pvalues 
 #' @export
 #'
-pbLRT <- function(happi_out,
+npLRT <- function(happi_out,
                   max_iterations = 1000,
                   min_iterations = 15,
                   h0_param = 2,
@@ -30,25 +30,6 @@ pbLRT <- function(happi_out,
                   spline_df = 4, 
                   nstarts = 1, 
                   seed = 8,
-                  B = 1000){
-# Step 1: Estimate parameters for alternative and null models 
-# This function takes in penalized maximum likelihood estimates as input for 
-# alternative and null models 
- LL_alt <- tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
- LL_null<- tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
- 
-# Compute LRT test statistic using data and estimated parameters of alternative and null models 
- t.observed <- 2 * (LL_alt-LL_null)    
-
- BOOT <- rep(NA, B)
- for (j in 1:B) {
-   BOOT[j] <- doBoot(happi_results_boot = happi_out)
- }
- perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
- p.val <- perc.rank(t.observed, BOOT)
- return(p.val)
+                  P = 1000){
+  
 }
- 
- 
-
-
