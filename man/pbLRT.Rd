@@ -6,7 +6,7 @@
 \usage{
 pbLRT(
   happi_out,
-  max_iterations = 1000,
+  max_iterations = 3000,
   min_iterations = 15,
   h0_param = 2,
   change_threshold = 0.1,
@@ -15,7 +15,7 @@ pbLRT(
   firth = T,
   spline_df = 4,
   nstarts = 1,
-  seed = 8,
+  seed = 88,
   B = 1000
 )
 }
