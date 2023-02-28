@@ -31,5 +31,17 @@ npLRT <- function(happi_out,
                   nstarts = 1, 
                   seed = 8,
                   P = 1000){
+  dif <- vector(length = P)
+  set.seed(seed) # for reproducibility when we use the function sample() below
+  dat <- happi_out
+  random_rows <-sample(nrow(my_results$covariate))
+  my_results$covariate[random_rows,]
   
+  for (i in 1:length(dif)){
+    dat$group <- sample(my_results$covariate) # shuffle the group labels
+    # Compute the means for each group and then take the difference and store it
+    dif[i] <- diff(tapply(X = dat$extra, 
+                          INDEX = dat$group, 
+                          FUN = mean))
+  }
 }

@@ -21,7 +21,7 @@ doBoot <- function(happi_results_boot,
                    method = "splines", 
                    firth = T, 
                    spline_df = 4, 
-                   max_iterations = 1000,
+                   max_iterations = 3000,
                    min_iterations = 15, 
                    change_threshold = 0.1, 
                    epsilon = 0){
