@@ -42,7 +42,15 @@ pbLRT <- function(happi_out,
 
  BOOT <- rep(NA, B)
  for (j in 1:B) {
-   BOOT[j] <- doBoot(happi_results_boot = happi_out)
+   
+   check_test_stat <- doBoot(happi_results_boot = happi_out)
+   
+   if (is.numeric(check_test_stat)){
+     BOOT[j] <- check_test_stat
+   } else {
+     BOOT[j] <- NA
+   }
+   
  }
  perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
  p.val <- perc.rank(t.observed, BOOT)

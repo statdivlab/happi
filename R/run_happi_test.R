@@ -317,9 +317,14 @@ happi_test <- function(outcome,
         
 
         if (tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
-          message("Restarting to estimate beta_alt didn't work. Likelihood is still greater under the null than alt.")
+          message("Restarting to estimate beta_alt didn't work. Penalized likelihood is still greater under the null than alt.")
           # message(paste("Had not converged after", tt_restart - 1, "iterations; LL % change:", round(pct_change_llks, 3)))
         }
+        if (tail(bestOut$loglik$loglik_nopenalty[!is.na(bestOut$loglik$loglik_nopenalty)],1) < tail(bestOut_null$loglik$loglik_nopenalty[!is.na(bestOut_null$loglik$loglik_nopenalty)],1)) {
+          message("Weird! Nonpenalized Likelihood is also greater under the null than alt.")
+        } else {
+          message("Phew! Nonpenalized Likelihood is not greater under the null than alt.")
+          }
 } ## End restart if likelihood is greater under the null
     
     ###############################
