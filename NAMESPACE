@@ -3,6 +3,7 @@
 export("%>%")
 export(calculate_p)
 export(doBoot)
+export(doPerm)
 export(expit)
 export(genInits)
 export(genInits_f)

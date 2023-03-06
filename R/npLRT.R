@@ -14,7 +14,6 @@
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
-#' @param seed numeric number to set seed for random multiple starts
 #'
 #' @return An object with npLRT pvalues 
 #' @export
@@ -28,20 +27,33 @@ npLRT <- function(happi_out,
                   method = "splines",
                   firth = T,
                   spline_df = 4, 
-                  nstarts = 1, 
-                  seed = 8,
+                  nstarts = 1,
                   P = 1000){
-  dif <- vector(length = P)
-  set.seed(seed) # for reproducibility when we use the function sample() below
-  dat <- happi_out
-  random_rows <-sample(nrow(my_results$covariate))
-  my_results$covariate[random_rows,]
+  LL_alt <- tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
+  LL_null<- tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
   
-  for (i in 1:length(dif)){
-    dat$group <- sample(my_results$covariate) # shuffle the group labels
-    # Compute the means for each group and then take the difference and store it
-    dif[i] <- diff(tapply(X = dat$extra, 
-                          INDEX = dat$group, 
-                          FUN = mean))
-  }
+  # Compute LRT test statistic using data and estimated parameters of alternative and null models 
+  t.observed <- 2 * (LL_alt-LL_null)    
+  
+  my_results_obj <- happi_out 
+  PERM <- rep(NA, P)
+
+  for (i in 1:P){
+    # Compute the model 
+    check_test_stat <- doPerm(happi_results_perm = my_results_obj)
+    
+    if (is.numeric(check_test_stat)){
+      PERM[i] <- check_test_stat
+    } else {
+      PERM[i] <- NA
+    }
+  
+  } # end PERM loop 
+  
+  perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
+  p.val <- perc.rank(t.observed, PERM)
+  return(p.val)
 }
+
+
+

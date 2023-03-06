@@ -15,7 +15,6 @@ pbLRT(
   firth = T,
   spline_df = 4,
   nstarts = 1,
-  seed = 88,
   B = 1000
 )
 }
@@ -42,8 +41,6 @@ argument spline_df; "isotone" for isotonic regression fit}
 monotone spline fit; default 3}
 
 \item{nstarts}{number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.}
-
-\item{seed}{numeric number to set seed for random multiple starts}
 
 \item{B}{number of bootstrap iterations}
 }

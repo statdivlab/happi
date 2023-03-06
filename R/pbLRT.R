@@ -14,7 +14,6 @@
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
-#' @param seed numeric number to set seed for random multiple starts
 #'
 #' @return An object with pbLRT pvalues 
 #' @export
@@ -29,7 +28,6 @@ pbLRT <- function(happi_out,
                   firth = T,
                   spline_df = 4, 
                   nstarts = 1, 
-                  seed = 88,
                   B = 1000){
 # Step 1: Estimate parameters for alternative and null models 
 # This function takes in penalized maximum likelihood estimates as input for 
