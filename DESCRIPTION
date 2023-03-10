@@ -1,7 +1,7 @@
 Package: happi
 Type: Package
 Title: a hierarchical approach to pangenomics inference
-Version: 0.8.3
+Version: 0.8.4
 Authors@R: as.person(c(
     "Amy Willis <adwillis@uw.edu> [aut, cre]",
     "Pauline Trinh [aut]",
