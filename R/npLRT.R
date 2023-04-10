@@ -26,7 +26,7 @@ npLRT <- function(happi_out,
                   epsilon = 0,
                   method = "splines",
                   firth = T,
-                  spline_df = 4, 
+                  spline_df = 3, 
                   nstarts = 1,
                   P = 1000){
   LL_alt <- tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
@@ -40,7 +40,15 @@ npLRT <- function(happi_out,
 
   for (i in 1:P){
     # Compute the model 
-    check_test_stat <- doPerm(happi_results_perm = my_results_obj)
+    check_test_stat <- doPerm(happi_results_perm = my_results_obj, 
+                              spline_df = spline_df, 
+                              max_iterations = max_iterations, 
+                              h0_param = h0_param, 
+                              epsilon = epsilon, 
+                              min_iterations = min_iterations, 
+                              change_threshold = change_threshold, 
+                              method = method, 
+                              firth = firth)
     
     if (is.numeric(check_test_stat)){
       PERM[i] <- check_test_stat

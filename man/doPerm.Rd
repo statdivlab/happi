@@ -9,8 +9,8 @@ doPerm(
   h0_param = 2,
   method = "splines",
   firth = T,
-  spline_df = 4,
-  max_iterations = 3000,
+  spline_df = 3,
+  max_iterations = 1000,
   min_iterations = 15,
   change_threshold = 0.1,
   epsilon = 0

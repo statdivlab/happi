@@ -7,7 +7,7 @@
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
-#' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
+#' @param change_threshold aalgorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit

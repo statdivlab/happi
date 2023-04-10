@@ -26,7 +26,7 @@ pbLRT <- function(happi_out,
                   epsilon = 0,
                   method = "splines",
                   firth = T,
-                  spline_df = 4, 
+                  spline_df = 3, 
                   nstarts = 1, 
                   B = 1000){
 # Step 1: Estimate parameters for alternative and null models 

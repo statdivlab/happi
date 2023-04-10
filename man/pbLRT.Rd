@@ -13,7 +13,7 @@ pbLRT(
   epsilon = 0,
   method = "splines",
   firth = T,
-  spline_df = 4,
+  spline_df = 3,
   nstarts = 1,
   B = 1000
 )
