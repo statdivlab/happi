@@ -35,9 +35,9 @@ Before going through this vignette you'll need to make sure that you've installe
 To install `happi`, you'll need to check that you've installed `devtools` first. The following script checks that `devtools` is installed and if it's not, your system will install `devtools`. We'll then use `devtools` to install `happi` along with all its required dependencies (if they aren't already installed) such as `isotone`,`logistf`, and `tibble`. 
 
 ```{r, eval = FALSE}
-if (!require("devtools", quietly = TRUE))
-    install.packages("devtools") # check that devtools is installed
-devtools::install_github("statdivlab/happi", dependencies = TRUE) # install dependencies for happi
+if (!require("remotes", quietly = TRUE))
+    install.packages("remotes") # check that devtools is installed
+remotes::install_github("statdivlab/happi", dependencies = TRUE) # install dependencies for happi
 library(happi)
 ```
 
@@ -114,18 +114,18 @@ Recall though, we were concerned about conflating of this difference in gene det
 
 ```{r}
 x_matrix <- model.matrix(~tongue, data = Mem) # create design matrix
-set.seed(55)
+set.seed(5)
 happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
         covariate=x_matrix, 
         quality_var=Mem$mean_coverage,
-        max_iterations=100, 
-        change_threshold=0.01,
+        max_iterations=1000, 
+        change_threshold=0.1,
         epsilon=0, 
         nstarts = 1)
 
 tail(happi_results$loglik$pvalue[!is.na(happi_results$loglik$pvalue)],1)
 ```
-Using `happi` we see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009211437) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
+Using `happi` we see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009642293) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
 

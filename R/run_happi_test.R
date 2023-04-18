@@ -28,13 +28,14 @@
 #' @return An object of class \code{happi}.
 #'
 #' @export
+
 happi_test <- function(outcome,
                   covariate,
                   quality_var,
-                  max_iterations = 50,
+                  max_iterations = 1000,
                   min_iterations = 15,
                   h0_param = 2,
-                  change_threshold = 0.05,
+                  change_threshold = 0.1,
                   epsilon = 0,
                   method = "splines",
                   random_starts = FALSE,

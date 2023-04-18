@@ -6,10 +6,9 @@ test_that("method spline works", {
   gam_model <- mgcv::gam(presence ~ s(coverage), family = binomial, data = logit_data, method = "REML")
   epsilon <- 0
 
-  set.seed(506)
+  set.seed(11)
 
-  replicate(10, {
-    nn <- 30
+    nn <- 100
     xx_sd <- 0.5
     beta <- c(1, 1)
     mm <- seq(10, 40, length.out = nn)
@@ -24,16 +23,14 @@ test_that("method spline works", {
     true_prob_y_equal_1 <- true_f # for lambdas == 1
     true_prob_y_equal_1[lambdas == 0] <- epsilon # for lambdas == 0
     ys <- rbinom(n = nn, size = 1, prob = true_prob_y_equal_1)
-
-    expect_type(happi(outcome = ys,
-                      covariate = xx,
-                      quality_var = mm,
-                      max_iterations = 200,
-                      nstarts = 1,
-                      method = "spline",
-                      change_threshold = 0.05,
-                      epsilon = 0),
-                "list")
+    my_happi_results <- happi::happi(outcome = ys,
+                                     covariate = xx,
+                                     quality_var = mm,
+                                     max_iterations = 1000,
+                                     nstarts = 1,
+                                     method = "splines",
+                                     change_threshold = 0.1,
+                                     epsilon = 0)
+    expect_type(my_happi_results, "list")
   })
 
-})

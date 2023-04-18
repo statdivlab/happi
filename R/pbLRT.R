@@ -32,8 +32,8 @@ pbLRT <- function(happi_out,
 # Step 1: Estimate parameters for alternative and null models 
 # This function takes in penalized maximum likelihood estimates as input for 
 # alternative and null models 
- LL_alt <- tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
- LL_null<- tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
+ LL_alt <- utils::tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
+ LL_null<- utils::tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
  
 # Compute LRT test statistic using data and estimated parameters of alternative and null models 
  t.observed <- 2 * (LL_alt-LL_null)    

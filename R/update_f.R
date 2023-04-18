@@ -11,31 +11,14 @@
 #'
 #' @return vector of estimated f's 
 #'
-#' @examples
-#' data("TM7_data")
-#' # create design matrix
-#' covariate <- model.matrix(~tongue, data = TM7_data) 
-#' outcome <- TM7_data$`Ribosomal protein L27`
-#' quality_var <- TM7_data$mean_coverage
-#' spline_df <- 3 
-#' nn <- length(outcome)
-#' probs <- rep(0.5,nn)
-#' 
-#' my_updated_f <- update_f(probs = probs, 
-#' tuning_param = 50, 
-#' method = "splines", 
-#' spline_df = spline_df, 
-#' outcome = outcome, 
-#' nn = nn, 
-#' quality_var = quality_var)
 #' @export
 update_f <- function(probs,
                      tuning_param = 50,
-                     method = "splines",
-                     spline_df = spline_df, 
-                     outcome = outcome, 
+                     method,
+                     spline_df, 
+                     outcome, 
                      nn = nn, 
-                     quality_var = quality_var, 
+                     quality_var, 
                      tt = tt) {
   
   if(method == "isotone") {

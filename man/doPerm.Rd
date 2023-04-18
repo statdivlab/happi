@@ -7,13 +7,13 @@
 doPerm(
   happi_results_perm,
   h0_param = 2,
-  method = "splines",
-  firth = T,
-  spline_df = 3,
+  method,
+  firth,
+  spline_df,
   max_iterations = 1000,
   min_iterations = 15,
   change_threshold = 0.1,
-  epsilon = 0
+  epsilon
 )
 }
 \arguments{

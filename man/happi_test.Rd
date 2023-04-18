@@ -8,10 +8,10 @@ happi_test(
   outcome,
   covariate,
   quality_var,
-  max_iterations = 50,
+  max_iterations = 1000,
   min_iterations = 15,
   h0_param = 2,
-  change_threshold = 0.05,
+  change_threshold = 0.1,
   epsilon = 0,
   method = "splines",
   random_starts = FALSE,
@@ -34,7 +34,7 @@ happi_test(
 
 \item{h0_param}{the column index in covariate that has beta=zero under the null}
 
-\item{change_threshold}{algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
+\item{change_threshold}{aalgorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
 
 \item{epsilon}{probability of observing a gene when it should be absent; probability between 0 and 1}
 

@@ -25,18 +25,17 @@
 #' 
 #' @return An object of class \code{happi}.
 #' @export
-#'
  
-run_em <- function(outcome = outcome,
-                   quality_var = quality_var, 
+run_em <- function(outcome  =  outcome,
+                   quality_var  =  quality_var, 
                    change_threshold = change_threshold,
-                   max_iterations = max_iterations,
-                   min_iterations = min_iterations,
+                   max_iterations =  max_iterations,
+                   min_iterations =  min_iterations,
                    epsilon = epsilon,
                    method = method,
                    firth = firth,
                    spline_df = spline_df, 
-                   nn = nn, 
+                   nn  = nn, 
                    em_covariate = NULL,
                    em_estimates = NULL,
                    em_estimated_beta  = NULL,
@@ -53,12 +52,12 @@ run_em <- function(outcome = outcome,
     
     tt <- tt + 1
     
-    em_estimated_beta[tt, ] <- update_beta(probs=em_estimated_p[tt - 1, ],
+    em_estimated_beta[tt, ] <- happi::update_beta(probs=em_estimated_p[tt - 1, ],
                                            covariate=em_covariate,
                                            firth = firth)
     em_fitted_xbeta[tt, ] <- c(em_covariate %*% em_estimated_beta[tt, ])
     
-    updated_f <- update_f(probs=em_estimated_p[tt - 1, ],
+    updated_f <- happi::update_f(probs=em_estimated_p[tt - 1, ],
                           method = method,
                           spline_df = spline_df, 
                           outcome = outcome, 
@@ -68,21 +67,21 @@ run_em <- function(outcome = outcome,
     em_estimated_ftilde[tt, ] <- updated_f$fitted_f_tilde
     em_estimated_basis_weights[tt, ] <- updated_f$basis_weights
     
-    em_estimated_f[tt, ] <- expit(em_estimated_ftilde[tt, ])
+    em_estimated_f[tt, ] <- happi::expit(em_estimated_ftilde[tt, ])
     
-    em_estimated_p[tt, ] <- calculate_p(xbeta=em_fitted_xbeta[tt, ], 
+    em_estimated_p[tt, ] <- happi::calculate_p(xbeta=em_fitted_xbeta[tt, ], 
                                         ff=em_estimated_f[tt, ], 
                                         epsilon = epsilon, 
                                         outcome = outcome)
     
-    em_estimates[tt, "loglik"] <- incomplete_loglik(xbeta = em_fitted_xbeta[tt, ],
+    em_estimates[tt, "loglik"] <- happi::incomplete_loglik(xbeta = em_fitted_xbeta[tt, ],
                                                     ff = em_estimated_f[tt, ],
                                                     firth = firth, 
                                                     outcome = outcome, 
                                                     epsilon = epsilon, 
                                                     covariate = em_covariate)
     
-    em_estimates[tt, "loglik_nopenalty"] <- incomplete_loglik(xbeta = em_fitted_xbeta[tt, ],
+    em_estimates[tt, "loglik_nopenalty"] <- happi::incomplete_loglik(xbeta = em_fitted_xbeta[tt, ],
                                                     ff = em_estimated_f[tt, ],
                                                     firth = F, 
                                                     outcome = outcome, 
@@ -97,7 +96,7 @@ run_em <- function(outcome = outcome,
       if(all(!keep_going)){
         message(paste("Model converged after", tt, "iterations; LL % change:", round(tail(pct_change_llks,1), 3)))
         keep_going <- FALSE 
-        check_updated_f <- warningcheck_update_f(probs=em_estimated_p[tt - 1, ],
+        check_updated_f <- happi::warningcheck_update_f(probs=em_estimated_p[tt - 1, ],
                                                  method = method,
                                                  spline_df = spline_df, 
                                                  quality_var = quality_var, 

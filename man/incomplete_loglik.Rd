@@ -32,21 +32,3 @@ incomplete log-likelihood value
 \description{
 Function for calculating incomplete log likelihood
 }
-\examples{
-data("TM7_data")
-# create design matrix
-covariate <- model.matrix(~tongue, data = TM7_data) 
-outcome <- TM7_data$`Ribosomal protein L27`
-beta <- c(0.1,0.03)
-my_xbeta <- covariate \%*\% beta
-nn <- length(outcome) 
-my_ff <- rep(mean(outcome), nn)
-
-my_incomplete_LL <- incomplete_loglik(xbeta = my_xbeta, 
-ff = my_ff, 
-firth = TRUE, 
-outcome = outcome, 
-epsilon = 0, 
-covariate = covariate)
-
-}

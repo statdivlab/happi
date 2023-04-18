@@ -9,12 +9,12 @@ npLRT(
   max_iterations = 1000,
   min_iterations = 15,
   h0_param = 2,
-  change_threshold = 0.1,
-  epsilon = 0,
-  method = "splines",
-  firth = T,
-  spline_df = 3,
-  nstarts = 1,
+  change_threshold,
+  epsilon,
+  method,
+  firth,
+  spline_df,
+  nstarts,
   P = 1000
 )
 }

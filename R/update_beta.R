@@ -6,14 +6,6 @@
 #'
 #' @return vector of estimated betas
 #'
-#' @examples
-#' data("TM7_data")
-#' # create design matrix
-#' covariate <- model.matrix(~tongue, data = TM7_data) 
-#' outcome <- TM7_data$`Ribosomal protein L27`
-#' nn <- length(outcome)
-#' probs <- rep(0.5,nn)
-#' my_beta <- update_beta(probs = probs, covariate = covariate, firth = TRUE)
 #' @export
 update_beta <- function(probs, covariate, firth = TRUE) {
   

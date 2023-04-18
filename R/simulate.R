@@ -18,7 +18,7 @@ simulate_b <- function(happi_results_sims,
   covariate_null <- covariate[, -h0_param]
   if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=length(covariate_null))
   
-  lambda_props <- expit(covariate_null %*% beta_null)
+  lambda_props <- happi::expit(covariate_null %*% beta_null)
   colnames(lambda_props) <- c("lambda_props")
   my_table <- cbind(f_null,quality_var,lambda_props,covariate) %>% as.data.frame()
   # Draw from a Bernoulli distribution with p = lambda_props 

@@ -26,7 +26,7 @@ doBoot <- function(happi_results_boot,
                    change_threshold = 0.1, 
                    epsilon = 0){
   
-  newData <- simulate_b(happi_results_sims = happi_results_boot)
+  newData <- happi::simulate_b(happi_results_sims = happi_results_boot)
   
   happi_boot_out  <- happi::happi_test(outcome=newData$Y, 
                               covariate=happi_results_boot$covariate, 

@@ -17,20 +17,19 @@
 #'
 #' @return An object with npLRT pvalues 
 #' @export
-#'
 npLRT <- function(happi_out,
                   max_iterations = 1000,
                   min_iterations = 15,
                   h0_param = 2,
-                  change_threshold = 0.1,
-                  epsilon = 0,
-                  method = "splines",
-                  firth = T,
-                  spline_df = 3, 
-                  nstarts = 1,
+                  change_threshold,
+                  epsilon,
+                  method,
+                  firth,
+                  spline_df, 
+                  nstarts,
                   P = 1000){
-  LL_alt <- tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
-  LL_null<- tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
+  LL_alt <- utils::tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
+  LL_null<- utils::tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
   
   # Compute LRT test statistic using data and estimated parameters of alternative and null models 
   t.observed <- 2 * (LL_alt-LL_null)    
@@ -40,7 +39,7 @@ npLRT <- function(happi_out,
 
   for (i in 1:P){
     # Compute the model 
-    check_test_stat <- doPerm(happi_results_perm = my_results_obj, 
+    check_test_stat <- happi::doPerm(happi_results_perm = my_results_obj, 
                               spline_df = spline_df, 
                               max_iterations = max_iterations, 
                               h0_param = h0_param, 
