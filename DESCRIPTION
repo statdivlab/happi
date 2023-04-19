@@ -1,7 +1,7 @@
 Package: happi
 Type: Package
 Title: a hierarchical approach to pangenomics inference
-Version: 0.1.0
+Version: 0.8.6
 Authors@R: as.person(c(
     "Amy Willis <adwillis@uw.edu> [aut, cre]",
     "Pauline Trinh [aut]",
@@ -24,7 +24,7 @@ Suggests:
     knitr,
     testthat (>= 3.0.0)
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Imports: 
