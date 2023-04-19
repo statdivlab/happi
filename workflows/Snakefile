@@ -5,14 +5,14 @@ rule run_happi:
         quality_var = 'quality_var.txt',
         covariate = 'covariate.txt',
     params:
-        min_iterations = '15',
-        max_iterations = '1000',
+        min_iterations = 15,
+        max_iterations = 1000,
         method = 'splines',
         firth = 'TRUE',
-        spline_df = '3',
+        spline_df = 3,
         perm = 'FALSE',
-        nstarts = '1',
-        seed = '13',
+        nstarts = 1,
+        seed = 8,
     output:
         data = 'my_pvalues.csv',
     shell:
