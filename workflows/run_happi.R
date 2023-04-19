@@ -1,21 +1,33 @@
 #!/usr/bin/env Rscript
-args = commandArgs(trailingOnly=TRUE)
-# test if there is at least one argument: if not, return an error
-if (length(args)!=2) {
-  stop("NOPE! Bad args. ARGH!", call.=FALSE)
-} else {
-  input_1 = as.numeric(args[1])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-  input_2 = as.numeric(args[2])
-}
+# libraries
+if (!require("argparse", quietly = TRUE))
+  install.packages("argparse") # check that argparse is installed
+library(argparse)
 
+# parse data
+parser <- ArgumentParser(description= 'This is a workflow for running happi')
+parser$add_argument('--input', '-i', help= 'Input file')
+parser$add_argument('--output', '-o', help= 'Output file')
+parser$add_argument('--quality_var', '-q', help= 'Quality variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+parser$add_argument('--myFactor', '-f', help= 'Imported variable', type= 'double')
+
+xargs<- parser$parse_args()
+# process data
+dat <- readRDS(xargs$input)
+importedFactor <- xargs$myFactor
+out <- dat*importedFactor
+
+# output data
+write.table(out, xargs$output)
 
 happi_out <- happi(outcome = ys,
                    covariate = xx,

@@ -1,25 +1,31 @@
 rule run_happi:
-  input:
-    script = "run_happi.R"
-    data = "my_data.txt"
-    quality_var = "quality_var.txt"
-    covariate = "covariate.txt"
-    min_iterations = "15"
-    max_iterations = "1000"
-    method = "splines"
-    firth = "TRUE"
-    spline_df = "3"
-
-  output:
-    data = "my_pvalues.csv"
-  shell:
-    "Rscript {input.script} \
-    --data {input.data} \
-    --out {output.data} \
-    --quality_var = {input.quality_var} \
-    --covariate = {input.covariate} \
-    --min_iterations = {input.min_iterations} \
-    --max_iterations = {input.max_iterations} \
-    --method = {input.method} \
-    --firth = {input.firth} \
-    --spline_df = {input.spline_df}"
+    input:
+        script = 'run_happi.R',
+        data = 'my_data.txt',
+        quality_var = 'quality_var.txt',
+        covariate = 'covariate.txt',
+    params:
+        min_iterations = '15',
+        max_iterations = '1000',
+        method = 'splines',
+        firth = 'TRUE',
+        spline_df = '3',
+        perm = 'FALSE',
+        nstarts = '1',
+        seed = '13',
+    output:
+        data = 'my_pvalues.csv',
+    shell:
+        "Rscript {input.script} \
+        --data {input.data} \
+        --out {output.data} \
+        --quality_var = {input.quality_var} \
+        --covariate = {input.covariate} \
+        --min_iterations = {params.min_iterations} \
+        --max_iterations = {params.max_iterations} \
+        --method = {params.method} \
+        --firth = {params.firth} \
+        --spline_df = {params.spline_df} \
+        --perm = {params.perm} \
+        --nstarts = {params.nstarts} \
+        --seed = {params.seed}"
