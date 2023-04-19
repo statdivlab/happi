@@ -19,9 +19,16 @@ library(happi)
 ```
 
 ## Usage 
-The vignettes provide examples of how to use `happi` and all its main functions. You can follow the vignettes by running the following code in `R`: 
+The vignettes provide examples of how to use `happi` and all its main
+functions through the `R` interactive session. You can follow the vignettes by running the following code in
+`R`:
 ```
 utils::browseVignettes(package = "happi")
+```
+An example snakemake workflow of `happi`'s usage has been made available under the `workflows/` folder of this github directory. To run the example workflow: 
+
+```
+snakemake -s Snakefile --cores 1
 ```
 
 ## Citation 
