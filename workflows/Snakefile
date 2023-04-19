@@ -1,10 +1,11 @@
 rule run_happi:
     input:
         script = 'run_happi.R',
-        data = 'my_data.txt',
-        quality_var = 'quality_var.txt',
-        covariate = 'covariate.txt',
+        data = '',
     params:
+        outcome = '',
+        quality_var = '',
+        covariate = '',
         min_iterations = 15,
         max_iterations = 1000,
         method = 'splines',
@@ -14,15 +15,16 @@ rule run_happi:
         nstarts = 1,
         seed = 8,
     output:
-        data = 'my_pvalues.csv',
+        data = 'my_results.csv',
     shell:
         "Rscript {input.script} \
-        --data {input.data} \
-        --out {output.data} \
-        --quality_var = {input.quality_var} \
-        --covariate = {input.covariate} \
-        --min_iterations = {params.min_iterations} \
-        --max_iterations = {params.max_iterations} \
+        --input {input.data} \
+        --output {output.data} \
+        --outcome {params.outcome} \
+        --quality_var = {params.quality_var} \
+        --covariate = {params.covariate} \
+        --minit = {params.min_iterations} \
+        --maxit = {params.max_iterations} \
         --method = {params.method} \
         --firth = {params.firth} \
         --spline_df = {params.spline_df} \

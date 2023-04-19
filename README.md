@@ -1,31 +1,37 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-`happi`: <span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
+<span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
 **Ap**proach to **P**angenomics **I**nference</span>
 
-`happi` is an `R` package for modeling gene presence that accounts for differences in genome quality. 
+`happi` is an `R` package for modeling gene presence.
 
 ## Installation
 
-    if (!require("remotes", quietly = TRUE))
-        install.packages("remotes") # check that remotes is installed
-    remotes::install_github("statdivlab/happi", build_vignettes = TRUE) # install happi using remotes and build vignettes
+    if (!require("devtools", quietly = TRUE))
+        install.packages("devtools") # check that devtools is installed
+    devtools::install_github("statdivlab/happi", build_vignettes = TRUE) # install happi using devtools
     library(happi)
 
 ## Usage
 
 The vignettes provide examples of how to use `happi` and all its main
-functions. You can follow the vignettes by running the following code in
-`R`:
+functions through the `R` interactive session. You can follow the
+vignettes by running the following code in `R`:
 
     utils::browseVignettes(package = "happi")
+
+An example snakemake workflow of `happi`’s usage has been made available
+under the `workflows/` folder of this github directory. To run the
+example workflow:
+
+    snakemake -s Snakefile --cores 1
 
 ## Citation
 
 If you use `happi` please cite our work:
 
-An open-access preprint is available [here](https://www.biorxiv.org/content/10.1101/2022.04.26.489591v1).
+An open-access preprint is available here.
 
 ## Issues/Requests
 
