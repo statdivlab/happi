@@ -121,11 +121,31 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         max_iterations=1000, 
         change_threshold=0.1,
         epsilon=0, 
-        nstarts = 1)
+        nstarts = 1, 
+        spline_df = 3)
 
 tail(happi_results$loglik$pvalue[!is.na(happi_results$loglik$pvalue)],1)
+
 ```
-Using `happi` we see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.009642293) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
+By default, the hypothesis testing approach used by `happi` is a likelihood ratio test assuming a chi-sq distribution for the test statistic. We have found that this assumption  holds in settings with larger sample sizes (n > 100) and for situations where the sample size is more modest we recommend the use of `happi`'s nonparametric permutation testing approach. 
+
+To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. 
+
+```{r}
+
+perm_test_result <- npLRT(happi_results, 
+                          P = 500, 
+                          change_threshold = 0.1, 
+                          spline_df = 3, 
+                          nstarts = 1, 
+                          max_iterations = 1000, 
+                          epsilon = 0, 
+                          firth = T, 
+                          method = "splines")
+```
+
+Using `happi` we see that there is still a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites, however the p-value is larger (p = 0.04790419) than the p-value we got when we didn't account for genome quality (p = 0.006370813). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
+
 
