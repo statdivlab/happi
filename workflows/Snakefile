@@ -2,8 +2,8 @@ rule run_happi:
     input:
         script = 'run_happi.R',
         data = '',
+        metadata = '',
     params:
-        outcome = '',
         quality_var = '',
         covariate = '',
         min_iterations = 15,
@@ -12,22 +12,30 @@ rule run_happi:
         firth = 'TRUE',
         spline_df = 3,
         perm = 'FALSE',
+        num_perm = 1000,
         nstarts = 1,
         seed = 8,
+        epsilon = 0,
+        change_threshold = 0.1,
+        cores = 4,
     output:
-        data = 'my_results.csv',
+        data = 'my_results.tsv',
     shell:
         "Rscript {input.script} \
         --input {input.data} \
+        --metadata {input.metadata} \
         --output {output.data} \
-        --outcome {params.outcome} \
         --quality_var = {params.quality_var} \
         --covariate = {params.covariate} \
+        --epsilon = {params.epsilon} \
         --minit = {params.min_iterations} \
         --maxit = {params.max_iterations} \
         --method = {params.method} \
         --firth = {params.firth} \
         --spline_df = {params.spline_df} \
         --perm = {params.perm} \
+        --num_perm = {params.num_perm} \
         --nstarts = {params.nstarts} \
-        --seed = {params.seed}"
+        --seed = {params.seed} \
+        --change_threshold = {params.change_threshold} \
+        --cores = {params.cores}"
