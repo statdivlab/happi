@@ -25,10 +25,24 @@ functions through the `R` interactive session. You can follow the vignettes by r
 ```
 utils::browseVignettes(package = "happi")
 ```
-An example snakemake workflow of `happi`'s usage has been made available under the `workflows/` folder of this github directory. To run the example workflow: 
+An example snakemake workflow of `happi`'s usage has been made available under the `workflows/` folder of this github directory. To run the example workflow you'll need to install snakemake. We recommend creating a conda environment with your snakemake installation: 
 
 ```
-snakemake -s Snakefile --cores 1
+conda install -n base -c conda-forge mamba
+conda activate base
+mamba create -c conda-forge -c bioconda -n snakemake snakemake
+```
+
+You can activate your snakemake conda environment and check it: 
+```
+conda activate snakemake
+snakemake --help
+```
+
+Once your snakemake has been installed in a conda environment and activated you can navigate to the `workflows/` folder and run the following to execute the workflow: 
+
+```
+snakemake -s Snakefile --cores 6
 ```
 
 ## Citation 
