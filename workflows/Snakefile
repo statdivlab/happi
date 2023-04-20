@@ -19,7 +19,7 @@ rule run_happi:
         change_threshold = 0.1,
         cores = 6,
     output:
-        data = 'my_happi_results.txt',
+        data = 'my_happi_results.csv',
     shell:
         "Rscript {input.script} \
         --input {input.data} \
