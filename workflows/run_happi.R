@@ -76,6 +76,7 @@ parser$add_argument('--cores', '-t', help= 'number of cores', type= 'integer')
                                  nstarts = as.numeric(xargs$nstarts))
    npLRT_results <- happi::npLRT(happi_results, 
                           firth = T, 
+                          method = xargs$method,
                           spline_df = as.numeric(xargs$spline_df),
                           max_iterations = as.numeric(xargs$maxit), 
                           min_iterations = as.numeric(xargs$minit), 
@@ -101,6 +102,7 @@ parser$add_argument('--cores', '-t', help= 'number of cores', type= 'integer')
                                  nstarts = as.numeric(xargs$nstarts))
    npLRT_results <- happi::npLRT(happi_results, 
                           firth = F, 
+                          method = xargs$method,
                           spline_df = as.numeric(xargs$spline_df),
                           max_iterations = as.numeric(xargs$maxit), 
                           min_iterations = as.numeric(xargs$minit), 
@@ -143,32 +145,6 @@ parser$add_argument('--cores', '-t', help= 'number of cores', type= 'integer')
      return(happi_results)
   }
 
- 
- run_happi_parallel_perm_true_firth_true <- function(colnum) {
-     happi_results <- happi::happi(outcome=unlist(my_gene_parallel[,colnum]), 
-                                   covariate = x_matrix, 
-                                   quality_var =  my_metadata[,xargs$quality_var],
-                                   method = xargs$method,
-                                   firth = T, 
-                                   spline_df = as.numeric(xargs$spline_df),
-                                   max_iterations = as.numeric(xargs$maxit), 
-                                   min_iterations = as.numeric(xargs$minit), 
-                                   change_threshold = as.numeric(xargs$change_threshold), 
-                                   epsilon = as.numeric(xargs$epsilon), 
-                                   seed = as.numeric(xargs$seed), 
-                                   nstarts = as.numeric(xargs$nstarts))
-     npLRT_results <- happi::npLRT(happi_results, 
-                                   firth = T, 
-                                   spline_df = as.numeric(xargs$spline_df),
-                                   max_iterations = as.numeric(xargs$maxit), 
-                                   min_iterations = as.numeric(xargs$minit), 
-                                   change_threshold = as.numeric(xargs$change_threshold), 
-                                   epsilon = as.numeric(xargs$epsilon),
-                                   nstarts = as.numeric(xargs$nstarts), 
-                                   P = as.numeric(xargs$num_perm))
-     
-     return(npLRT_results)
-   }
  if (perm == "TRUE" & firth == "TRUE") {
    
   set.seed(as.numeric(xargs$seed))
