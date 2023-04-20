@@ -39,11 +39,13 @@ conda activate snakemake
 snakemake --help
 ```
 
-Once your snakemake has been installed in a conda environment and activated you can navigate to the `workflows/` folder and run the following to execute the workflow: 
+Once your snakemake has been installed in a conda environment and activated you can download the contest in the `workflows/` folder and run the following to execute the workflow from within the folder: 
 
 ```
-snakemake -s Snakefile --cores 6
+snakemake --cores 6
 ```
+
+The Snakefile is customizable for your own input data and parameters. Please refer to the sample data files that have been provided in `workflows` for formatting of your input data.
 
 ## Citation 
 If you use `happi` please cite our work: 
