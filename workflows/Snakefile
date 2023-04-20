@@ -1,41 +1,41 @@
 rule run_happi:
     input:
-        script = 'run_happi.R',
-        data = '',
-        metadata = '',
+        script = '/Users/paulinetrinh/Documents/GitHub/happi/workflows/run_happi.R',
+        data = '/Users/paulinetrinh/Documents/GitHub/happi/workflows/TM7_genes_presence_table.csv',
+        metadata = '/Users/paulinetrinh/Documents/GitHub/happi/workflows/TM7_metadata.csv',
     params:
-        quality_var = '',
-        covariate = '',
+        quality_var = 'mean_coverage',
+        covariate = 'tongue',
         min_iterations = 15,
         max_iterations = 1000,
         method = 'splines',
         firth = 'TRUE',
         spline_df = 3,
-        perm = 'FALSE',
-        num_perm = 1000,
+        perm = 'TRUE',
+        num_perm = 100,
         nstarts = 1,
         seed = 8,
         epsilon = 0,
         change_threshold = 0.1,
-        cores = 4,
+        cores = 6,
     output:
-        data = 'my_results.tsv',
+        data = 'my_happi_results.txt',
     shell:
         "Rscript {input.script} \
         --input {input.data} \
         --metadata {input.metadata} \
         --output {output.data} \
-        --quality_var = {params.quality_var} \
-        --covariate = {params.covariate} \
-        --epsilon = {params.epsilon} \
-        --minit = {params.min_iterations} \
-        --maxit = {params.max_iterations} \
-        --method = {params.method} \
-        --firth = {params.firth} \
-        --spline_df = {params.spline_df} \
-        --perm = {params.perm} \
-        --num_perm = {params.num_perm} \
-        --nstarts = {params.nstarts} \
-        --seed = {params.seed} \
-        --change_threshold = {params.change_threshold} \
-        --cores = {params.cores}"
+        --quality_var {params.quality_var} \
+        --covariate {params.covariate} \
+        --epsilon {params.epsilon} \
+        --minit {params.min_iterations} \
+        --maxit {params.max_iterations} \
+        --method {params.method} \
+        --firth {params.firth} \
+        --spline_df {params.spline_df} \
+        --perm {params.perm} \
+        --num_perm {params.num_perm} \
+        --nstarts {params.nstarts} \
+        --seed {params.seed} \
+        --change_threshold {params.change_threshold} \
+        --cores {params.cores}"

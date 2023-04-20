@@ -23,9 +23,18 @@ vignettes by running the following code in `R`:
 
 An example snakemake workflow of `happi`’s usage has been made available
 under the `workflows/` folder of this github directory. To run the
-example workflow:
+example workflow you’ll need to install snakemake:
 
-    snakemake -s Snakefile --cores 1
+    conda install -n base -c conda-forge mamba
+    conda activate base
+    mamba create -c conda-forge -c bioconda -n snakemake snakemake
+
+    conda activate snakemake
+
+Once your snakemake has been installed in a conda environment and
+activated you can run the following to execute the workflow:
+
+    snakemake -s Snakefile --cores 6
 
 ## Citation
 

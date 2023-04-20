@@ -1,0 +1,151 @@
+"gene","pvalue_happi"
+"Cellulase.cellobiase.CelA1","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Leucine.rich.repeat..LRR..protein","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Translation.elongation.factor.EF.4..membrane.bound.GTPase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Arginine.deiminase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Tfp.pilus.assembly.protein.PilE","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"DNA.directed.RNA.polymerase..beta..subunit.160.kD.subunit","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Isoleucyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"DNA.topoisomerase.IA","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Ribosomal.protein.L21","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"X5..3..exonuclease","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Translation.elongation.factor.EF.Tu..a.GTPase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Molecular.chaperone.DnaK..HSP70.","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Polyribonucleotide.nucleotidyltransferase..polynucleotide.phosphorylase.","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Cell.division.GTPase.FtsZ","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"UDP.N.acetylglucosamine.enolpyruvyl.transferase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Translation.initiation.factor.IF.2..a.GTPase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"DNA.polymerase.III..gamma.tau.subunits","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"DNA.primase..bacterial.type.","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"ATP.dependent.Zn.proteases","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Archaeal.DNA.helicase.HerA.or.a.related.bacterial.ATPase..contains.HAS.barrel.and.ATPase.domains","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Ribosome.binding.ATPase.YchF..GTP1.OBG.family","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Peptidoglycan.biosynthesis.protein.MviN.MurJ..putative.lipid.II.flippase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"X.p.ppGpp.synthase.hydrolase..HD.superfamily","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Replicative.DNA.helicase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"nanoRNase.pAp.phosphatase..hydrolyzes.c.di.AMP.and.oligoRNAs","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Preprotein.translocase.subunit.SecA..ATPase..RNA.helicase.","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"NAD.dependent.DNA.ligase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Transcription.antitermination.factor.NusG","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Methionyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Prolyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Leucyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Exonuclease.I","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Holliday.junction.resolvasome.RuvABC..ATP.dependent.DNA.helicase.subunit","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Alanyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Glutamyl..or.glutaminyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Predicted.membrane.GTPase.involved.in.stress.response","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Exonuclease.III","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Valyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Tfp.pilus.assembly.protein.PilT..pilus.retraction.ATPase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"RecA.RadA.recombinase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Type.IV.secretory.pathway..VirB4.component","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Type.II.secretory.pathway..component.PulF","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Ribosomal.protein.L6P.L9E","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Ribosomal.protein.S1","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Threonyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"DNA.gyrase.topoisomerase.IV..subunit.B","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"X5.10.methylene.tetrahydrofolate.dehydrogenase.Methenyl.tetrahydrofolate.cyclohydrolase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Cysteinyl.tRNA.synthetase","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"Conserved.DNA.binding.protein.YbaB..function.unknown.","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
+"ABC.type.ATPase.involved.in.cell.division","Error in happi::happi_test(outcome = my_results$outcome, covariate = my_perm_covariate,  : 
+  Full model could not be optimized! Try increasing the number of nstarts or simplifying your model.
+"
