@@ -88,7 +88,7 @@ run_em <- function(outcome  =  outcome,
                                                     epsilon = epsilon, 
                                                     covariate = em_covariate)
     
-    if ((tt > min_iterations) & (!is.na(em_estimates[tt, "loglik"]))) {
+    if ((tt > min_iterations) && (!is.na(em_estimates[tt, "loglik"]))) {
       
       pct_change_llks <- 100*abs((em_estimates[(tt - 4):tt, "loglik"] - em_estimates[(tt - 5):(tt - 1), "loglik"])/em_estimates[(tt - 5):(tt - 1), "loglik"])
       keep_going <- pct_change_llks > change_threshold # when this is all TRUE 
@@ -103,7 +103,7 @@ run_em <- function(outcome  =  outcome,
                                                  nn = nn, 
                                                  outcome = outcome, 
                                                  tt = tt)
-        } else if((tt == max_iterations) & keep_going) { # if we reach max_iterations and the model still has not converged then: 
+        } else if((tt == max_iterations) && keep_going) { # if we reach max_iterations and the model still has not converged then: 
           stop(paste("Model did not converge after", tt, "maximum number of iterations"))
          
         } else {

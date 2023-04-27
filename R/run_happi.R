@@ -27,10 +27,17 @@
 #'
 #' @return An object of class \code{happi}.
 #'
-#' @example 
+#' @examples
 #' data(TM7_data)
 #' x_matrix <- model.matrix(~tongue, data = TM7_data)
-#' happi()
+#' happi_results <- happi (outcome = TM7_data$`Cellulase/cellobiase CelA1`,
+#' covariate=x_matrix, 
+#' quality_var=TM7_data$mean_coverage,
+#' max_iterations=1000, 
+#' change_threshold=0.1,
+#' epsilon=0, 
+#' nstarts = 1, 
+#' spline_df = 3)
 #' @export
 happi <- function(outcome,
                        covariate,
@@ -256,7 +263,7 @@ happi <- function(outcome,
   ### If alternative LL is smaller than null:
   ## restart estimation of alternative model using the null model 
   #############################################
-  if (utils::tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
+  if (utils::tail(bestOut$loglik$loglik_nopenalty[!is.na(bestOut$loglik$loglik_nopenalty)],1) < tail(bestOut_null$loglik$loglik_nopenalty[!is.na(bestOut_null$loglik$loglik_nopenalty)],1)) {
     
     message("Likelihood greater under null; restarting...")
     my_estimates <- tibble::tibble("iteration" = 0:max_iterations,
