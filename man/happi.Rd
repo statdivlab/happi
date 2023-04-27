@@ -58,3 +58,15 @@ An object of class \code{happi}.
 \description{
 Main function for happi, p=q=1; this script contains the modularized version of happi with correct implementation of log likelihood
 }
+\examples{
+data(TM7_data)
+x_matrix <- model.matrix(~tongue, data = TM7_data)
+happi_results <- happi (outcome = TM7_data$`Cellulase/cellobiase CelA1`,
+covariate=x_matrix, 
+quality_var=TM7_data$mean_coverage,
+max_iterations=1000, 
+change_threshold=0.1,
+epsilon=0, 
+nstarts = 1, 
+spline_df = 3)
+}
