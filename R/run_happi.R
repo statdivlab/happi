@@ -256,7 +256,7 @@ happi <- function(outcome,
   ### If alternative LL is smaller than null:
   ## restart estimation of alternative model using the null model 
   #############################################
-  if (utils::tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
+  if (utils::tail(bestOut$loglik$loglik_nopenalty[!is.na(bestOut$loglik$loglik_nopenalty)],1) < tail(bestOut_null$loglik$loglik_nopenalty[!is.na(bestOut_null$loglik$loglik_nopenalty)],1)) {
     
     message("Likelihood greater under null; restarting...")
     my_estimates <- tibble::tibble("iteration" = 0:max_iterations,
