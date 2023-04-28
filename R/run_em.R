@@ -91,24 +91,24 @@ run_em <- function(outcome  =  outcome,
     if ((tt > min_iterations) && (!is.na(em_estimates[tt, "loglik"]))) {
       
       pct_change_llks <- 100*abs((em_estimates[(tt - 4):tt, "loglik"] - em_estimates[(tt - 5):(tt - 1), "loglik"])/em_estimates[(tt - 5):(tt - 1), "loglik"])
-      keep_going <- pct_change_llks > change_threshold # when this is all TRUE 
+      keep_going <- pct_change_llks > change_threshold # when this is all FALSE 
       
       if(all(!keep_going)){
         message(paste("Model converged after", tt, "iterations; LL % change:", round(tail(pct_change_llks,1), 3)))
         keep_going <- FALSE 
         check_updated_f <- happi::warningcheck_update_f(probs=em_estimated_p[tt - 1, ],
-                                                 method = method,
-                                                 spline_df = spline_df, 
-                                                 quality_var = quality_var, 
-                                                 nn = nn, 
-                                                 outcome = outcome, 
-                                                 tt = tt)
-        } else if((tt == max_iterations) && keep_going) { # if we reach max_iterations and the model still has not converged then: 
-          stop(paste("Model did not converge after", tt, "maximum number of iterations"))
-         
-        } else {
-          keep_going <- TRUE 
-        }
+                                                        method = method,
+                                                        spline_df = spline_df, 
+                                                        quality_var = quality_var, 
+                                                        nn = nn, 
+                                                        outcome = outcome, 
+                                                        tt = tt)
+      } else if ((tt == max_iterations) & all(!keep_going) == FALSE) { # if we reach max_iterations and the model still has not converged then: 
+        stop(paste("Model did not converge after", tt, "maximum number of iterations"))
+        
+      } else {
+        keep_going <- TRUE 
+      }
       
     } # END if - convergence of LL's 
     
