@@ -21,14 +21,14 @@ incomplete_loglik <- function(xbeta,
   prob_lambda <- expit(xbeta)
   ## PT TODO: remove redundancy of the LL calculation 
   if (!firth) {
-    sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
+    sum(log( (1 - epsilon[outcome == 0]) * (1 - prob_lambda[outcome == 0]) +
                (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
-      sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
+      sum(log(epsilon[outcome == 1] * (1 - prob_lambda[outcome == 1]) +
                 ff[outcome == 1] * prob_lambda[outcome == 1]))
   } else {
-    ll <-  sum(log( (1 - epsilon) * (1 - prob_lambda[outcome == 0]) +
+    ll <-  sum(log( (1 - epsilon[outcome == 0]) * (1 - prob_lambda[outcome == 0]) +
                       (1 - ff[outcome == 0]) * prob_lambda[outcome == 0])) +
-      sum(log(epsilon * (1 - prob_lambda[outcome == 1]) +
+      sum(log(epsilon[outcome == 1] * (1 - prob_lambda[outcome == 1]) +
                 ff[outcome == 1] * prob_lambda[outcome == 1]))
     penalty <- 0.5*msos::logdet(t(covariate) %*% diag(as.numeric(prob_lambda)*(
       1 - as.numeric(prob_lambda))) %*% covariate)
