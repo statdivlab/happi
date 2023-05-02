@@ -33,7 +33,7 @@ doPerm <- function(happi_results_perm,
   
   my_perm_covariate <- my_results$covariate[random_rows,] # shuffle the group labels
   
-  happi_perm_out <- happi::happi_test(outcome=my_results$outcome, 
+  happi_perm_out <- happi::happi(outcome=my_results$outcome, 
                     covariate=my_perm_covariate, 
                     quality_var=my_results$quality_var,
                     h0_param = h0_param, 
