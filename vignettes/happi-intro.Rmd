@@ -131,7 +131,7 @@ By default, the hypothesis testing approach used by `happi` is a likelihood rati
 
 To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified. 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 set.seed(22)
 perm_test_result <- npLRT(happi_results, 
                           P = 500, 
