@@ -34,7 +34,7 @@ happi(
 
 \item{h0_param}{the column index in covariate that has beta=zero under the null}
 
-\item{change_threshold}{aalgorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
+\item{change_threshold}{algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null}
 
 \item{epsilon}{probability of observing a gene when it should be absent; probability between 0 and 1; default is 0. Either a single value or a vector of length n.}
 
