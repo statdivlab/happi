@@ -2,10 +2,14 @@
 #'
 #' @param outcome length-n vector; this is the vector of a target gene's presence/absence; should be coded as 0 or 1
 #' @param covariate n x p matrix; this is the matrix for the primary predictor/covariate of interest
+#' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param quality_var length-n vector; this is the quality variable vector, currently p = 1  TODO(turn into n x q matrix)
+#' @param covariate_formula alternative to \code{covariate} argument, a formula for covariates of the form \eqn{~ covariate1 + covariate2 + ...}, requires \code{data} argument
+#' @param covariate_formula_h0 alternative to \code{h0_param} argument, a formula for covariates in the null model, takes the form \eqn{ ~ 1} for an intercept-only model, requires \code{data} argument
+#' @param quality_var_formula alternative to \code{quality_var} argument, a formula for quality variable of the form \eqn{~ quality_var}, requires \code{data} argument
+#' @param data required with \code{formula} arguments, a data frame including covariates and the quality variable
 #' @param max_iterations the maximum number of EM steps that the algorithm will run for
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
-#' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
 #' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1; default is 0. Either a single value or a vector of length n.  
@@ -40,32 +44,77 @@
 #' spline_df = 3)
 #' @export
 happi <- function(outcome,
-                  covariate,
-                  quality_var,
-                  max_iterations = 1000,
-                  min_iterations = 15,
-                  h0_param = 2,
-                  change_threshold = 0.05,
-                  epsilon = 0,
-                  method = "splines",
-                  random_starts = FALSE,
-                  firth = TRUE,
-                  spline_df = 3, 
-                  nstarts = 1, 
-                  seed = 13
+                            covariate = NULL,
+                            h0_param = 2,
+                            quality_var = NULL,
+                            covariate_formula = NULL, 
+                            covariate_formula_h0 = NULL,
+                            quality_var_formula = NULL, 
+                            data = NULL, 
+                            max_iterations = 1000,
+                            min_iterations = 15,
+                            change_threshold = 0.05,
+                            epsilon = 0,
+                            method = "splines",
+                            random_starts = FALSE,
+                            firth = TRUE,
+                            spline_df = 3, 
+                            nstarts = 1, 
+                            seed = 13
 ) {
   
-  # TODO(PT) take in formula
-  # TODO(PT) reduce redundancies i.e. calculation of ll 
-  
-  stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) # some missing data
-  
+  # number of observations 
   nn <- length(outcome)
   
-  stopifnot(nn == nrow(covariate) | nn == length(quality_var))
+  # check that all inputs are provided in either form 
+  if (is.null(covariate)) {
+    if (is.null(covariate_formula) | is.null(covariate_formula_h0) | 
+        is.null(quality_var_formula) | is.null(data)) {
+      stop("If using formulas, please include `covariate_formula`, `covariate_formula_h0`, `quality_val_formula`, and `data`.")
+    }
+  } else {
+    if (is.null(h0_param) | is.null(quality_var)) {
+      stop("If using covariate matrix, please also include `h0_param` and `quality_var`.")
+    }
+  }
   
-  pp <- ncol(covariate)
+  # make covariate matrices from formulas
+  if (!(is.null(covariate_formula))) {
+    if (nrow(data) != nn) {
+      stop("Make sure that `outcome` and `data` have the same number of rows.")
+    }
+    covariate <- stats::model.matrix(covariate_formula, data)
+    pp <- ncol(covariate)
+    covariate_null <- stats::model.matrix(covariate_formula_h0, data)
+    if ((pp - ncol(covariate_null)) > 1) {
+      stop("Currently happi cannot test multiple parameters at once.")
+    }
+    quality_var_mat <- stats::model.matrix(quality_var_formula, data)
+    # if quality variable matrix has intercept, just take column with quality variable
+    if (ncol(quality_var_mat) == 1) {
+      quality_var <- quality_var_mat
+    } else {
+      quality_var <- quality_var_mat[, -1]
+    }
+    # otherwise use covariate matrices provided   
+  } else {
+    if (nrow(covariate) != nn | length(quality_var) != nn) {
+      stop("Make sure that `outcome`, `covariate_data`, and `quality_variable` have the same number of observations.")
+    }
+    pp <- ncol(covariate)
+    if (pp == 1) {
+      covariate <- matrix(covariate, ncol = 1, nrow = nn)
+      covariate_null <- matrix(1, ncol = 1, nrow = nn)
+    } else {
+      covariate_null <- covariate[, -h0_param]
+    } 
+    if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
+  }
   
+  # stop if there is any missing data 
+  stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) 
+  
+  # check that epsilon is either a single value or a vector of length n
   if (length(epsilon) == 1) {
     epsilon_vec <- rep(epsilon, nn)
   } else if (length(epsilon == nn)) {
@@ -74,7 +123,6 @@ happi <- function(outcome,
     error("epsilon should be a single number or a length n vector.")
   }
   
-  #  if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
   #  if(h0_param != 2) warning("Amy hasn't properly checked that testing a different parameter results in sensible output")
   
   ## reorder all elements of all data by ordering in quality_var

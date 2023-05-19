@@ -11,7 +11,7 @@
 #' @param max_iterations the maximum number of EM steps that the algorithm will run for
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
-#' @param change_threshold aalgorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
+#' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1; default is 0. Either a single value or a vector of length n.  
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
@@ -34,7 +34,7 @@
 #' @examples 
 #' data(TM7_data)
 #' x_matrix <- model.matrix(~tongue, data = TM7_data)
-#' happi_results <- happi (outcome = TM7_data$`Cellulase/cellobiase CelA1`,
+#' happi_results <- happi_multi_cov(outcome = TM7_data$`Cellulase/cellobiase CelA1`,
 #' covariate=x_matrix, 
 #' quality_var=TM7_data$mean_coverage,
 #' max_iterations=1000, 
@@ -63,7 +63,8 @@ happi_multi_cov <- function(outcome,
                   seed = 13
 ) {
   
-  # TODO(PT) take in formula
+  # number of observations 
+  nn <- length(outcome)
   
   # check that all inputs are provided in either form 
   if (is.null(covariate)) {
@@ -79,19 +80,41 @@ happi_multi_cov <- function(outcome,
   
   # make covariate matrices from formulas
   if (!(is.null(covariate_formula))) {
-    
+    if (nrow(data) != nn) {
+      stop("Make sure that `outcome` and `data` have the same number of rows.")
+    }
+    covariate <- stats::model.matrix(covariate_formula, data)
+    pp <- ncol(covariate)
+    covariate_null <- stats::model.matrix(covariate_formula_h0, data)
+    if ((pp - ncol(covariate_null)) > 1) {
+      stop("Currently happi cannot test multiple parameters at once.")
+    }
+    quality_var_mat <- stats::model.matrix(quality_var_formula, data)
+    # if quality variable matrix has intercept, just take column with quality variable
+    if (ncol(quality_var_mat) == 1) {
+      quality_var <- quality_var_mat
+    } else {
+      quality_var <- quality_var_mat[, -1]
+    }
+  # otherwise use covariate matrices provided   
+  } else {
+    if (nrow(covariate) != nn | length(quality_var) != nn) {
+      stop("Make sure that `outcome`, `covariate_data`, and `quality_variable` have the same number of observations.")
+    }
+    pp <- ncol(covariate)
+    if (pp == 1) {
+      covariate <- matrix(covariate, ncol = 1, nrow = nn)
+      covariate_null <- matrix(1, ncol = 1, nrow = nn)
+    } else {
+      covariate_null <- covariate[, -h0_param]
+    } 
+    if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
   }
   
-  # TODO(PT) reduce redundancies i.e. calculation of ll 
+  # stop if there is any missing data 
+  stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) 
   
-  stopifnot(all(!is.na(c(outcome, covariate, quality_var)))) # some missing data
-  
-  nn <- length(outcome)
-  
-  stopifnot(nn == nrow(covariate) | nn == length(quality_var))
-  
-  pp <- ncol(covariate)
-  
+  # check that epsilon is either a single value or a vector of length n
   if (length(epsilon) == 1) {
     epsilon_vec <- rep(epsilon, nn)
   } else if (length(epsilon == nn)) {
@@ -100,7 +123,6 @@ happi_multi_cov <- function(outcome,
     error("epsilon should be a single number or a length n vector.")
   }
   
-  #  if (ncol(covariate) > 2) warning("Amy hasn't properly checked that multiple covariates result in sensible output")
   #  if(h0_param != 2) warning("Amy hasn't properly checked that testing a different parameter results in sensible output")
   
   ## reorder all elements of all data by ordering in quality_var
@@ -111,14 +133,7 @@ happi_multi_cov <- function(outcome,
   covariate <- covariate[my_order, ]
   epsilon_vec <- epsilon_vec[my_order]
   
-  if (pp == 1) {
-    covariate <- matrix(covariate, ncol = 1, nrow = nn)
-    covariate_null <- matrix(1, ncol = 1, nrow = nn)
-  } else {
-    covariate_null <- covariate[, -h0_param]
-  } #TODO(PT) take in formula 
-  if (!is.matrix(covariate_null)) covariate_null <- matrix(covariate_null, nrow=nn)
-  
+ 
   # generate beta initial starts for alternative model
   inits <- happi::genInits(num_covariate = pp, nstarts = nstarts, seed = seed)
   # generate beta initial starts for null model   
@@ -419,6 +434,4 @@ happi_multi_cov <- function(outcome,
               "quality_var" = quality_var,
               "outcome" = outcome,
               "covariate" = covariate))
-  
-  
 } 
