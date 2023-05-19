@@ -7,7 +7,7 @@
 #' @param min_iterations the minimum number of EM steps that the algorithm will run for
 #' @param h0_param the column index in covariate that has beta=zero under the null
 #' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
-#' @param change_threshold aalgorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
+#' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1; default is 0. Either a single value or a vector of length n.  
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
@@ -104,6 +104,11 @@ happi <- function(outcome,
   bestOut_null <- NULL
   
   ### Start for loop through multiple starts 
+  
+  # save information from each start
+  starts_df <- data.frame(starts = 1:nstarts,
+                          alt_ll = NA,
+                          null_ll = NA)
   
   for (i in 1:nstarts) {
     
@@ -236,6 +241,7 @@ happi <- function(outcome,
     ## If NOT NUlL then replace only if LL is better than what is currently in bestOut
     
     tryCatch(if(!is.na(tail(mlout$loglik$loglik[!is.na(mlout$loglik$loglik)],1))){ # check that not NA for alternative model
+      starts_df[i, "alt_ll"] <- tail(mlout$loglik$loglik[!is.na(mlout$loglik$loglik)],1)
       if (is.null(bestOut)) {
         bestOut <-  mlout
       } else if (!is.null(bestOut)){
@@ -254,6 +260,7 @@ happi <- function(outcome,
     ## If bestOut_null is NOT NUlL then replace only if LL is better than what is currently in bestOut_null
     
     tryCatch(if(!is.na(utils::tail(mlout_null$loglik$loglik[!is.na(mlout_null$loglik$loglik)],1))){ # check that not NA for null model 
+      starts_df[i, "null_ll"] <- tail(mlout_null$loglik$loglik[!is.na(mlout_null$loglik$loglik)],1)
       if (is.null(bestOut_null)) {
         bestOut_null <-  mlout_null
       } else if (!is.null(bestOut_null)){
@@ -392,7 +399,8 @@ happi <- function(outcome,
               "p_null" = my_estimated_p_null,
               "quality_var" = quality_var,
               "outcome" = outcome,
-              "covariate" = covariate))
+              "covariate" = covariate,
+              "starts_df" = starts_df))
   
   
 } 

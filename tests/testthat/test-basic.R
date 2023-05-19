@@ -42,8 +42,18 @@ test_that("happi runs", {
                        method = "splines",
                        nstarts = 1,
                        epsilon = 0)
+  
+  # check that the epsilon argument will take in either a single value or a vector of length n 
+  hh0_spline_mult_eps <- happi::happi(outcome = ys,
+                                      covariate = xx,
+                                      quality_var = mm,
+                                      max_iterations = 1000,
+                                      method = "splines",
+                                      nstarts = 1,
+                                      epsilon = rep(0, length(ys)))
 
   expect_type(hh0_isotone, "list")
   expect_type(hh0_spline, "list")
+  expect_equal(hh0_spline$loglik$pvalue, hh0_spline_mult_eps$loglik$pvalue)
 
 })
