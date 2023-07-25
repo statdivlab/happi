@@ -454,7 +454,7 @@ happi <- function(outcome,
                 "starts_df" = starts_df))
   } else {
     p_val <- tail(my_estimates$pvalue[!is.na(my_estimates$pvalue)], 1)
-    beta <- tail(my_estimated_beta[!is.na(my_estimated_beta)], 1)
+    beta <- tail(my_estimated_beta[!is.na(my_estimated_beta[, 1]), ], 1)
     LRT <- tail(my_estimates$LRT[!is.na(my_estimates$LRT)], 1)
     return(list(p_val = p_val, beta = beta, LRT = LRT))
   }
