@@ -1,8 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<span style="font-family:Arial; font-size:2em;"> a **H**ierarchical
-**Ap**proach to **P**angenomics **I**nference</span>
+<span style="font-family:Arial; font-size:4em;"> `happi`: a
+**H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
 
 ## What is `happi`?
 
@@ -100,11 +100,14 @@ The Snakefile is customizable for your own input data and parameters.
 Please refer to the sample data files that have been provided in
 `workflows` for formatting of your input data.
 
+## How do I export data from anvi’o for use in `happi`?
+
 ## Citation
 
 If you use `happi` please cite our work:
 
-An open-access preprint is available here.
+An open-access preprint is available
+[here](https://www.biorxiv.org/content/10.1101/2022.04.26.489591v1.full).
 
 ## Issues/Requests
 
