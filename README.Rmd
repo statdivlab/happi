@@ -5,7 +5,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-<span style="font-family:Arial; font-size:4em;"> `happi`: a **H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
+#`happi`: a **H**ierarchical **Ap**proach to **P**angenomics **I**nference
 
 ## What is `happi`?
 `happi` is a method for modeling gene presence in pangenomics that leverages information about genome quality to improve inference. `happi` models the association between an experimental condition and gene presence where the **experimental condition** is the **primary predictor** of interest and **gene presence** is the **outcome** while incorporating user-chosen information on genome quality metrics (e.g. mean coverage, contamination, completion, etc...). 

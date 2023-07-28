@@ -1,8 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<span style="font-family:Arial; font-size:4em;"> `happi`: a
-**H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
+# <span style="font-family:Arial; font-size:4em;"> `happi`: a **H**ierarchical **Ap**proach to **P**angenomics **I**nference</span>
 
 ## What is `happi`?
 
