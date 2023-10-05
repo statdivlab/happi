@@ -377,7 +377,7 @@ happi <- function(outcome,
                                                                     covariate = covariate,
                                                                     firth = F)
     ## restart at null model if likelihood greater under null than alternative
-    bestOut <- happi::run_em(outcome = outcome,
+    tryOut <- tryCatch(happi::run_em(outcome = outcome,
                              quality_var = quality_var,
                              max_iterations = max_iterations,
                              min_iterations = min_iterations,
@@ -394,8 +394,15 @@ happi <- function(outcome,
                              em_estimates = my_estimates,
                              em_estimated_beta  = my_estimated_beta,
                              em_estimated_basis_weights =  my_estimated_basis_weights,
-                             em_estimated_ftilde = my_estimated_ftilde)
+                             em_estimated_ftilde = my_estimated_ftilde), 
+                        error = function(e) {cat("WARNING alternative model E-M at null model estimates:", conditionMessage(e),"\n")}) 
     
+    if (!(is.null(tryOut))) {
+      # use tryOut as new bestOut if it has a higher likelihood value
+      if (utils::tail(tryOut$loglik$loglik[!is.na(tryOut$loglik$loglik)],1) > utils::tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
+        bestOut <- tryOut 
+      }
+    }
     
     if (utils::tail(bestOut$loglik$loglik[!is.na(bestOut$loglik$loglik)],1) < utils::tail(bestOut_null$loglik$loglik[!is.na(bestOut_null$loglik$loglik)],1)) {
       message("Restarting to estimate beta_alt didn't work. Penalized likelihood is still greater under the null than alt. pvalue = 1")
