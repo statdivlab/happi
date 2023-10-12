@@ -13,7 +13,7 @@
 genInits <- function(num_covariate, 
                      nstarts = 1, 
                      seed,
-                     norm_sd = 15) {
+                     norm_sd) {
   
   init_start <- rep(0,num_covariate) # fixed initial start parameters
   inits <- rbind(init_start)

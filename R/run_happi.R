@@ -63,7 +63,7 @@ happi <- function(outcome,
                   spline_df = 3, 
                   nstarts = 1, 
                   seed = 13, 
-                  norm_sd = NULL,
+                  norm_sd = 1,
                   verbose = TRUE
 ) {
   
