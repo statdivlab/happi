@@ -42,3 +42,6 @@ test_that("happi correctly implements multiple starts", {
                c(max(res$starts_df$alt_ll), max(res$starts_df$null_ll)))
   
 })
+
+
+
