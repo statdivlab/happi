@@ -38,7 +38,7 @@ The key difference between `happi` and existing methods for gene enrichment in p
 ## Installing `happi` 
 
 Before going through this vignette you'll need to make sure that you've installed `happi`. 
-To install `happi`, you'll need to check that you've installed `devtools` first. The following script checks that `devtools` is installed and if it's not, your system will install `devtools`. We'll then use `devtools` to install `happi` along with all its required dependencies (if they aren't already installed) such as `isotone`,`logistf`, and `tibble`. 
+To install `happi`, you'll need to check that you've installed `remotes` first. The following script checks that `remotes`` is installed and if it's not, your system will install `remotes`. We'll then use `remotes` to install `happi` along with all its required dependencies. 
 
 ```{r, eval = FALSE}
 if (!require("remotes", quietly = TRUE))
@@ -48,7 +48,7 @@ remotes::install_github("statdivlab/happi", dependencies = TRUE) # install depen
 library(happi)
 ```
 
-Additionally, to go through this vignette (but these are not required to use `happi`) we'll need to make sure `magrittr`, `ggplot` and `dplyr` are installed. 
+Additionally, to go through this vignette (but these are not required to use `happi`) we'll need to make sure `tidyverse` and `ggplot2` are installed. 
 ```{r, eval = FALSE}
 if (!require("tidyverse", quietly = TRUE))
     install.packages("tidyverse") # check that tidyverse is installed
@@ -77,7 +77,7 @@ Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain err
 
 We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
 
-Let's also plot our data with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
+Let's also take a look at our data using a plot with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
 
 ```{r ggplot,fig.width=7,fig.height=4}
 Mem <- TM7_data %>% 
@@ -237,6 +237,7 @@ For the purposes of this vignette we will not be running all the COG functions a
 Additionally, for quicker run-time we're going to keep the max_iterations 100, a change threshold of 0.01, and we will be using the function `run_happi_tm7()` that we created above.  
 
 ```{r, message = FALSE, warning = FALSE}
+set.seed(8)
 TM7_results <- mclapply(3:22, run_happi_tm7, mc.cores=6) 
 # this should take a couple minutes to finish running... 
 
@@ -308,6 +309,8 @@ run_happi_tm7_e05 <- function(colnum) {
  return(happi_results)
 
 }
+
+set.seed(9)
 tm7_results_e05 <- mclapply(3:22, run_happi_tm7_e05, mc.cores=6) 
 # this should only take about a minute or two to finish running... 
 
