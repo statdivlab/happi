@@ -123,7 +123,7 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         max_iterations=1000, 
         change_threshold=0.1,
         epsilon=0, 
-        firth = F, 
+        firth = T, 
         nstarts = 1, # you can specify how many starts you'd like to initiate 
         # default = 1
         spline_df = 3)
@@ -144,7 +144,7 @@ perm_test_result <- npLRT(happi_results,
                           nstarts = 1, 
                           max_iterations = 1000, 
                           epsilon = 0, 
-                          firth = F, 
+                          firth = T, 
                           method = "splines")
 perm_test_result
 ```
@@ -193,8 +193,8 @@ run_happi_tm7 <- function(colnum) {
         quality_var=tm7_df$mean_coverage, 
         # choose your method for estimating f, default splines                 
         method="splines", 
-        # use firth's penalty = FALSE        
-        firth=F,
+        # use firth's penalty = TRUE        
+        firth=T,
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for
@@ -216,7 +216,7 @@ run_happi_tm7_perm <- function(colnum) {
                               covariate=x_matrix, 
                               quality_var=tm7_df$mean_coverage,
                               method="splines", 
-                              firth=F, 
+                              firth=T, 
                               spline_df=4,
                               max_iterations=1000, 
                               change_threshold=0.1, 
@@ -224,7 +224,7 @@ run_happi_tm7_perm <- function(colnum) {
   
   npLRT_results <- happi::npLRT(happi_results, 
                                 method="splines", 
-                                firth=F, 
+                                firth=T, 
                                 spline_df=4,
                                 max_iterations=1000, 
                                 change_threshold=0.1, 
@@ -298,8 +298,8 @@ run_happi_tm7_e05 <- function(colnum) {
         quality_var=tm7_df$mean_coverage, 
         # choose your method for estimating f, default splines                 
         method="splines", 
-        # use firth's penalty = FALSE       
-        firth=F,
+        # default is TRUE       
+        firth=T,
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for

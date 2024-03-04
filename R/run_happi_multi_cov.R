@@ -16,7 +16,7 @@
 #' @param method method for estimating f. Defaults to "splines" which fits a monotone spline with df determined by 
 #' argument spline_df; "isotone" for isotonic regression fit
 #' @param random_starts whether to pick the starting values of beta's randomly. Defaults to FALSE.
-#' @param firth use firth penalty? Default is FALSE
+#' @param firth use firth penalty? Default is TRUE
 #' @param spline_df degrees of freedom (in addition to intercept) to use in
 #' monotone spline fit; default 3 
 #' @param seed numeric number to set seed for random multiple starts
