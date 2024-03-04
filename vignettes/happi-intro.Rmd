@@ -148,7 +148,7 @@ perm_test_result <- npLRT(happi_results,
                           method = "splines")
 perm_test_result
 ```
-Using `happi` we see that the p-value is larger when we compare the p-value from `happi` (p = 0.052) to the p-value using GLM-Rao (p = 0.006). 
+Using `happi` we see that the p-value is larger when we compare the p-value from `happi` (p = 0.056) to the p-value using GLM-Rao (p = 0.006). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
 
