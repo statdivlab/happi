@@ -16,7 +16,6 @@ vignette: >
 }
 ```
 ```{r load-packages, include=FALSE}
-library(knitr)
 library(tidyverse)
 library(ggplot2)
 library(happi)
@@ -124,6 +123,7 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         max_iterations=1000, 
         change_threshold=0.1,
         epsilon=0, 
+        firth = F, 
         nstarts = 1, # you can specify how many starts you'd like to initiate 
         # default = 1
         spline_df = 3)
@@ -144,11 +144,11 @@ perm_test_result <- npLRT(happi_results,
                           nstarts = 1, 
                           max_iterations = 1000, 
                           epsilon = 0, 
-                          firth = T, 
+                          firth = F, 
                           method = "splines")
 perm_test_result
 ```
-Using `happi` we see that the p-value is larger and that there is no longer a significant difference (at an alpha-level of 5%) in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites when we compare the p-value from `happi` (p = 0.06) to the p-value using GLM-Rao (p = 0.006). 
+Using `happi` we see that the p-value is larger when we compare the p-value from `happi` (p = 0.052) to the p-value using GLM-Rao (p = 0.006). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
 
@@ -193,14 +193,14 @@ run_happi_tm7 <- function(colnum) {
         quality_var=tm7_df$mean_coverage, 
         # choose your method for estimating f, default splines                 
         method="splines", 
-        # default TRUE to use firth's penalty       
-        firth=T,
+        # use firth's penalty = FALSE        
+        firth=F,
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for
         max_iterations=1000, 
         # change threshold of the likelihood for algorithm to stop at 
-        change_threshold=0.01, 
+        change_threshold=0.1, 
         # number of starts for optimization; default = 1
         nstarts = 1, 
         # probability of observing a gene when it should be absent
@@ -216,7 +216,7 @@ run_happi_tm7_perm <- function(colnum) {
                               covariate=x_matrix, 
                               quality_var=tm7_df$mean_coverage,
                               method="splines", 
-                              firth=T, 
+                              firth=F, 
                               spline_df=4,
                               max_iterations=1000, 
                               change_threshold=0.1, 
@@ -224,7 +224,7 @@ run_happi_tm7_perm <- function(colnum) {
   
   npLRT_results <- happi::npLRT(happi_results, 
                                 method="splines", 
-                                firth=T, 
+                                firth=F, 
                                 spline_df=4,
                                 max_iterations=1000, 
                                 change_threshold=0.1, 
@@ -237,7 +237,7 @@ run_happi_tm7_perm <- function(colnum) {
 For the purposes of this vignette we will not be running all the COG functions and will focus on only 20. 
 Additionally, for quicker run-time we're going to be using the function `run_happi_tm7()` that we created above instead of the function `run_happi_tm7_perm` that includes permutation hypothesis testing.
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
 set.seed(8)
 TM7_results <- mclapply(3:22, run_happi_tm7, mc.cores=6) 
 # this should take a couple minutes to finish running... 
@@ -260,9 +260,9 @@ tm7_hyp_results <- tibble("gene" = colnames(tm7_df)[3:22],
                                   beta_tm7[,2]) %>% 
   arrange(pvalue_tm7)
 
-head(tm7_hyp_results)
+# View(tm7_hyp_results)
 ```
- And here we see the variables
+ If you look at your object `tm7_hyp_results` you will see the variables
 
   - gene: contains the COG function names
   
@@ -274,11 +274,11 @@ head(tm7_hyp_results)
 
 Don't forget that if you're running multiple comparisons we need to correct for that with your favorite FDR or FWER method. We'll demonstrate how you can do this with Benjamini & Yekutieli's method which does better when we might have positive dependence of our variables. We'll create another column called fdr_pvalue to hold these FDR corrected pvalues. 
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
 tm7_hyp_results_fdr <- tm7_hyp_results %>%
   mutate(fdr_pvalue = p.adjust(pvalue_tm7, method = "BY"))
 
-head(tm7_hyp_results_fdr)
+# View(tm7_hyp_results_fdr) 
 ```
 
 ## Sensitivity analyses using epsilon
@@ -287,7 +287,7 @@ head(tm7_hyp_results_fdr)
 
 For this set of 20 COG functions let's try setting epsilon = 0.05 (i.e., the probability of a false gene "detection" is 5%) and compare with our results when epsilon = 0
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
 
 # create function when epsilon - 0.05
 run_happi_tm7_e05 <- function(colnum) {
@@ -298,14 +298,14 @@ run_happi_tm7_e05 <- function(colnum) {
         quality_var=tm7_df$mean_coverage, 
         # choose your method for estimating f, default splines                 
         method="splines", 
-        # default TRUE to use firth's penalty       
-        firth=T,
+        # use firth's penalty = FALSE       
+        firth=F,
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for
         max_iterations=1000, 
         # change threshold of the likelihood for algorithm to stop at 
-        change_threshold=0.01, 
+        change_threshold=0.1, 
         # probability of observing a gene when it should be absent
         epsilon=0.05) 
  return(happi_results)
