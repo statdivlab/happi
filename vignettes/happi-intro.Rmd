@@ -38,11 +38,11 @@ The key difference between `happi` and existing methods for gene enrichment in p
 ## Installing `happi` 
 
 Before going through this vignette you'll need to make sure that you've installed `happi`. 
-To install `happi`, you'll need to check that you've installed `remotes` first. The following script checks that `remotes`` is installed and if it's not, your system will install `remotes`. We'll then use `remotes` to install `happi` along with all its required dependencies. 
+To install `happi`, you'll need to check that you've installed `remotes` first. The following script checks that `remotes` is installed and if it's not, your system will install it. We'll then use `remotes` to install `happi` along with all its required dependencies. 
 
 ```{r, eval = FALSE}
 if (!require("remotes", quietly = TRUE))
-    install.packages("remotes") # check that devtools is installed
+    install.packages("remotes") # check that remotes is installed
 
 remotes::install_github("statdivlab/happi", dependencies = TRUE) # install dependencies for happi
 library(happi)
@@ -64,7 +64,7 @@ library(ggplot2)
 
 Great! Now that we have `happi` installed let's load in an example dataset of Saccharibacteria metagenome-assembeled genomes (MAGs) that has been provided with the `happi` `R` package. 
 
-```{r, message = FALSE, eval = FALSE}
+```{r, message = FALSE}
 data(TM7_data)
 dim(TM7_data)
 ```
@@ -73,11 +73,11 @@ dim(TM7_data)
 
 
 ## Why account for genome quality? 
-Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragements from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look our example data to give us some intuition behind why this might be problematic. 
+Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragments from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look at our example data to give us some intuition behind why this might be problematic. 
 
 We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
 
-Let's also take a look at our data using a plot with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
+Let's take a look at our data using a plot with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
 
 ```{r ggplot,fig.width=7,fig.height=4}
 Mem <- TM7_data %>% 
@@ -109,9 +109,9 @@ h0 <- glm(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` ~ 1, family="binomial",
 anova(ha, h0, test = "Rao")[2, "Pr(>Chi)"]
 ```
 
-So, using a GLM + Rao score test we find that there is a significant difference (p = 0.006370813) at an alpha level of 0.05 between the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites. Specifically, it appears that `Membrane protein insertase Oxa1/YidC/SpoIIIJ` is more enriched in Saccharibacteria MAGs from plaque than from tongue samples. We have additional confirmation for what we visually  were seeing in the plot in terms of differences in detection pattern by oral site. 
+So, using a GLM + Rao score test we find that there is a significant difference (p = 0.006370813) at an alpha level of 0.05 between the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites. Specifically, it appears that `Membrane protein insertase Oxa1/YidC/SpoIIIJ` is more enriched in Saccharibacteria MAGs from plaque than from tongue samples. Base on our results using GLM-Rao we could conclude that there are differences in the presence/absence of this gene by oral site. 
 
-Recall though, we were concerned about conflating of this difference in gene detection with differences in mean coverage. We would expect that if this was the case that a method that does not account for genome quality would produce smaller p-values than a method that does account for genome quality. 
+Recall though from the plot above, we were concerned about conflating of this difference in gene detection with differences in mean coverage. We would expect that if this was the case that a method that does not account for genome quality would produce smaller p-values than a method that does account for genome quality. 
 
 `happi` accounts for genome quality in its modeling of gene presence and allows user flexibility to specify which genome quality variable is relevant to their experimental condition. Let's see how `happi` does! 
 
@@ -133,7 +133,7 @@ tail(happi_results$loglik$pvalue_nopenalty[!is.na(happi_results$loglik$pvalue_no
 ```
 By default, the hypothesis testing approach used by `happi` is a likelihood ratio test assuming a chi-sq distribution for the test statistic. We have found that this assumption  holds in settings with larger sample sizes (n > 100) and for situations where the sample size is more modest we recommend the use of `happi`'s nonparametric permutation testing approach. 
 
-To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified.  This may take some time. 
+To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified. We've selected 500 as a vignette demonstration here which should take a few minutes to run. For your own analyses you might want to consider 1000 permutations at minimum. 
 
 ```{r,  message = FALSE, warning = FALSE}
 set.seed(22)
@@ -148,7 +148,7 @@ perm_test_result <- npLRT(happi_results,
                           method = "splines")
 perm_test_result
 ```
-Using `happi` we see that there is no longer a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites (p = 0.06) compared to the p-value we got when we didn't account for genome quality using logistic regression methods (p = 0.006). 
+Using `happi` we see that the p-value is larger and that there is no longer a significant difference (at an alpha-level of 5%) in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites when we compare the p-value from `happi` (p = 0.06) to the p-value using GLM-Rao (p = 0.006). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
 
@@ -167,6 +167,8 @@ library(parallel) # load parallel package
 
 In the next few steps we'll be cleaning up our TM7_data to get it ready for our analyses and set up all the components we need to parallelize `happi()` on our data. 
 ```{r, message = FALSE, warning = FALSE}
+# clean up TM7_data to only contain the gene presence/absence matrix, 
+# the genome quality variable, and the primary covariate of interest 
 tm7_df <- TM7_data %>% 
   select(site, mean_coverage, `Cellulase/cellobiase CelA1`:ncol(.)) %>%
   mutate(tongue = ifelse(site == "tongue", 1, 0)) %>% 
@@ -178,9 +180,8 @@ tm7_df <- TM7_data %>%
 
 x_matrix_tm7 <-  model.matrix(~tongue, data = tm7_df)
 
-# We're next going to write a function that will take in a gene 
-#(denoted by the column of the dataframe TM7_data) 
-# and run the main happi function happi() on that gene
+# We're next going to write a function that will take in a gene column (colnum)
+# and run the main happi function happi() on through the columns of genes
 # There are many ways one could write this function 
 # but we'll propose a simple approach here 
 
@@ -197,7 +198,7 @@ run_happi_tm7 <- function(colnum) {
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for
-        max_iterations=100, 
+        max_iterations=1000, 
         # change threshold of the likelihood for algorithm to stop at 
         change_threshold=0.01, 
         # number of starts for optimization; default = 1
@@ -234,7 +235,7 @@ run_happi_tm7_perm <- function(colnum) {
  }
 ```
 For the purposes of this vignette we will not be running all the COG functions and will focus on only 20. 
-Additionally, for quicker run-time we're going to keep the max_iterations 100, a change threshold of 0.01, and we will be using the function `run_happi_tm7()` that we created above.  
+Additionally, for quicker run-time we're going to be using the function `run_happi_tm7()` that we created above instead of the function `run_happi_tm7_perm` that includes permutation hypothesis testing.
 
 ```{r, message = FALSE, warning = FALSE}
 set.seed(8)
@@ -243,8 +244,8 @@ TM7_results <- mclapply(3:22, run_happi_tm7, mc.cores=6)
 
 # 3:22 denotes the COG functions I want to run that exist in columns 3 - 22 
 # run_happi_tm7 is the function we created above 
-# and mc.cores allows you to specify how many cores 
-# you want to allocate to this computational task 
+# and mc.cores allows you to specify how many cores you
+# want to allocate to this computational task 
 
 # we can consolidate our beta estimates along with p-values using
 
@@ -282,12 +283,13 @@ head(tm7_hyp_results_fdr)
 
 ## Sensitivity analyses using epsilon
 
-happi has a hyperparameter epsilon, which is the probability of observing a gene given that it shouldn't be present. This can usually be thought of as  "contamination" of our genes in our genomes from genes in other genomes.  We are interested in trying different values of epsilon to assess the robustness of our results to varying levels of contamination in our genomes. 
+`happi` has a hyperparameter epsilon, which is the probability of observing a gene given that it shouldn't be present. This can usually be thought of as  "contamination" of our genes in our genomes from genes in other genomes.  We are interested in trying different values of epsilon to assess the robustness of our results to varying levels of contamination in our genomes. 
 
-For this set of 20 COG functions let's try setting epsilon = 0.05 (i.e., the chance of a false gene "detection" is 5%) and compare with our results when epsilon = 0
+For this set of 20 COG functions let's try setting epsilon = 0.05 (i.e., the probability of a false gene "detection" is 5%) and compare with our results when epsilon = 0
 
 ```{r, message = FALSE, warning = FALSE}
 
+# create function when epsilon - 0.05
 run_happi_tm7_e05 <- function(colnum) {
  happi_results <- happi(outcome=unlist(tm7_df[,colnum]), # specify columns of tm7_df dataset
         # input your covariate matrix object here
@@ -301,7 +303,7 @@ run_happi_tm7_e05 <- function(colnum) {
         # if using method = splines specify number of splines, default 3
         spline_df=3, 
         # the maximum number of EM steps that the algorithm will run for
-        max_iterations=100, 
+        max_iterations=1000, 
         # change threshold of the likelihood for algorithm to stop at 
         change_threshold=0.01, 
         # probability of observing a gene when it should be absent
@@ -341,4 +343,12 @@ tm7_hyp_results_comparison %>%
 
 
 Looking at our results there doesn't seem to be too much of a difference overall between the pvalues we see when epsilon = 0 vs. epsilon = 0.05. In general, we recommend choosing epsilon based on genome redundancy metrices or based on other tuning parameters for MAG construction. We discourage further exploration of genes whose significantly differential presence hinges on the assumption of low genome contamination levels and is not robust across small increases in epsilon. 
+
+For further ideas on how to apply `happi` to your own data analysis please refer to `happi`'s [supplementary materials](https://github.com/statdivlab/happi_supplementary) that reproduce the data analyses conducted in the paper. 
+
+
+And finally, if you use our tool please make sure to cite our work:  
+
+
+Trinh, P., Clausen, D.S. & Willis, A.D. happi: a hierarchical approach to pangenomics inference. Genome Biol 24, 214 (2023). https://doi.org/10.1186/s13059-023-03040-6
 
