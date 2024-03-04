@@ -57,7 +57,7 @@ happi_multi_cov <- function(outcome,
                   epsilon = 0,
                   method = "splines",
                   random_starts = FALSE,
-                  firth = FALSE,
+                  firth = TRUE,
                   spline_df = 3, 
                   nstarts = 1, 
                   seed = 13
