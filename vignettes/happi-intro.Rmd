@@ -15,49 +15,55 @@ vignette: >
   font-weight: bold;
 }
 ```
-
+```{r load-packages, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(happi)
+library(parallel)
+```
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
-## What does `happi` do? 
+## Introduction: What does `happi` do? 
 `happi` uses a hierarchical modeling approach to incorporate information related to a genome's quality when conducting enrichment testing for genes in pangenomics. For example, if you were interested in understanding whether a particular gene is more present in *E. coli* genomes recovered from sea otters compared to *E. coli* genomes recovered from narwhals then `happi` is well-suited to help you answer this question! 
 
-To be extra clear, `happi` models the association between an experimental condition and gene presence where the **experimental condition** is the **primary predictor** of interest and **gene presence** is the **outcome**.
+`happi` models the association between a covariate (e.g. narwhal E.coli genomes vs. sea otter E.coli genomes) and gene presence (gene X) where the **covariate** is the **primary predictor** of interest and **gene presence** is the **outcome** of interest. 
 
 The key difference between `happi` and existing methods for gene enrichment in pangenomics is that `happi` incorporates information on the quality of each genome in its modeling approach. 
 
-## What do I need to get started? 
+## Installing `happi` 
 
 Before going through this vignette you'll need to make sure that you've installed `happi`. 
-To install `happi`, you'll need to check that you've installed `devtools` first. The following script checks that `devtools` is installed and if it's not, your system will install `devtools`. We'll then use `devtools` to install `happi` along with all its required dependencies (if they aren't already installed) such as `isotone`,`logistf`, and `tibble`. 
+To install `happi`, you'll need to check that you've installed `remotes` first. The following script checks that `remotes` is installed and if it's not, your system will install it. We'll then use `remotes` to install `happi` along with all its required dependencies. 
 
 ```{r, eval = FALSE}
 if (!require("remotes", quietly = TRUE))
-    install.packages("remotes") # check that devtools is installed
+    install.packages("remotes") # check that remotes is installed
+
 remotes::install_github("statdivlab/happi", dependencies = TRUE) # install dependencies for happi
 library(happi)
 ```
 
-Additionally, to go through this vignette (but these are not required to use `happi`) we'll need to make sure `magrittr`, `ggplot` and `dplyr` are installed. 
+Additionally, to go through this vignette (but these are not required to use `happi`) we'll need to make sure `tidyverse` and `ggplot2` are installed. 
 ```{r, eval = FALSE}
-if (!require("magrittr", quietly = TRUE))
-    install.packages("magrittr") # check that magrittr is installed
-
-if (!require("dplyr", quietly = TRUE))
-    install.packages("dplyr") # check that dplyr is installed
+if (!require("tidyverse", quietly = TRUE))
+    install.packages("tidyverse") # check that tidyverse is installed
+library(tidyverse)
 
 if (!require("ggplot2", quietly = TRUE))
     install.packages("ggplot2") # check that ggplot2 is installed
+library(ggplot2)
 ```
+
 
 ## How do I use `happi`? 
 
 Great! Now that we have `happi` installed let's load in an example dataset of Saccharibacteria metagenome-assembeled genomes (MAGs) that has been provided with the `happi` `R` package. 
 
-```{r, message = FALSE, eval = FALSE}
+```{r, message = FALSE}
 data(TM7_data)
 dim(TM7_data)
 ```
@@ -66,24 +72,19 @@ dim(TM7_data)
 
 
 ## Why account for genome quality? 
-Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragements from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look our example data to give us some intuition behind why this might be problematic. 
+Metagenome-assembled genomes (MAGs) are frequently incomplete or can contain errors (i.e., contamination of fragments from other, missing genes due to assembly issues or shallow sequencing depth). Let's take a look at our example data to give us some intuition behind why this might be problematic. 
 
 We are interested in understanding whether the presence of a gene, let's choose this gene that encodes for `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`, is more enriched (aka prevalent) in Saccharibacteria MAGs recovered from plaque samples versus tongue samples. 
 
-```{r,message = F}
-library(magrittr)
-library(happi)
+Let's take a look at our data using a plot with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
+
+```{r ggplot,fig.width=7,fig.height=4}
 Mem <- TM7_data %>% 
-  dplyr::rename(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` = `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`) %>% 
-  dplyr::select(MAGs_Id, site, mean_coverage, tongue,
-         `Membrane protein insertase Oxa1/YidC/SpoIIIJ`) # Let's simplify our data and pull out the variables we'll need
-```
+  rename(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` = `Membrane protein insertase Oxa1/YidC/SpoIIIJ, required for the localization of integral membrane proteins`) %>% 
+ select(MAGs_Id, site, mean_coverage, tongue,
+         `Membrane protein insertase Oxa1/YidC/SpoIIIJ`) # Let's simplify our data and pull out the variable we'll need
 
-Let's plot our data with `mean_coverage` on the x-axis, the observed presence/absence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` on the y-axis (Detected vs. Not detected), and colored by our primary covariate of interest oral `site`. 
-
-```{r,fig.width=7,fig.height=4}
-library(ggplot2)
-Mem %>% ggplot() +
+my_mem_plot <- Mem %>% ggplot() +
   geom_jitter(aes(x = mean_coverage, y = `Membrane protein insertase Oxa1/YidC/SpoIIIJ`, col = site, pch = site), height=0.08, width=0.00) +
   xlab("Mean coverage") + ylab("") +
   theme_bw() + 
@@ -91,6 +92,7 @@ Mem %>% ggplot() +
   theme(legend.position="right") +
   scale_y_continuous(breaks = c(0,1),
                      label = c("Not detected", "Detected"), limits=c(-0.32, 1.1)) 
+my_mem_plot
 ```
 
 So what do we see? We see that there are more tongue-associated MAGs that do not have `Membrane protein insertase Oxa1/YidC/SpoIIIJ` detected in their genomes and these appear to be MAGs that have lower mean coverage. 
@@ -100,19 +102,19 @@ Looking at this plot, there may be a potential difference between the presence/a
 ## Let's compare an existing method for enrichment testing with `happi` 
 One existing method to test the hypothesis of whether there is a difference in gene presence by some covariate of interest is to use a generalized linear model (GLM) with Rao score test. So let's use that and see what we get. 
 
-```{r}
+```{r,  message = FALSE, warning = FALSE}
 ha <- glm(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` ~ tongue, family="binomial", data = Mem)
 h0 <- glm(`Membrane protein insertase Oxa1/YidC/SpoIIIJ` ~ 1, family="binomial", data = Mem)
 anova(ha, h0, test = "Rao")[2, "Pr(>Chi)"]
 ```
 
-So, using a GLM + Rao score test we find that there is a significant difference (p = 0.006370813) at an alpha level of 0.05 between the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites. Specifically, it appears that `Membrane protein insertase Oxa1/YidC/SpoIIIJ` is more enriched in Saccharibacteria MAGs from plaque than from tongue samples. We have additional confirmation for what we visually  were seeing in the plot in terms of differences in detection pattern by oral site. 
+So, using a GLM + Rao score test we find that there is a significant difference (p = 0.006370813) at an alpha level of 0.05 between the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites. Specifically, it appears that `Membrane protein insertase Oxa1/YidC/SpoIIIJ` is more enriched in Saccharibacteria MAGs from plaque than from tongue samples. Base on our results using GLM-Rao we could conclude that there are differences in the presence/absence of this gene by oral site. 
 
-Recall though, we were concerned about conflating of this difference in gene detection with differences in mean coverage. We would expect that if this was the case that a method that does not account for genome quality would produce smaller p-values than a method that does account for genome quality. 
+Recall though from the plot above, we were concerned about conflating of this difference in gene detection with differences in mean coverage. We would expect that if this was the case that a method that does not account for genome quality would produce smaller p-values than a method that does account for genome quality. 
 
 `happi` accounts for genome quality in its modeling of gene presence and allows user flexibility to specify which genome quality variable is relevant to their experimental condition. Let's see how `happi` does! 
 
-```{r}
+```{r,message = FALSE}
 x_matrix <- model.matrix(~tongue, data = Mem) # create design matrix
 set.seed(5)
 happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ`, 
@@ -121,17 +123,19 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         max_iterations=1000, 
         change_threshold=0.1,
         epsilon=0, 
-        nstarts = 1, 
+        firth = T, 
+        nstarts = 1, # you can specify how many starts you'd like to initiate 
+        # default = 1
         spline_df = 3)
 
-tail(happi_results$loglik$pvalue[!is.na(happi_results$loglik$pvalue)],1)
+tail(happi_results$loglik$pvalue_nopenalty[!is.na(happi_results$loglik$pvalue_nopenalty)],1)
 
 ```
 By default, the hypothesis testing approach used by `happi` is a likelihood ratio test assuming a chi-sq distribution for the test statistic. We have found that this assumption  holds in settings with larger sample sizes (n > 100) and for situations where the sample size is more modest we recommend the use of `happi`'s nonparametric permutation testing approach. 
 
-To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified. 
+To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified. We've selected 500 as a vignette demonstration here which should take a few minutes to run. For your own analyses you might want to consider 1000 permutations at minimum. 
 
-```{r, message = FALSE, warning = FALSE}
+```{r,  message = FALSE, warning = FALSE}
 set.seed(22)
 perm_test_result <- npLRT(happi_results, 
                           P = 500, 
@@ -142,7 +146,209 @@ perm_test_result <- npLRT(happi_results,
                           epsilon = 0, 
                           firth = T, 
                           method = "splines")
+perm_test_result
 ```
-Using `happi` we see that there is no longer a significant difference in the presence of `Membrane protein insertase Oxa1/YidC/SpoIIIJ` between tongue vs. plaque sites (p = 0.05988024) compared to the p-value we got when we didn't account for genome quality using logistic regression methods (p = 0.006370813). 
+Using `happi` we see that the p-value is larger when we compare the p-value from `happi` (p = 0.056) to the p-value using GLM-Rao (p = 0.006). 
 
 We think this is great! In  situations where  the pattern of detection or non-detection could be attributable to genome quality, we think statements about significance **should** be moderated. In this case we want to see larger p-values! 
+
+
+## But what if I have thousands of genes I want to look at?
+
+You can parallelize your analyses! We'll do this with the package `parallel`. 
+
+
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
+if (!require("parallel", quietly = TRUE)) 
+  install.packages("parallel") # check that parallel is installed. If not then install. 
+
+library(parallel) # load parallel package 
+```
+
+In the next few steps we'll be cleaning up our TM7_data to get it ready for our analyses and set up all the components we need to parallelize `happi()` on our data. 
+```{r, message = FALSE, warning = FALSE}
+# clean up TM7_data to only contain the gene presence/absence matrix, 
+# the genome quality variable, and the primary covariate of interest 
+tm7_df <- TM7_data %>% 
+  select(site, mean_coverage, `Cellulase/cellobiase CelA1`:ncol(.)) %>%
+  mutate(tongue = ifelse(site == "tongue", 1, 0)) %>% 
+  select(2, ncol(.), 3:(ncol(.) - 1))
+
+# to run your analyses in parallel let's first make our design matrix 
+# x_matrix_tm7 and also a function run_happi_tm7() 
+# that contains all the specifications of happi() we want to use 
+
+x_matrix_tm7 <-  model.matrix(~tongue, data = tm7_df)
+
+# We're next going to write a function that will take in a gene column (colnum)
+# and run the main happi function happi() on through the columns of genes
+# There are many ways one could write this function 
+# but we'll propose a simple approach here 
+
+run_happi_tm7 <- function(colnum) {
+ happi_results <- happi(outcome=unlist(tm7_df[,colnum]), # specify columns of tm7_df dataset
+        # input your covariate matrix object here
+        covariate=x_matrix_tm7, 
+        # specify your genome quality variable here
+        quality_var=tm7_df$mean_coverage, 
+        # choose your method for estimating f, default splines                 
+        method="splines", 
+        # use firth's penalty = TRUE        
+        firth=T,
+        # if using method = splines specify number of splines, default 3
+        spline_df=3, 
+        # the maximum number of EM steps that the algorithm will run for
+        max_iterations=1000, 
+        # change threshold of the likelihood for algorithm to stop at 
+        change_threshold=0.1, 
+        # number of starts for optimization; default = 1
+        nstarts = 1, 
+        # probability of observing a gene when it should be absent
+        epsilon=0) 
+ return(happi_results)
+}
+
+# If you want to parallelize and use the npLRT() function for 
+# hypothesis testing you can write that into your function as follows: 
+
+run_happi_tm7_perm <- function(colnum) {
+  happi_results <- happi(outcome=unlist(tm7_df[,colnum]), 
+                              covariate=x_matrix, 
+                              quality_var=tm7_df$mean_coverage,
+                              method="splines", 
+                              firth=T, 
+                              spline_df=4,
+                              max_iterations=1000, 
+                              change_threshold=0.1, 
+                              epsilon=0)
+  
+  npLRT_results <- happi::npLRT(happi_results, 
+                                method="splines", 
+                                firth=T, 
+                                spline_df=4,
+                                max_iterations=1000, 
+                                change_threshold=0.1, 
+                                epsilon=0, 
+                                P = 1000)
+  
+  return(npLRT_results)
+ }
+```
+For the purposes of this vignette we will not be running all the COG functions and will focus on only 20. 
+Additionally, for quicker run-time we're going to be using the function `run_happi_tm7()` that we created above instead of the function `run_happi_tm7_perm` that includes permutation hypothesis testing.
+
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
+set.seed(8)
+TM7_results <- mclapply(3:22, run_happi_tm7, mc.cores=6) 
+# this should take a couple minutes to finish running... 
+
+# 3:22 denotes the COG functions I want to run that exist in columns 3 - 22 
+# run_happi_tm7 is the function we created above 
+# and mc.cores allows you to specify how many cores you
+# want to allocate to this computational task 
+
+# we can consolidate our beta estimates along with p-values using
+
+pvalue_tm7 <-  lapply(TM7_results, function(x) tail(x$loglik$pvalue_nopenalty[!is.na(x$loglik$pvalue_nopenalty)], 1)) %>% unlist
+beta_tm7 <- lapply(TM7_results, function(x) tail(x$beta[!is.na(x$beta[,1]),],1)) %>% do.call("rbind",.)
+
+# grab the names of each gene from tm7_df
+# and combine with our pvalues and betas
+tm7_hyp_results <- tibble("gene" = colnames(tm7_df)[3:22], 
+                                  pvalue_tm7, 
+                                  beta_tm7[,1],
+                                  beta_tm7[,2]) %>% 
+  arrange(pvalue_tm7)
+
+# View(tm7_hyp_results)
+```
+ If you look at your object `tm7_hyp_results` you will see the variables
+
+  - gene: contains the COG function names
+  
+  - pvalue_tm7: the happi p-values (without FDR correction)
+  
+  - beta_tm7[, 1]: the estimate for beta0 that corresponds to our intercept 
+  
+  - beta_tm7[, 2]: the estimate for beta1 that corresponds to our primary covariate (tongue)
+
+Don't forget that if you're running multiple comparisons we need to correct for that with your favorite FDR or FWER method. We'll demonstrate how you can do this with Benjamini & Yekutieli's method which does better when we might have positive dependence of our variables. We'll create another column called fdr_pvalue to hold these FDR corrected pvalues. 
+
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
+tm7_hyp_results_fdr <- tm7_hyp_results %>%
+  mutate(fdr_pvalue = p.adjust(pvalue_tm7, method = "BY"))
+
+# View(tm7_hyp_results_fdr) 
+```
+
+## Sensitivity analyses using epsilon
+
+`happi` has a hyperparameter epsilon, which is the probability of observing a gene given that it shouldn't be present. This can usually be thought of as  "contamination" of our genes in our genomes from genes in other genomes.  We are interested in trying different values of epsilon to assess the robustness of our results to varying levels of contamination in our genomes. 
+
+For this set of 20 COG functions let's try setting epsilon = 0.05 (i.e., the probability of a false gene "detection" is 5%) and compare with our results when epsilon = 0
+
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
+
+# create function when epsilon - 0.05
+run_happi_tm7_e05 <- function(colnum) {
+ happi_results <- happi(outcome=unlist(tm7_df[,colnum]), # specify columns of tm7_df dataset
+        # input your covariate matrix object here
+        covariate=x_matrix_tm7, 
+        # specify your genome quality variable here
+        quality_var=tm7_df$mean_coverage, 
+        # choose your method for estimating f, default splines                 
+        method="splines", 
+        # default is TRUE       
+        firth=T,
+        # if using method = splines specify number of splines, default 3
+        spline_df=3, 
+        # the maximum number of EM steps that the algorithm will run for
+        max_iterations=1000, 
+        # change threshold of the likelihood for algorithm to stop at 
+        change_threshold=0.1, 
+        # probability of observing a gene when it should be absent
+        epsilon=0.05) 
+ return(happi_results)
+
+}
+
+set.seed(9)
+tm7_results_e05 <- mclapply(3:22, run_happi_tm7_e05, mc.cores=6) 
+# this should only take about a minute or two to finish running... 
+
+# we can consolidate our beta estimates along with p-values
+pvalue_tm7_e05 <- lapply(tm7_results_e05, function(x) tail(x$loglik$pvalue_nopenalty[!is.na(x$loglik$pvalue_nopenalty)], 1)) %>% unlist
+beta_tm7_e05 <- lapply(tm7_results_e05, function(x) tail(x$beta[!is.na(x$beta[,1]),],1)) %>% do.call("rbind",.)
+
+# To compare results let's merge both sets of results and 
+# look at the differences between the 
+# p-values, beta0, and beta1 when using epsilon = 0 and 0.05 
+tm7_hyp_results_comparison <- tibble("gene" = colnames(tm7_df)[3:22], 
+                                             pvalue_tm7_e05, 
+                                             beta_tm7_e05[,1],
+                                             beta_tm7_e05[,2]) %>% 
+  full_join(tm7_hyp_results, by = "gene") %>% # merge with previous results when epsilon = 0 
+  mutate(pvalue_diff = round(pvalue_tm7_e05-pvalue_tm7, 3), # round differences to 3 decimal places 
+         beta0_diff = round(as.numeric(`beta_tm7_e05[, 1]`) - as.numeric(`beta_tm7[, 1]`), 3), 
+         beta1_diff = round(as.numeric(`beta_tm7_e05[, 2]`) - as.numeric(`beta_tm7[, 2]`), 3)) 
+
+# plot comparsion of p-values when epsilon = 0 and epsilon = 0.05
+tm7_hyp_results_comparison %>%
+  ggplot(aes(x = pvalue_tm7, y = pvalue_tm7_e05)) +
+  geom_point() +
+  geom_abline() +
+  xlab("happi pvalues with "~epsilon~"=0") +
+  ylab("happi pvalues with "~epsilon~"=0.05")
+```
+
+
+Looking at our results there doesn't seem to be too much of a difference overall between the pvalues we see when epsilon = 0 vs. epsilon = 0.05. In general, we recommend choosing epsilon based on genome redundancy metrices or based on other tuning parameters for MAG construction. We discourage further exploration of genes whose significantly differential presence hinges on the assumption of low genome contamination levels and is not robust across small increases in epsilon. 
+
+For further ideas on how to apply `happi` to your own data analysis please refer to `happi`'s [supplementary materials](https://github.com/statdivlab/happi_supplementary) that reproduce the data analyses conducted in the paper. 
+
+
+And finally, if you use our tool please make sure to cite our work:  
+
+
+Trinh, P., Clausen, D.S. & Willis, A.D. happi: a hierarchical approach to pangenomics inference. Genome Biol 24, 214 (2023). https://doi.org/10.1186/s13059-023-03040-6
+
