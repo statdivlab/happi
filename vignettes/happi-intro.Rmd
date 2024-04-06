@@ -128,12 +128,12 @@ happi_results <- happi(outcome=Mem$`Membrane protein insertase Oxa1/YidC/SpoIIIJ
         # default = 1
         spline_df = 3)
 
-tail(happi_results$loglik$pvalue_nopenalty[!is.na(happi_results$loglik$pvalue_nopenalty)],1)
+happi_results$summary$pvalue_LRT
 
 ```
 By default, the hypothesis testing approach used by `happi` is a likelihood ratio test assuming a chi-sq distribution for the test statistic. We have found that this assumption  holds in settings with larger sample sizes (n > 100) and for situations where the sample size is more modest we recommend the use of `happi`'s nonparametric permutation testing approach. 
 
-To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. This will take a bit of time to run depending on the number of permutations specified. We've selected 500 as a vignette demonstration here which should take a few minutes to run. For your own analyses you might want to consider 1000 permutations at minimum. 
+To use `happi`'s nonparametric permutation testing approach we can take our `happi` results object as an input to the function `happi::npLRT()`. We could also run this from the main `happi()` function with the argument `run_npLRT`. This will take a bit of time to run depending on the number of permutations specified. We've selected 500 as a vignette demonstration here which should take a few minutes to run. For your own analyses you might want to consider 1000 permutations at minimum. 
 
 ```{r,  message = FALSE, warning = FALSE}
 set.seed(22)
@@ -208,31 +208,23 @@ run_happi_tm7 <- function(colnum) {
  return(happi_results)
 }
 
-# If you want to parallelize and use the npLRT() function for 
+# If you want to parallelize and use the non-parametric LRT for 
 # hypothesis testing you can write that into your function as follows: 
 
 run_happi_tm7_perm <- function(colnum) {
   happi_results <- happi(outcome=unlist(tm7_df[,colnum]), 
-                              covariate=x_matrix, 
-                              quality_var=tm7_df$mean_coverage,
-                              method="splines", 
-                              firth=T, 
-                              spline_df=4,
-                              max_iterations=1000, 
-                              change_threshold=0.1, 
-                              epsilon=0)
-  
-  npLRT_results <- happi::npLRT(happi_results, 
-                                method="splines", 
-                                firth=T, 
-                                spline_df=4,
-                                max_iterations=1000, 
-                                change_threshold=0.1, 
-                                epsilon=0, 
-                                P = 1000)
-  
-  return(npLRT_results)
- }
+                         covariate=x_matrix, 
+                         quality_var=tm7_df$mean_coverage,
+                         method="splines", 
+                         firth=T, 
+                         spline_df=4,
+                         max_iterations=1000, 
+                         change_threshold=0.1, 
+                         epsilon=0,
+                         run_npLRT = TRUE,
+                         P = 1000)
+  return(happi_results)
+}
 ```
 For the purposes of this vignette we will not be running all the COG functions and will focus on only 20. 
 Additionally, for quicker run-time we're going to be using the function `run_happi_tm7()` that we created above instead of the function `run_happi_tm7_perm` that includes permutation hypothesis testing.
@@ -249,8 +241,8 @@ TM7_results <- mclapply(3:22, run_happi_tm7, mc.cores=6)
 
 # we can consolidate our beta estimates along with p-values using
 
-pvalue_tm7 <-  lapply(TM7_results, function(x) tail(x$loglik$pvalue_nopenalty[!is.na(x$loglik$pvalue_nopenalty)], 1)) %>% unlist
-beta_tm7 <- lapply(TM7_results, function(x) tail(x$beta[!is.na(x$beta[,1]),],1)) %>% do.call("rbind",.)
+pvalue_tm7 <- lapply(TM7_results, function(x) x$summary$pvalue_LRT) %>% unlist
+beta_tm7 <- lapply(TM7_results, function(x) x$summary$beta) %>% do.call("rbind",.)
 
 # grab the names of each gene from tm7_df
 # and combine with our pvalues and betas
@@ -317,8 +309,10 @@ tm7_results_e05 <- mclapply(3:22, run_happi_tm7_e05, mc.cores=6)
 # this should only take about a minute or two to finish running... 
 
 # we can consolidate our beta estimates along with p-values
-pvalue_tm7_e05 <- lapply(tm7_results_e05, function(x) tail(x$loglik$pvalue_nopenalty[!is.na(x$loglik$pvalue_nopenalty)], 1)) %>% unlist
-beta_tm7_e05 <- lapply(tm7_results_e05, function(x) tail(x$beta[!is.na(x$beta[,1]),],1)) %>% do.call("rbind",.)
+pvalue_tm7_e05 <- lapply(tm7_results_e05, function(x)
+  x$summary$pvalue_LRT) %>% unlist
+beta_tm7_e05 <- lapply(tm7_results_e05, function(x) 
+  x$summary$beta) %>% do.call("rbind",.)
 
 # To compare results let's merge both sets of results and 
 # look at the differences between the 
