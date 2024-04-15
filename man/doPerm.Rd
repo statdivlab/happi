@@ -13,7 +13,8 @@ doPerm(
   max_iterations = 1000,
   min_iterations = 15,
   change_threshold = 0.1,
-  epsilon
+  epsilon,
+  nstarts = 1
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ monotone spline fit; default 3}
 5 iterations in a row for both the alternative and the null}
 
 \item{epsilon}{probability of observing a gene when it should be absent; probability between 0 and 1}
+
+\item{nstarts}{number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.}
 }
 \value{
 test statistic for one permutation iteration
