@@ -12,6 +12,7 @@
 #' @param change_threshold algorithm will terminate early if the likelihood changes by this percentage or less for 
 #' 5 iterations in a row for both the alternative and the null
 #' @param epsilon probability of observing a gene when it should be absent; probability between 0 and 1
+#' @param nstarts number of starts; Integer. Defaults to \code{1}. Number of starts for optimization.
 #' 
 #' @return test statistic for one permutation iteration 
 #' @export
@@ -25,7 +26,8 @@ doPerm <- function(happi_results_perm,
                    max_iterations = 1000,
                    min_iterations = 15, 
                    change_threshold = 0.1, 
-                   epsilon){
+                   epsilon,
+                   nstarts = 1){
   
   my_results <- happi_results_perm
   
@@ -33,23 +35,30 @@ doPerm <- function(happi_results_perm,
   
   my_perm_covariate <- my_results$covariate[random_rows,] # shuffle the group labels
   
-  happi_perm_out <- happi::happi(outcome=my_results$outcome, 
-                    covariate=my_perm_covariate, 
-                    quality_var=my_results$quality_var,
-                    h0_param = h0_param, 
-                    method = method, 
-                    firth = firth, 
-                    spline_df = spline_df, 
-                    max_iterations = max_iterations,
-                    min_iterations = min_iterations, 
-                    change_threshold = change_threshold, 
-                    epsilon = epsilon)
+  happi_perm_out <- try({
+    happi::happi(outcome = my_results$outcome, 
+                 covariate = my_perm_covariate, 
+                 quality_var = my_results$quality_var,
+                 h0_param = h0_param, 
+                 method = method, 
+                 firth = firth, 
+                 spline_df = spline_df, 
+                 max_iterations = max_iterations,
+                 min_iterations = min_iterations, 
+                 change_threshold = change_threshold, 
+                 epsilon = epsilon,
+                 nstarts = nstarts)
+  })
   
-  LL_alt_nopenalty <- tail(happi_perm_out$loglik$loglik_nopenalty[!is.na(happi_perm_out$loglik$loglik_nopenalty)],1)
-  LL_null_nopenalty <- tail(happi_perm_out$loglik$loglik_null_nopenalty[!is.na(happi_perm_out$loglik$loglik_null_nopenalty)],1)
-  
-  test.stat <- 2 * abs(LL_alt_nopenalty - LL_null_nopenalty)
-  
+  if (!inherits(happi_perm_out, "try-error")) {
+    LL_alt_nopenalty <- tail(happi_perm_out$loglik$loglik_nopenalty[!is.na(happi_perm_out$loglik$loglik_nopenalty)],1)
+    LL_null_nopenalty <- tail(happi_perm_out$loglik$loglik_null_nopenalty[!is.na(happi_perm_out$loglik$loglik_null_nopenalty)],1)
+    
+    test.stat <- 2 * abs(LL_alt_nopenalty - LL_null_nopenalty)
+  } else {
+    test.stat <- NA
+  }
+
   return(test.stat)
   
 }

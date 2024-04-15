@@ -14,7 +14,7 @@ npLRT(
   method,
   firth,
   spline_df,
-  nstarts,
+  nstarts = 1,
   P = 1000
 )
 }

@@ -26,7 +26,7 @@ npLRT <- function(happi_out,
                   method,
                   firth,
                   spline_df, 
-                  nstarts,
+                  nstarts = 1,
                   P = 1000){
   LL_alt <- utils::tail(happi_out$loglik$loglik_nopenalty[!is.na(happi_out$loglik$loglik_nopenalty)],1)
   LL_null<- utils::tail(happi_out$loglik$loglik_null_nopenalty[!is.na(happi_out$loglik$loglik_null_nopenalty)],1)
@@ -47,7 +47,8 @@ npLRT <- function(happi_out,
                               min_iterations = min_iterations, 
                               change_threshold = change_threshold, 
                               method = method, 
-                              firth = firth)
+                              firth = firth,
+                              nstarts = nstarts)
     
     if (is.numeric(check_test_stat)){
       PERM[i] <- check_test_stat
@@ -57,8 +58,13 @@ npLRT <- function(happi_out,
   
   } # end PERM loop 
   
+  if (sum(is.na(PERM)) == P) {
+    warning("Nonparametric permutation test failed because the model failed to converge for all permutations.")
+    return(NA)
+  }
   perc.rank <- function(x, y) (1 + sum(stats::na.omit(y) >= x)) / (length(stats::na.omit(y)) + 1)
   p.val <- perc.rank(t.observed, PERM)
+  message(paste0("Out of ", P, " permutations, ", sum(!is.na(PERM)), " converged and contributed to the permutation test."))
   return(p.val)
 }
 
